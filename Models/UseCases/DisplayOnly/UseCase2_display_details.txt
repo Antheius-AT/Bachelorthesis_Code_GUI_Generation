@@ -1,0 +1,10 @@
+﻿USE CASE PERSONAL DETAILS VIEW
+
+-) Display personal details (read only)
+-) Relevant personal details to be displayed:
+	Gender
+	Age
+	First name
+	Last name
+	Address (containing street, housenumber and zip code)
+	List of job educations (Job education consists of a name of the institution as well as the attendance duration)

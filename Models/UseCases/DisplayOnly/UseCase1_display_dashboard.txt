@@ -1,0 +1,11 @@
+﻿USE CASE DASHBOARD
+
+-) Visualize sensor data on dashboard
+-) Relevant metrics: 
+	Average temperature over the last day
+	Average power consumption over the past week
+	Current temperature
+	Average humidity in percent over the past week
+	Current sensor power status (On/Off)
+
+-) Data updates in real time

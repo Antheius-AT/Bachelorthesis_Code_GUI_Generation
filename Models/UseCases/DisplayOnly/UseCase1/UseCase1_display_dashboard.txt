@@ -2,10 +2,12 @@
 
 -) Visualize sensor data on dashboard
 -) Relevant metrics: 
-	Average temperature over the last day
+	Average temperature over the last week
 	Average power consumption over the past week
 	Current temperature
-	Average humidity in percent over the past week
+	Current air humidity
 	Current sensor power status (On/Off)
 
--) Data updates in real time
+-) If sensor is powered off, no data is shown
+
+-) Data for current moment updates in real time

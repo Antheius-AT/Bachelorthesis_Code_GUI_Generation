@@ -1,0 +1,12 @@
+﻿USE CASE EDIT MENU
+
+-) The UI must offer selection buttons for various tools commonly found in image editing UIs
+-) The following tools must be supported:
+	Pencil
+	Eraser
+	Tool width (The width of the currently selected tool)
+	New img button
+	Save img button
+
+-) None of this functionality has to be implemented.
+-) Simple callbacks to demonstrate functionality and possibility to invoke actions upon button pressing have to be implemented though

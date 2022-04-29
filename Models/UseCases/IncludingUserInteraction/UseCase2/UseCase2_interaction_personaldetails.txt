@@ -1,0 +1,6 @@
+﻿USE CASE PERSONAL DETAILS EDITOR
+
+-) Within single page (without navigating to different page) offer editing functionality for editing personal details
+-) The same models as in "UseCase1_display_details" are used
+-) Model references do not have to be the same, however all details encapsulated by the models must be editable via this UI
+-) A save button will need to be visible. Instead of sending the data to a server, instead a popup is opened to display the values currently saved in the underlying model

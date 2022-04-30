@@ -1,0 +1,49 @@
+﻿@using Basic_Reflection_UseCase1_Display.Templates
+@using Models.UseCases.DisplayOnly.UseCase1
+@using System.Reflection
+@using System.Collections
+
+@if (Model != null)
+{
+    @foreach (var item in Model.GetType().GetProperties())
+    {
+        var typeAndValue = this.GetTypeValueTuple(item);
+        <DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}})"></DynamicComponent>
+    }
+}
+
+@code {
+    [Parameter]
+    public SensorData? Model { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+    }
+
+    private (Type, object) GetTypeValueTuple(PropertyInfo property)
+    {
+        var typeMap = new Dictionary<Type, Type>()
+        {
+            {typeof(string), typeof(StringTemplate)},
+            {typeof(double), typeof(DoubleTemplate)},
+            {typeof(bool), typeof(BoolTemplate)},
+        };
+
+        Type[] basics = new Type[]
+        {
+            typeof(string),
+            typeof(double),
+            typeof(bool),
+        };
+
+        if (basics.Contains(property.PropertyType))
+        {
+            return (typeMap[property.PropertyType], property.GetValue(Model)!);
+        }
+        else
+        {
+            throw new Exception();
+        }
+    }
+}

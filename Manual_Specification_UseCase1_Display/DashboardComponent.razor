@@ -15,7 +15,10 @@
             </div>
         </div>
     </div>
-    <div class="row mt-5">
+
+    @if (Model.IsPoweredOn)
+    {
+       <div class="row mt-5">
         <div class="col-12 col-lg-6">
             <div class="col-12">
                 <RadzenLabel Text="Avg. temperature last week"></RadzenLabel>
@@ -83,10 +86,16 @@
                 </RadzenArcGauge>
             </div>
         </div>
-    </div>
+    </div>   
+    }
 }
 
 @code {
     [Parameter]
     public SensorData? Model { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+    }
 }

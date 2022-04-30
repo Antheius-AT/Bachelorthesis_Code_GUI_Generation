@@ -30,6 +30,8 @@ namespace Models.UseCases.DisplayOnly.UseCase1
             var timer = new Timer(this.Elapsed, null, 2000, 1000);
         }
 
+        public event EventHandler StateHasChanged;
+
         public double AverageTempAcrossWeek { get; private set; }
 
         public double AveragePowerConsumptionAcrossWeek { get; private set; }
@@ -51,6 +53,8 @@ namespace Models.UseCases.DisplayOnly.UseCase1
             {
                 this.IsPoweredOn = !this.IsPoweredOn;
             }
+
+            this.StateHasChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

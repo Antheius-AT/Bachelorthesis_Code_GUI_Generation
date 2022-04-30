@@ -1,7 +1,8 @@
 ﻿@page "/"
+@using Models.UseCases.IncludingUserInteraction.UseCase1
 
-<LoginComponent></LoginComponent>
+<LoginComponent LoginModel=this.model></LoginComponent>
 
 @code{
-
+    private LoginModel model = new LoginModel();
 }

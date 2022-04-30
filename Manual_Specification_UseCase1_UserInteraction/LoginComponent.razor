@@ -1,6 +1,112 @@
 ﻿@using Models.UseCases.IncludingUserInteraction.UseCase1
+@using Radzen
+
+@inject DialogService DialogService
+
+@if (LoginModel != null)
+{
+    @if (isRegistration)
+    {
+       <Radzen.Blazor.RadzenCard>
+        <h3>Registration</h3>
+
+        <div class="row">
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenTextBox @bind-Value="LoginModel.UserName" Placeholder="Username"></Radzen.Blazor.RadzenTextBox>
+            </div>
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenPassword @bind-Value="LoginModel.Password" Placeholder="Password"></Radzen.Blazor.RadzenPassword>
+            </div>
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenPassword @bind-Value="LoginModel.PasswordConfirmation" Placeholder="Confirm password"></Radzen.Blazor.RadzenPassword>
+            </div>
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenButton class="btn-primary" Click=this.HandleRegistration Text="Register"></Radzen.Blazor.RadzenButton>
+            </div>
+             <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenButton class="btn-primary" Click=ToggleVisibility Text="Login instead"></Radzen.Blazor.RadzenButton>
+            </div>
+        </div>
+        </Radzen.Blazor.RadzenCard>
+    }
+    else
+    {
+          <Radzen.Blazor.RadzenCard>
+        <h3>Login</h3>
+
+        <div class="row">
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenTextBox @bind-Value="LoginModel.UserName" Placeholder="Username"></Radzen.Blazor.RadzenTextBox>
+            </div>
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenPassword @bind-Value="LoginModel.Password" Placeholder="Password"></Radzen.Blazor.RadzenPassword>
+            </div>
+            <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenButton class="btn-primary" Click=this.HandleLogin Text="Login"></Radzen.Blazor.RadzenButton>
+            </div>
+             <div class="mt-3 col-12">
+                <Radzen.Blazor.RadzenButton class="btn-primary" Click=ToggleVisibility Text="Register instead"></Radzen.Blazor.RadzenButton>
+            </div>
+        </div>
+    </Radzen.Blazor.RadzenCard>
+    }
+}
 
 @code {
     [Parameter]
-    public LoginModel? LoginModel{ get; set; }
+    public LoginModel? LoginModel { get; set; }
+
+    private bool isRegistration = false;
+
+    private void ToggleVisibility()
+    {
+        this.LoginModel!.UserName = null;
+        this.LoginModel.Password = null;
+        this.LoginModel.PasswordConfirmation = null;
+        this.isRegistration = !isRegistration;   
+    }
+
+    private async Task HandleRegistration()
+    {
+        var isValid = !string.IsNullOrWhiteSpace(this.LoginModel!.Password) && this.LoginModel!.Password == this.LoginModel.PasswordConfirmation;
+
+        if (!isValid)
+        {
+
+            await DialogService.OpenAsync("Passwords do not match", ds =>
+    @<div>
+        <h2>Passwords do not match</h2>
+        <Radzen.Blazor.RadzenButton Text="Ok" Click="() => ds.Close(true)"></Radzen.Blazor.RadzenButton>
+    </div>
+    );
+
+            return;
+        }
+
+        await DialogService.OpenAsync("Successfully registrated", ds =>
+    @<div>
+        Successfully authenticated with username @this.LoginModel!.UserName and password @this.LoginModel.Password;
+    </div>
+    );
+    }
+
+    private async Task HandleLogin()
+    {
+        if (string.IsNullOrWhiteSpace(LoginModel!.UserName) || string.IsNullOrWhiteSpace(LoginModel.Password))
+        {
+                    await DialogService.OpenAsync("Authentication error", ds =>
+    @<div>
+        Please specify authentication credentials when logging in
+    </div>
+    );
+
+            return;
+        }
+
+        await DialogService.OpenAsync("Successfully authenticated", ds =>
+    @<div>
+        Successfully authenticated with username @this.LoginModel!.UserName and password @this.LoginModel.Password;
+    </div>
+    );
+    }
 }

@@ -1,0 +1,92 @@
+﻿@using Models.UseCases.DisplayOnly.UseCase1
+
+@if (Model != null)
+{
+    <h1>SENSOR DASHBOARD</h1>
+
+    <div class="top-row mt-5">
+           <div class="col-12 col-lg-4">
+            <div class="col-12">
+                <RadzenLabel Text="Is Sensor active"></RadzenLabel>
+            </div>
+            <div class="col-12">
+                <RadzenSwitch Disabled=true Value=Model.IsPoweredOn>
+                </RadzenSwitch>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 col-lg-6">
+            <div class="col-12">
+                <RadzenLabel Text="Avg. temperature last week"></RadzenLabel>
+            </div>
+            <div class="col-12">
+                <RadzenArcGauge>
+                    <RadzenArcGaugeScale Min=-10 Max=50 Radius=1>
+                        <RadzenArcGaugeScaleValue Value=Model.AverageTempAcrossWeek>
+                            <Template Context="pointer">
+                                <h1>@Model.AverageTempAcrossWeek</h1>
+                            </Template>
+                        </RadzenArcGaugeScaleValue>
+                    </RadzenArcGaugeScale>
+                </RadzenArcGauge>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="col-12">
+                <RadzenLabel Text="Avg. power consumption last week"></RadzenLabel>
+            </div>
+            <div class="col-12">
+                <RadzenArcGauge>
+                    <RadzenArcGaugeScale Min=0 Max=500 Radius=1>
+                        <RadzenArcGaugeScaleValue Value=Model.AveragePowerConsumptionAcrossWeek>
+                            <Template Context="pointer">
+                                <h1>@Model.AveragePowerConsumptionAcrossWeek</h1>
+                            </Template>
+                        </RadzenArcGaugeScaleValue>
+                    </RadzenArcGaugeScale>
+                </RadzenArcGauge>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+         <div class="col-12 col-lg-6">
+            <div class="col-12">
+                <RadzenLabel Text="Current air humidity"></RadzenLabel>
+            </div>
+            <div class="col-12">
+                <RadzenArcGauge>
+                    <RadzenArcGaugeScale Min=0 Max=100 Radius=1>
+                        <RadzenArcGaugeScaleValue Value=Model.CurrentAirHumidity>
+                            <Template Context="pointer">
+                                <h1>@Model.CurrentAirHumidity</h1>
+                            </Template>
+                        </RadzenArcGaugeScaleValue>
+                    </RadzenArcGaugeScale>
+                </RadzenArcGauge>
+            </div>
+        </div>
+
+         <div class="col-12 col-lg-6">
+            <div class="col-12">
+                <RadzenLabel Text="Current temperature"></RadzenLabel>
+            </div>
+            <div class="col-12">
+                <RadzenArcGauge>
+                    <RadzenArcGaugeScale Min=-10 Max=50 Radius=1>
+                        <RadzenArcGaugeScaleValue Value=Model.CurrentTemperature>
+                            <Template Context="pointer">
+                                <h1>@Model.CurrentTemperature</h1>
+                            </Template>
+                        </RadzenArcGaugeScaleValue>
+                    </RadzenArcGaugeScale>
+                </RadzenArcGauge>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public SensorData? Model { get; set; }
+}

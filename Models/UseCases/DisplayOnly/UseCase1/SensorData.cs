@@ -11,6 +11,9 @@ namespace Models.UseCases.DisplayOnly.UseCase1
     /// </summary>
     public class SensorData
     {
+        // To simulate sensor getting data in real time.
+        private Random random;
+
         /// <summary>
         /// Initializes this class's property with default values and starts tasks to
         /// simulate live data generation, as a sensor would do.
@@ -23,38 +26,8 @@ namespace Models.UseCases.DisplayOnly.UseCase1
             this.CurrentAirHumidity = 70;
             this.IsPoweredOn = true;
 
-            var random = new Random();
-
-            // To simulate the data being gathered in real time
-            _ = Task.Run(() =>
-            {
-                while (true)
-                {
-                    Task.Delay(random.Next(100, 10001));
-
-                    CurrentTemperature = random.Next(0, 101) * 1.0;
-                }
-            });
-
-            _ = Task.Run(() =>
-            {
-                while (true)
-                {
-                    Task.Delay(random.Next(100, 10001));
-
-                    CurrentAirHumidity = random.Next(10, 101) * 1.0;
-                }
-            });
-
-            _ = Task.Run(() =>
-            {
-                while (true)
-                {
-                    Task.Delay(random.Next(5000, 30001));
-
-                    IsPoweredOn = !IsPoweredOn;
-                }
-            });
+            this.random = new Random();
+            var timer = new Timer(this.Elapsed, null, 2000, 1000);
         }
 
         public double AverageTempAcrossWeek { get; private set; }
@@ -66,5 +39,18 @@ namespace Models.UseCases.DisplayOnly.UseCase1
         public double CurrentAirHumidity { get; private set; }
 
         public bool IsPoweredOn { get; private set; }
+
+
+        private void Elapsed(object? state)
+        {
+            Console.WriteLine("Elapsed");
+            this.CurrentTemperature = this.random.Next(0, 51);
+            this.CurrentAirHumidity = this.random.Next(0, 101);
+
+            if (this.random.Next(0, 11) == 10)
+            {
+                this.IsPoweredOn = !this.IsPoweredOn;
+            }
+        }
     }
 }

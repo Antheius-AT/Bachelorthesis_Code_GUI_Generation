@@ -1,9 +1,8 @@
 ﻿@page "/"
+@using Models.UseCases.DisplayOnly.UseCase1
 
-<PageTitle>Index</PageTitle>
+<DashboardComponent Model="this.model"></DashboardComponent>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    private SensorData model = new SensorData();
+}

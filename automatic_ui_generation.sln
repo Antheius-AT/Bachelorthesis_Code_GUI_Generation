@@ -19,25 +19,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DisplayOnly", "DisplayOnly"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserInteraction", "UserInteraction", "{2F083185-BD92-4575-BB61-7DB0FBFEADA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic_Reflection_UseCase1_Display", "Basic_Reflection_UseCase1_Display\Basic_Reflection_UseCase1_Display.csproj", "{18CD734F-737D-4BD8-AA1A-C503EF281CEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase1_Display", "Basic_Reflection_UseCase1_Display\Basic_Reflection_UseCase1_Display.csproj", "{18CD734F-737D-4BD8-AA1A-C503EF281CEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic_Reflection_UseCase2_Display", "Basic_Reflection_UseCase2_Display\Basic_Reflection_UseCase2_Display.csproj", "{480C3699-C2EC-4126-9FF4-247453283F15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase2_Display", "Basic_Reflection_UseCase2_Display\Basic_Reflection_UseCase2_Display.csproj", "{480C3699-C2EC-4126-9FF4-247453283F15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manual_Specification_UseCase1_Display", "Manual_Specification_UseCase1_Display\Manual_Specification_UseCase1_Display.csproj", "{D09C1C16-DCDD-4CEF-A96F-5F5C0A373BC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase1_Display", "Manual_Specification_UseCase1_Display\Manual_Specification_UseCase1_Display.csproj", "{D09C1C16-DCDD-4CEF-A96F-5F5C0A373BC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manual_Specification_UseCase2_Display", "Manual_Specification_UseCase2_Display\Manual_Specification_UseCase2_Display.csproj", "{DB71FC20-0BC9-4533-B82C-3F56FDD2C356}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase2_Display", "Manual_Specification_UseCase2_Display\Manual_Specification_UseCase2_Display.csproj", "{DB71FC20-0BC9-4533-B82C-3F56FDD2C356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic_Reflection_UseCase1_UserInteraction", "Basic_Reflection_UseCase1_UserInteraction\Basic_Reflection_UseCase1_UserInteraction.csproj", "{E7A1C552-610B-4864-A997-A6AAFA371C0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase1_UserInteraction", "Basic_Reflection_UseCase1_UserInteraction\Basic_Reflection_UseCase1_UserInteraction.csproj", "{E7A1C552-610B-4864-A997-A6AAFA371C0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic_Reflection_UseCase2_UserInteraction", "Basic_Reflection_UseCase2_UserInteraction\Basic_Reflection_UseCase2_UserInteraction.csproj", "{98B00A52-E6FA-4F61-9D96-FC7B62E057CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase2_UserInteraction", "Basic_Reflection_UseCase2_UserInteraction\Basic_Reflection_UseCase2_UserInteraction.csproj", "{98B00A52-E6FA-4F61-9D96-FC7B62E057CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic_Reflection_UseCase3_UserInteraction", "Basic_Reflection_UseCase3_UserInteraction\Basic_Reflection_UseCase3_UserInteraction.csproj", "{4C0D3E0B-0057-4A93-8C72-22567AE7DD8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase3_UserInteraction", "Basic_Reflection_UseCase3_UserInteraction\Basic_Reflection_UseCase3_UserInteraction.csproj", "{4C0D3E0B-0057-4A93-8C72-22567AE7DD8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manual_Specification_UseCase1_UserInteraction", "Manual_Specification_UseCase1_UserInteraction\Manual_Specification_UseCase1_UserInteraction.csproj", "{5785624B-7ABD-4AC2-97B8-0FBD21D0BE19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase1_UserInteraction", "Manual_Specification_UseCase1_UserInteraction\Manual_Specification_UseCase1_UserInteraction.csproj", "{5785624B-7ABD-4AC2-97B8-0FBD21D0BE19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manual_Specification_UseCase2_UserInteraction", "Manual_Specification_UseCase2_UserInteraction\Manual_Specification_UseCase2_UserInteraction.csproj", "{DB53A63D-501A-4F85-9600-AEF669D910E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase2_UserInteraction", "Manual_Specification_UseCase2_UserInteraction\Manual_Specification_UseCase2_UserInteraction.csproj", "{DB53A63D-501A-4F85-9600-AEF669D910E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manual_Specification_UseCase3_UserInteraction", "Manual_Specification_UseCase3_UserInteraction\Manual_Specification_UseCase3_UserInteraction.csproj", "{B04E7DEF-3B8D-477B-A693-F120A024514D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase3_UserInteraction", "Manual_Specification_UseCase3_UserInteraction\Manual_Specification_UseCase3_UserInteraction.csproj", "{B04E7DEF-3B8D-477B-A693-F120A024514D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

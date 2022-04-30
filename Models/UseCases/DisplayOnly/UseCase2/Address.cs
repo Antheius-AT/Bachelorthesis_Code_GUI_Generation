@@ -13,7 +13,10 @@ namespace Models.UseCases.DisplayOnly.UseCase2
             this.City = "Demo city";
             this.Zipcode = 12459;
             this.HouseNumber = "196/Object C/Entrance 5A";
+            this.Street = "Research street 24";
         }
+
+        public string Street { get; set; }
 
         public string City { get; set; }
 

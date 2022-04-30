@@ -1,0 +1,83 @@
+﻿@using Models.UseCases.DisplayOnly.UseCase2
+
+@if (Details != null)
+{
+    <h2>PERSONAL DETAILS</h2>
+
+    <div class="row">
+        <div class="mt-3 col-12 col-lg-6">
+            <RadzenCard>
+                <h5>Personal Information</h5>
+                <div class="row">
+                    <div class="col-12 col-lg-4">
+                        <h2>Name</h2>
+                        @Details.FirstName @Details.LastName
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <h2>Gender</h2>
+                        @Details.Gender
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <h2>Age</h2>
+                        @Details.Age
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>
+        <div class="mt-3 col-12 col-lg-6">
+            <RadzenCard>
+                <h5>Address Information</h5>
+                <div class="row">
+                    <div class="mt-3 col-12 col-lg-6">
+                        <h2>Postcode</h2>
+                        @Details.Address.Zipcode
+                    </div>
+                    <div class="mt-3 col-12 col-lg-6">
+                        <h2>City</h2>
+                        @Details.Address.City
+                    </div>
+                    <div class="mt-3 col-12 col-lg-6">
+                        <h2>Street</h2>
+                        @Details.Address.Street
+                    </div>
+                    <div class="mt-3 col-12 col-lg-6">
+                        <h2>House number</h2>
+                        @Details.Address.HouseNumber
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>
+        <div class="mt-3 col-12">
+            <RadzenCard>
+                <h5>Education</h5>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Insitution Name</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Details.Educations)
+                        {
+                            <tr>
+                                <td>@item.InstitutionName</td>
+                                <td>@item.Duration</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </RadzenCard>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}

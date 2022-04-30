@@ -6,5 +6,5 @@
 	Age
 	First name
 	Last name
-	Address (containing street, housenumber and zip code)
+	Address (containing street, housenumber and zip code and city)
 	List of job educations (Job education consists of a name of the institution as well as the attendance duration)

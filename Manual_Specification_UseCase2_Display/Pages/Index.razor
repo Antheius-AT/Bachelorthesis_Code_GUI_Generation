@@ -1,9 +1,8 @@
 ﻿@page "/"
+@using Models.UseCases.DisplayOnly.UseCase2
 
-<PageTitle>Index</PageTitle>
+<PersonalDetailsComponent Details=model></PersonalDetailsComponent>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    private PersonalDetails model = new PersonalDetails();
+}

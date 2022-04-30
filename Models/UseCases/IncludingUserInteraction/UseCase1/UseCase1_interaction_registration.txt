@@ -1,10 +1,12 @@
-﻿USE CASE REGISTRATION PAGE
+﻿USE CASE REGISTRATION/LOGIN PAGE
 
 -) Offer registration functionality including the following:
 	Specify Username
 	Specify Password
 	Specify Password confirmation
-	Send registration to server
+	Send form to some endpoint
+	Toggle between registration and authentication mode
 
--) Display password and password confirmation using the * symbol instead of characters (1 * for each character)
+-) Display password and password confirmation using the * symbol instead of characters
 -) Send button does not actually need to send any data to a server. Instead a popup must be displayed, including specified username and password
+-) Allow toggle between login and registration

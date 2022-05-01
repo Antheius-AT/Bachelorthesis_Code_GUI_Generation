@@ -1,0 +1,5 @@
+﻿<element type="System.Double" value="27,6" label="AverageTempAcrossWeek"/>
+<element type="System.Double" value="170,59" label="AveragePowerConsumptionAcrossWeek"/>
+<element type="System.Double" value="35,9" label="CurrentTemperature"/>
+<element type="System.Double" value="70" label="CurrentAirHumidity"/>
+<element type="System.Boolean" value="True" label="IsPoweredOn"/>

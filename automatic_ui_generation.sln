@@ -29,6 +29,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManualSpecification", "Manu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basic_Reflection", "Basic_Reflection", "{CBFC729F-941F-4B1E-A434-AFACECEF0254}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GUI_Generator", "GUI_Generator", "{E7641A68-BE21-481E-98B0-DC7B1A2FDCC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI_Generator_UseCase1_Display", "GUI_Generator_UseCase1_Display\GUI_Generator_UseCase1_Display.csproj", "{3014DDB0-1320-471B-B332-FACC94382590}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,10 @@ Global
 		{B04E7DEF-3B8D-477B-A693-F120A024514D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B04E7DEF-3B8D-477B-A693-F120A024514D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B04E7DEF-3B8D-477B-A693-F120A024514D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3014DDB0-1320-471B-B332-FACC94382590}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3014DDB0-1320-471B-B332-FACC94382590}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3014DDB0-1320-471B-B332-FACC94382590}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3014DDB0-1320-471B-B332-FACC94382590}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +102,7 @@ Global
 		{5785624B-7ABD-4AC2-97B8-0FBD21D0BE19} = {80E36DFA-0F6F-42E3-8E29-2843674A79B9}
 		{DB53A63D-501A-4F85-9600-AEF669D910E9} = {80E36DFA-0F6F-42E3-8E29-2843674A79B9}
 		{B04E7DEF-3B8D-477B-A693-F120A024514D} = {80E36DFA-0F6F-42E3-8E29-2843674A79B9}
+		{3014DDB0-1320-471B-B332-FACC94382590} = {E7641A68-BE21-481E-98B0-DC7B1A2FDCC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F5560A1-CB99-42C4-9147-19E7CAD908FD}

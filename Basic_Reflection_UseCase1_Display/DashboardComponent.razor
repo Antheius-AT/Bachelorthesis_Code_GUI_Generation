@@ -8,7 +8,8 @@
     @foreach (var item in Model.GetType().GetProperties())
     {
         var typeAndValue = this.GetTypeValueTuple(item);
-        <DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}})"></DynamicComponent>
+        <DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}, {"Label", typeAndValue.Item3}})"></DynamicComponent>
+        <br />
     }
 }
 
@@ -21,7 +22,7 @@
         Model!.StateHasChanged += (_, _) => this.StateHasChanged();
     }
 
-    private (Type, object) GetTypeValueTuple(PropertyInfo property)
+    private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
     {
         var typeMap = new Dictionary<Type, Type>()
         {
@@ -39,7 +40,7 @@
 
         if (basics.Contains(property.PropertyType))
         {
-            return (typeMap[property.PropertyType], property.GetValue(Model)!);
+            return (typeMap[property.PropertyType], property.GetValue(Model)!, property.Name);
         }
         else
         {

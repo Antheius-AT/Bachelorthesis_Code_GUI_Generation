@@ -1,11 +1,14 @@
 ﻿@page "/"
-@using Models.UseCases.DisplayOnly.UseCase2
+@using Models.UseCases.DisplayOnly.UseCase1
+@using Models.UseCases.IncludingUserInteraction.UseCase1
+@using System.Reflection
 
-@code{
-    private PersonalDetails details = new PersonalDetails();
 
-    protected override void OnInitialized()
-    {
-        throw new Exception("Use case deemed impossible using pure reflection without additional meta data");
-    }
+@code {
+	private LoginModel model;
+
+	protected override void OnInitialized()
+	{
+		throw new NotImplementedException("Use case deemed impossible using only reflection without the addition of some metadata, due to action buttons like login and register not being part of the model and therefore not allowing a reflection based approach to logically infer the need for providing these buttons");
+	}
 }

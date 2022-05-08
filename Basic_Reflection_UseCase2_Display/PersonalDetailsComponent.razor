@@ -1,0 +1,36 @@
+﻿@using Models.UseCases.DisplayOnly.UseCase2
+@using System.Reflection
+@using Radzen
+@using Radzen.Blazor
+
+@if (Details != null)
+{
+	foreach (var propertyInfo in Details.GetType().GetProperties())
+	{
+		GetTypeValueTuple(propertyInfo);
+	}
+}
+
+@code {
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
+
+    private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
+    {
+        var typeMap = new Dictionary<Type, Type>()
+        {
+            {typeof(string), typeof(RadzenTextBox)},
+            {typeof(double), typeof(RadzenNumeric<double>)},
+        };
+
+        if (typeMap.ContainsKey(property.PropertyType))
+        {
+            var controlType = typeMap[property.PropertyType];
+            return controlType;
+        }
+        else
+        {
+            
+        }
+    }
+}

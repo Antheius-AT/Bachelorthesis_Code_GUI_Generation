@@ -1,13 +1,16 @@
-﻿@using Models.UseCases.DisplayOnly.UseCase2
+﻿@using Basic_Reflection_UseCase2_Display.Templates
+@using Models.UseCases.DisplayOnly.UseCase2
 @using System.Reflection
 @using Radzen
 @using Radzen.Blazor
+@using System.Collections
 
 @if (Details != null)
 {
 	foreach (var propertyInfo in Details.GetType().GetProperties())
 	{
-		GetTypeValueTuple(propertyInfo);
+		(Type, object, string) tuple = GetTypeValueTuple(propertyInfo);
+        <DynamicComponent Type=tuple.Item1 Parameters="@(new Dictionary<string, object>(){{"Data", tuple.Item2}, {"Label", tuple.Item3}})"></DynamicComponent>
 	}
 }
 
@@ -19,18 +22,19 @@
     {
         var typeMap = new Dictionary<Type, Type>()
         {
-            {typeof(string), typeof(RadzenTextBox)},
-            {typeof(double), typeof(RadzenNumeric<double>)},
+            {typeof(string), typeof(StringTemplate)},
+            {typeof(int), typeof(IntegerTemplate)},
+            {typeof(IEnumerable), typeof(CollectionView)},
         };
 
         if (typeMap.ContainsKey(property.PropertyType))
         {
             var controlType = typeMap[property.PropertyType];
-            return controlType;
+            return (controlType, property.GetValue(Details)!, property.Name);
         }
         else
         {
-            
+            return (typeof(ContainerView), property.GetValue(Details)!, property.Name);
         }
     }
 }

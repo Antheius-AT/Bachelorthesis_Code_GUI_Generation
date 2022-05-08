@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GUI_Generator", "GUI_Genera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUI_Generator_UseCase1_Display", "GUI_Generator_UseCase1_Display\GUI_Generator_UseCase1_Display.csproj", "{3014DDB0-1320-471B-B332-FACC94382590}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Attribute_Reflection", "Attribute_Reflection", "{28EB5415-3A1A-496C-93EE-106BC52DACDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

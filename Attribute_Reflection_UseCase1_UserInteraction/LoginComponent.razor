@@ -3,37 +3,78 @@
 @using Models.UseCases.IncludingUserInteraction.UseCase1
 @using System.Reflection.Metadata
 @using System.Reflection
+@using Radzen
+
+@inject DialogService DialogService
 
 @if (Data != null)
 {
-	var isInputForm = Data.GetType().GetCustomAttributes(false).Any(p => p.GetType() == typeof(InputFormAttribute));
+    foreach (var property in Data.GetType().GetProperties())
+    {
+        <div class="row">@GetRenderFragment(property)</div>
+    }
 
-	foreach (var property in Data.GetType().GetProperties())
-	{
-		var tuple = GetRenderFragment(property);
-	}
+    if (Data.GetType().GetCustomAttributes().Any(p => p.GetType() == typeof(InputFormAttribute)))
+    {
+        <Radzen.Blazor.RadzenButton class=mt-3 Click="HandleLogin" Text=Login></Radzen.Blazor.RadzenButton>
+    }
 }
 
 @code {
-	private Dictionary<Type, Type> typeMap = new Dictionary<Type, Type>()
-	{
-		{typeof(string), typeof(StringTemplate)},
-	};
+    private Dictionary<Type, Type> typeMap = new Dictionary<Type, Type>()
+    {
+        {typeof(string), typeof(StringTemplate)},
+    };
 
-	[Parameter]
-	public LoginModel? Data { get; set; }
+    private Dictionary<string, string> propertyBindingMap;
 
-	private RenderFragment GetRenderFragment(PropertyInfo propertyInfo)
-	{
-		if (typeMap.ContainsKey(propertyInfo.PropertyType))
-		{
-			return new RenderFragment(
-	@<div><Radzen.Blazor.RadzenTextBox @bind-Value="propertyInfo.Name"></Radzen.Blazor.RadzenTextBox></div>
-	);
-			// Think about how to manage binding here, as this use case
-			// is not read only but requires user input and value binding
-		}
+    protected override void OnInitialized()
+    {
+        propertyBindingMap = new Dictionary<string, string>();
 
-		throw new NotImplementedException();
-	}
+        if (Data != null)
+        {
+            foreach (var item in Data.GetType().GetProperties())
+            {
+                if (item.GetValue(Data) == null)
+                {
+                    item.SetValue(Data, string.Empty);
+                }
+
+                propertyBindingMap.Add(item.Name, item.GetValue(Data)!.ToString());
+            }
+        }
+    }
+
+    [Parameter]
+    public LoginModel? Data { get; set; }
+
+    private RenderFragment GetRenderFragment(PropertyInfo propertyInfo)
+    {
+        if (typeMap.ContainsKey(propertyInfo.PropertyType))
+        {
+            var binding = propertyBindingMap[propertyInfo.Name];
+            return new RenderFragment(
+    @<div><div class="col-6 mt-3">@propertyInfo.Name</div><div class="col-6 mt-3"><Radzen.Blazor.RadzenTextBox @bind-Value="binding"></Radzen.Blazor.RadzenTextBox></div></div>
+    );
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        if (string.IsNullOrWhiteSpace(Data!.UserName) || string.IsNullOrWhiteSpace(Data.Password))
+        {
+            await DialogService.OpenAsync("Authentication error", ds =>
+    @<div>
+        Please specify authentication credentials when logging in
+    </div>
+    );
+
+            return;
+        }
+    }
 }

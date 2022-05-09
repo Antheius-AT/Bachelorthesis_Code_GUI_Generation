@@ -1,0 +1,36 @@
+﻿@inject AppState AppState
+
+@if (IsShown)
+{
+    @if (Label != null)
+{
+    <label>@Label</label>
+}
+<Radzen.Blazor.RadzenNumeric Disabled="@this.ReadOnly" Value=@this.Value></Radzen.Blazor.RadzenNumeric>
+}
+
+@code {
+    [Parameter]
+    public double Value{ get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool IsShown { get; set; }
+
+    [Parameter]
+    public bool ReadOnly{ get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        AppState.ChangedEvent += this.HandleEvent;
+    }
+
+    private void HandleEvent(object? source, EventArgs e)
+    {
+        IsShown = AppState.Visible;
+        this.StateHasChanged();
+    }
+}

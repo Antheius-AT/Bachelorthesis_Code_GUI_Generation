@@ -1,26 +1,39 @@
-﻿@using Models.Metadata
+﻿@using Attribute_Reflection_UseCase1_UserInteraction.Templates
+@using Models.Metadata
 @using Models.UseCases.IncludingUserInteraction.UseCase1
+@using System.Reflection.Metadata
+@using System.Reflection
 
 @if (Data != null)
 {
-	if (Data.GetType().GetCustomAttributes(false).Any(a => a.GetType() == typeof(InputFormAttribute)))
-	{
-		<div class="form-control">
-
-		</div>
-	}
-	else
-	{
-		
-	}
+	var isInputForm = Data.GetType().GetCustomAttributes(false).Any(p => p.GetType() == typeof(InputFormAttribute));
 
 	foreach (var property in Data.GetType().GetProperties())
 	{
-		
+		var tuple = GetRenderFragment(property);
 	}
 }
 
 @code {
+	private Dictionary<Type, Type> typeMap = new Dictionary<Type, Type>()
+	{
+		{typeof(string), typeof(StringTemplate)},
+	};
+
 	[Parameter]
 	public LoginModel? Data { get; set; }
+
+	private RenderFragment GetRenderFragment(PropertyInfo propertyInfo)
+	{
+		if (typeMap.ContainsKey(propertyInfo.PropertyType))
+		{
+			return new RenderFragment(
+	@<div><Radzen.Blazor.RadzenTextBox @bind-Value="propertyInfo.Name"></Radzen.Blazor.RadzenTextBox></div>
+	);
+			// Think about how to manage binding here, as this use case
+			// is not read only but requires user input and value binding
+		}
+
+		throw new NotImplementedException();
+	}
 }

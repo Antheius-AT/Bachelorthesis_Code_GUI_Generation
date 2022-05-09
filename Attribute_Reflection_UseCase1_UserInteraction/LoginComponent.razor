@@ -1,0 +1,26 @@
+﻿@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase1
+
+@if (Data != null)
+{
+	if (Data.GetType().GetCustomAttributes(false).Any(a => a.GetType() == typeof(InputFormAttribute)))
+	{
+		<div class="form-control">
+
+		</div>
+	}
+	else
+	{
+		
+	}
+
+	foreach (var property in Data.GetType().GetProperties())
+	{
+		
+	}
+}
+
+@code {
+	[Parameter]
+	public LoginModel? Data { get; set; }
+}

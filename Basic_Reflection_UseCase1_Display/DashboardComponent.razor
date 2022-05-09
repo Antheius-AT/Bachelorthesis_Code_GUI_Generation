@@ -5,46 +5,48 @@
 
 @if (Model != null)
 {
-    @foreach (var item in Model.GetType().GetProperties())
-    {
-        var typeAndValue = this.GetTypeValueTuple(item);
-        <DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}, {"Label", typeAndValue.Item3}})"></DynamicComponent>
-        <br />
-    }
+	@foreach (var item in Model.GetType().GetProperties())
+	{
+		var typeAndValue = this.GetTypeValueTuple(item);
+		<DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}, {"Label", typeAndValue.Item3}})"></DynamicComponent>
+		<br />
+	}
 }
 
 @code {
-    [Parameter]
-    public SensorData? Model { get; set; }
+	[Parameter]
+	public SensorData? Model { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Model!.StateHasChanged += (_, _) => this.StateHasChanged();
-    }
+	private Dictionary<Type, Type> typeMap;
 
-    private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
-    {
-        var typeMap = new Dictionary<Type, Type>()
-        {
-            {typeof(string), typeof(StringTemplate)},
-            {typeof(double), typeof(DoubleTemplate)},
-            {typeof(bool), typeof(BoolTemplate)},
-        };
+	protected override void OnInitialized()
+	{
+		Model!.StateHasChanged += (_, _) => this.StateHasChanged();
 
-        Type[] basics = new Type[]
-        {
-            typeof(string),
-            typeof(double),
-            typeof(bool),
-        };
+		typeMap = new Dictionary<Type, Type>()
+		{
+			{typeof(string), typeof(StringTemplate)},
+			{typeof(double), typeof(DoubleTemplate)},
+			{typeof(bool), typeof(BoolTemplate)},
+		};
+	}
 
-        if (basics.Contains(property.PropertyType))
-        {
-            return (typeMap[property.PropertyType], property.GetValue(Model)!, property.Name);
-        }
-        else
-        {
-            throw new Exception();
-        }
-    }
+	private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
+	{
+		Type[] basics = new Type[]
+			{
+			typeof(string),
+			typeof(double),
+			typeof(bool),
+			};
+
+		if (basics.Contains(property.PropertyType))
+		{
+			return (typeMap[property.PropertyType], property.GetValue(Model)!, property.Name);
+		}
+		else
+		{
+			throw new Exception();
+		}
+	}
 }

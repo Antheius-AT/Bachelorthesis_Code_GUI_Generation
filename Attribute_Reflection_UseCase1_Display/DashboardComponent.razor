@@ -1,23 +1,53 @@
-﻿@using Models.Metadata
+﻿@using Attribute_Reflection_UseCase1_Display.Templates
+@using System.Reflection
+@using System.Collections
+@using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase1
 
-@if (Data != null)
+@if (Model != null)
 {
-	bool isInputForm = Data.GetType().GetCustomAttributes(false).Any(p => p.GetType() == typeof(InputFormAttribute));
-
-	@foreach (var item in Data.GetType().GetProperties())
+	@foreach (var item in Model.GetType().GetProperties())
 	{
-
-		<DynamicComponent></DynamicComponent>
-	}
-
-	if (isInputForm)
-	{
-		<Radzen.Blazor.RadzenButton Text=Bestätigen></Radzen.Blazor.RadzenButton>
+		bool isReadOnly = item.GetCustomAttributes().Any(p => p.GetType() == typeof(ReadOnlyAttribute));
+		var typeAndValue = this.GetTypeValueTuple(item);
+		<DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}, {"Label", typeAndValue.Item3}, {"ReadOnly", isReadOnly}})"></DynamicComponent>
+		<br />
 	}
 }
 
 @code {
 	[Parameter]
-	public SensorData? Data { get; set; }
+	public SensorData? Model { get; set; }
+
+	private Dictionary<Type, Type> typeMap;
+
+	protected override void OnInitialized()
+	{
+		Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+
+		typeMap = new Dictionary<Type, Type>()
+		{
+			{typeof(double), typeof(DoubleTemplate)},
+			{typeof(bool), typeof(BoolTemplate)},
+		};
+	}
+
+	private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
+	{
+		Type[] basics = new Type[]
+			{
+			typeof(string),
+			typeof(double),
+			typeof(bool),
+			};
+
+		if (basics.Contains(property.PropertyType))
+		{
+			return (typeMap[property.PropertyType], property.GetValue(Model)!, property.Name);
+		}
+		else
+		{
+			throw new Exception();
+		}
+	}
 }

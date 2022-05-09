@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Metadata;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,14 +33,19 @@ namespace Models.UseCases.DisplayOnly.UseCase1
 
         public event EventHandler StateHasChanged;
 
+        [ReadOnly]
         public double AverageTempAcrossWeek { get; private set; }
 
+        [ReadOnly]
         public double AveragePowerConsumptionAcrossWeek { get; private set; }
 
+        [ReadOnly]
         public double CurrentTemperature { get; private set; }
 
+        [ReadOnly]
         public double CurrentAirHumidity { get; private set; }
 
+        [DataToggle]
         public bool IsPoweredOn { get; private set; }
 
 

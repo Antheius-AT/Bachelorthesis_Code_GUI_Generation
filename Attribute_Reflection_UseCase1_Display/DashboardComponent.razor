@@ -1,0 +1,23 @@
+﻿@using Models.Metadata
+@using Models.UseCases.DisplayOnly.UseCase1
+
+@if (Data != null)
+{
+	bool isInputForm = Data.GetType().GetCustomAttributes(false).Any(p => p.GetType() == typeof(InputFormAttribute));
+
+	@foreach (var item in Data.GetType().GetProperties())
+	{
+
+		<DynamicComponent></DynamicComponent>
+	}
+
+	if (isInputForm)
+	{
+		<Radzen.Blazor.RadzenButton Text=Bestätigen></Radzen.Blazor.RadzenButton>
+	}
+}
+
+@code {
+	[Parameter]
+	public SensorData? Data { get; set; }
+}

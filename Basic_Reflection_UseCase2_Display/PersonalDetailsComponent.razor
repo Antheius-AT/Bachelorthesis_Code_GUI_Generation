@@ -24,13 +24,16 @@
         {
             {typeof(string), typeof(StringTemplate)},
             {typeof(int), typeof(IntegerTemplate)},
-            {typeof(IEnumerable), typeof(CollectionView)},
         };
 
         if (typeMap.ContainsKey(property.PropertyType))
         {
             var controlType = typeMap[property.PropertyType];
             return (controlType, property.GetValue(Details)!, property.Name);
+        }
+        else if (property.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
+        {
+            return (typeof(CollectionView), property.GetValue(Details)!, property.Name);
         }
         else
         {

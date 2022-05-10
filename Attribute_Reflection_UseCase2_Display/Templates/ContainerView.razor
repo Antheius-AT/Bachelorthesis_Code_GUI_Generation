@@ -1,0 +1,17 @@
+﻿@if (Data != null)
+{
+    @foreach (var item in Data.GetType().GetProperties())
+    {
+        <span>@item.Name:</span>
+        <span>@item.GetValue(Data)</span>
+        <br />
+    }
+}
+
+@code {
+    [Parameter]
+    public object? Data{ get; set; }
+
+    [Parameter]
+    public string? Label{ get; set; }
+}

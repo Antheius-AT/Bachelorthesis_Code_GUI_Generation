@@ -1,5 +1,8 @@
 ﻿@page "/"
+@using Models.UseCases.DisplayOnly.UseCase2
+
+<PersonalDetailsComponent Details=details></PersonalDetailsComponent>
 
 @code{
-
+	private PersonalDetails details = new PersonalDetails();
 }

@@ -14,18 +14,14 @@
         <div class="row">@GetRenderFragment(property)</div>
     }
 
-    if (Data.GetType().GetCustomAttributes().Any(p => p.GetType() == typeof(InputFormAttribute)))
+    if (Data.GetType().GetCustomAttributes().Any(p => p.GetType() == typeof(AuthenticationFormAttribute)))
     {
         <Radzen.Blazor.RadzenButton class=mt-3 Click="HandleLogin" Text=Login></Radzen.Blazor.RadzenButton>
+        <Radzen.Blazor.RadzenButton class=mt-3 Click=HandleRegistration Text=Register></Radzen.Blazor.RadzenButton>
     }
 }
 
 @code {
-    private Dictionary<Type, Type> typeMap = new Dictionary<Type, Type>()
-    {
-        {typeof(string), typeof(StringTemplate)},
-    };
-
     private Dictionary<string, string> propertyBindingMap;
 
     protected override void OnInitialized()
@@ -51,17 +47,22 @@
 
     private RenderFragment GetRenderFragment(PropertyInfo propertyInfo)
     {
-        if (typeMap.ContainsKey(propertyInfo.PropertyType))
+        if (propertyInfo.PropertyType == typeof(string))
         {
-            var binding = propertyBindingMap[propertyInfo.Name];
-            return new RenderFragment(
-    @<div><div class="col-6 mt-3">@propertyInfo.Name</div><div class="col-6 mt-3"><Radzen.Blazor.RadzenTextBox @bind-Value="binding"></Radzen.Blazor.RadzenTextBox></div></div>
-    );
+            return GetStringFragment(propertyInfo);
         }
         else
         {
             throw new NotImplementedException();
         }
+    }
+
+    private RenderFragment GetStringFragment(PropertyInfo propertyInfo)
+    {
+           var binding = propertyBindingMap[propertyInfo.Name];
+            return new RenderFragment(
+    @<div><div class="col-6 mt-3">@propertyInfo.Name</div><div class="col-6 mt-3"><Radzen.Blazor.RadzenTextBox ValueChanged=@(p => HandleValueChanged(p, propertyInfo.Name))></Radzen.Blazor.RadzenTextBox></div></div>
+    );
     }
 
     private async Task HandleLogin()
@@ -76,5 +77,40 @@
 
             return;
         }
+        else
+        {
+            await DialogService.OpenAsync("Success", ds =>
+    @<div>Success</div>
+    );
+        }
+    }
+
+    private async Task HandleRegistration()
+    {
+        var isValid = !string.IsNullOrWhiteSpace(this.Data!.Password) && this.Data!.Password == this.Data.PasswordConfirmation;
+
+        if (!isValid)
+        {
+
+            await DialogService.OpenAsync("Passwords do not match", ds =>
+    @<div>
+        <h2>Passwords do not match</h2>
+        <Radzen.Blazor.RadzenButton Text="Ok" Click="() => ds.Close(true)"></Radzen.Blazor.RadzenButton>
+    </div>
+    );
+
+            return;
+        }
+
+        await DialogService.OpenAsync("Successfully registrated", ds =>
+    @<div>
+        Successfully registrated with username @this.Data!.UserName and password @this.Data.Password;
+    </div>
+    );
+    }
+
+    private void HandleValueChanged(string value, string propertyName)
+    {
+        this.Data!.GetType().GetProperties().First(p => p.Name == propertyName).SetValue(Data, value);
     }
 }

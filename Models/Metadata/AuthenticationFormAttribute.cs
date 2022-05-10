@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.Metadata
 {
-    public class InputFormAttribute : Attribute
+    public class AuthenticationFormAttribute : Attribute
     {
     }
 }

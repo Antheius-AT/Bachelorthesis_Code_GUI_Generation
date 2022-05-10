@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Models.UseCases.IncludingUserInteraction.UseCase1
 {
-    [InputForm]
+    [AuthenticationForm]
     public class LoginModel
     {
         [Required]

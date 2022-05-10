@@ -28,7 +28,9 @@
 }
 
 @code {
-	private Dictionary<string, string> propertyBindingMap;
+	// Maps are for data binding
+	private Dictionary<string, object> simplePropertyTypeMap;
+	private Dictionary<string, Dictionary<string, object>> complexPropertyTypeMap;
 
 	private List<Type> basicTypes = new List<Type>()
 	{
@@ -43,15 +45,20 @@
 
 	protected override void OnInitialized()
 	{
-		propertyBindingMap = new Dictionary<string, string>();
+		complexPropertyTypeMap = new Dictionary<string, Dictionary<string, object>>();
+		simplePropertyTypeMap = new Dictionary<string, object>();
 
 		if (Details != null)
 		{
 			foreach (var item in Details.GetType().GetProperties())
 			{
-				if (!basicTypes.Contains(item.PropertyType))
+				if (!basicTypes.Contains(item.PropertyType) && !item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
 				{
-					// Create sub map
+					complexPropertyTypeMap.Add(item.Name, GetSimplePropertyTypeMap(item.PropertyType));
+				}
+				else if (!basicTypes.Contains(item.PropertyType) && item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+				{
+					// Think about how to map collection
 				}
 				else
 				{
@@ -60,10 +67,29 @@
 						item.SetValue(Details, string.Empty);
 					}
 
-					propertyBindingMap.Add(item.Name, item.GetValue(Details)!.ToString());
+					simplePropertyTypeMap.Add(item.Name, item.GetValue(Details)!);
 				}
 			}
 		}
+	}
+
+	private Dictionary<string, object> GetSimplePropertyTypeMap(Type type)
+	{
+		var map = new Dictionary<string, object>();
+
+		var activated = Activator.CreateInstance(type);
+
+		foreach (var item in type.GetProperties())
+		{
+			if (item.GetValue(activated) == null)
+			{
+				item.SetValue(activated, string.Empty);
+			}
+
+			map.Add(item.Name, item.GetValue(activated)!);
+		}
+
+		return map;
 	}
 
 	private RenderFragment GetContainerTypeFragment(PropertyInfo nonBasicTypeProperty)

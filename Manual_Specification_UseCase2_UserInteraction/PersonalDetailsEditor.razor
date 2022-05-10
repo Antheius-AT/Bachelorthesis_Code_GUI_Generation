@@ -5,114 +5,109 @@
 
 @if (Details != null)
 {
-    <h2>EDIT PERSONAL DETAILS</h2>
+	<h2>EDIT PERSONAL DETAILS</h2>
 
-    <div class="row">
-        <div class="mt-3 col-12 col-lg-6">
-            <RadzenCard>
-                <h5>Personal Information</h5>
-                <div class="row">
-                    <div class="col-12 col-lg-3">
-                        <h2>First name</h2>
-                        <RadzenTextBox @bind-Value=Details.FirstName></RadzenTextBox>
-                    </div>
-                    <div class="col-12 col-lg-3">
-                        <h2>Last name</h2>
-                        <RadzenTextBox @bind-Value=Details.LastName></RadzenTextBox>
-                    </div>
-                    <div class="col-12 col-lg-3">
-                        <h2>Gender</h2>
-                        <RadzenTextBox @bind-Value=Details.Gender></RadzenTextBox>
-                    </div>
-                    <div class="col-12 col-lg-3">
-                        <h2>Age</h2>
-                        <RadzenNumeric @bind-Value=Details.Age></RadzenNumeric>
-                    </div>
-                </div>
-                  <div class="row mt-3">
-                    <div class=col-3>
-                        <RadzenButton class=btn-primary Text=Save Click=@(async () => await SaveModelDemo())></RadzenButton>
-                    </div>
-                </div>
-            </RadzenCard>
-        </div>
-        <div class="mt-3 col-12 col-lg-6">
-            <RadzenCard>
-                <h5>Address Information</h5>
-                <div class="row">
-                    <div class="mt-3 col-12 col-lg-6">
-                        <h2>Postcode</h2>
-                        <RadzenNumeric @bind-Value=Details.Address.Zipcode></RadzenNumeric>
-                    </div>
-                    <div class="mt-3 col-12 col-lg-6">
-                        <h2>City</h2>
-                        <RadzenTextBox @bind-Value=Details.Address.City></RadzenTextBox>
-                    </div>
-                    <div class="mt-3 col-12 col-lg-6">
-                        <h2>Street</h2>
-                        <RadzenTextBox @bind-Value=Details.Address.Street></RadzenTextBox>
-                    </div>
-                    <div class="mt-3 col-12 col-lg-6">
-                        <h2>House number</h2>
-                        <RadzenNumeric @bind-Value=Details.Address.HouseNumber></RadzenNumeric>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class=col-3>
-                        <RadzenButton class=btn-primary Text=Save Click=@(async () => await SaveModelDemo())></RadzenButton>
-                    </div>
-                </div>
-            </RadzenCard>
-        </div>
-        <div class="mt-3 col-12">
-            <RadzenCard>
-                <h5>Education</h5>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Insitution Name</th>
-                            <th>Duration</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Details.Educations)
-                        {
-                            <tr>
-                                <td>@item.InstitutionName</td>
-                                <td>@item.Duration</td>
-                                <td><RadzenButton class="btn-danger" Text="Delete" Click="() => Details.Educations.Remove(item)"></RadzenButton> </td>
-                            </tr>
-                        }
+	<div class="row">
+		<div class="mt-3 col-12 col-lg-6">
+			<RadzenCard>
+				<h5>Personal Information</h5>
+				<div class="row">
+					<div class="col-12 col-lg-3">
+						<h2>First name</h2>
+						<RadzenTextBox @bind-Value=Details.FirstName></RadzenTextBox>
+					</div>
+					<div class="col-12 col-lg-3">
+						<h2>Last name</h2>
+						<RadzenTextBox @bind-Value=Details.LastName></RadzenTextBox>
+					</div>
+					<div class="col-12 col-lg-3">
+						<h2>Gender</h2>
+						<RadzenTextBox @bind-Value=Details.Gender></RadzenTextBox>
+					</div>
+					<div class="col-12 col-lg-3">
+						<h2>Age</h2>
+						<RadzenNumeric @bind-Value=Details.Age></RadzenNumeric>
+					</div>
+				</div>
+				<div class="row mt-3">
+				</div>
+			</RadzenCard>
+		</div>
+		<div class="mt-3 col-12 col-lg-6">
+			<RadzenCard>
+				<h5>Address Information</h5>
+				<div class="row">
+					<div class="mt-3 col-12 col-lg-6">
+						<h2>Postcode</h2>
+						<RadzenNumeric @bind-Value=Details.Address.Zipcode></RadzenNumeric>
+					</div>
+					<div class="mt-3 col-12 col-lg-6">
+						<h2>City</h2>
+						<RadzenTextBox @bind-Value=Details.Address.City></RadzenTextBox>
+					</div>
+					<div class="mt-3 col-12 col-lg-6">
+						<h2>Street</h2>
+						<RadzenTextBox @bind-Value=Details.Address.Street></RadzenTextBox>
+					</div>
+					<div class="mt-3 col-12 col-lg-6">
+						<h2>House number</h2>
+						<RadzenNumeric @bind-Value=Details.Address.HouseNumber></RadzenNumeric>
+					</div>
+				</div>
+			</RadzenCard>
+		</div>
+		<div class="mt-3 col-12">
+			<RadzenCard>
+				<h5>Education</h5>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Insitution Name</th>
+							<th>Duration</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Details.Educations)
+						{
+							<tr>
+								<td>@item.InstitutionName</td>
+								<td>@item.Duration</td>
+								<td><RadzenButton class="btn-danger" Text="Delete" Click="() => Details.Educations.Remove(item)"></RadzenButton> </td>
+							</tr>
+						}
 
-                        <tr>
-                            <td><RadzenTextBox @bind-Value=this.addedInstitutionName Placeholder="Specify insitution name"></RadzenTextBox></td>
-                            <td><RadzenNumeric @bind-Value=this.addedDuration Placeholder="Specify duration of education"></RadzenNumeric></td>
-                            <td><RadzenButton class="btn-secondary" Text="Save" Click="() => { Details.Educations.Add(new JobEducation(){InstitutionName = this.addedInstitutionName, Duration = this.addedDuration }); addedInstitutionName = null; addedDuration = 0;}"></RadzenButton> </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </RadzenCard>
-        </div>
-    </div>
+						<tr>
+							<td><RadzenTextBox @bind-Value=this.addedInstitutionName Placeholder="Specify insitution name"></RadzenTextBox></td>
+							<td><RadzenNumeric @bind-Value=this.addedDuration Placeholder="Specify duration of education"></RadzenNumeric></td>
+							<td><RadzenButton class="btn-secondary" Text="Save" Click="() => { Details.Educations.Add(new JobEducation(){InstitutionName = this.addedInstitutionName, Duration = this.addedDuration }); addedInstitutionName = null; addedDuration = 0;}"></RadzenButton> </td>
+						</tr>
+					</tbody>
+				</table>
+			</RadzenCard>
+			<div class="col-3 mt-3">
+				<RadzenButton class=btn-primary Text=Save Click=@(async () => await SaveModelDemo())></RadzenButton>
+			</div>
+		</div>
+	</div>
 }
 
 @code {
-    private string? addedInstitutionName;
-    private int addedDuration;
+	private string? addedInstitutionName;
+	private int addedDuration;
 
-    [Parameter]
-    public PersonalDetails? Details { get; set; }
+	[Parameter]
+	public PersonalDetails? Details { get; set; }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+	}
 
-    private async Task SaveModelDemo()
-    {
-        await DialogService.OpenAsync("Saved Changes", dlg =>
-    @<h2>Saved changes in database</h2>
-    );
-    }
+	private async Task SaveModelDemo()
+	{
+		await DialogService.OpenAsync("Saved Changes", dlg =>
+	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+	);
+	}
 }

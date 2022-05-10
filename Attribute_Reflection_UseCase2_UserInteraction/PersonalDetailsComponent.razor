@@ -1,0 +1,43 @@
+﻿@using Attribute_Reflection_UseCase2_UserInteraction.Templates
+@using Models.UseCases.DisplayOnly.UseCase2
+@using System.Reflection
+@using Radzen
+@using Radzen.Blazor
+@using System.Collections
+
+@if (Details != null)
+{
+	foreach (var propertyInfo in Details.GetType().GetProperties())
+	{
+		(Type, object, string) tuple = GetTypeValueTuple(propertyInfo);
+        <DynamicComponent Type=tuple.Item1 Parameters="@(new Dictionary<string, object>(){{"Data", tuple.Item2}, {"Label", tuple.Item3}})"></DynamicComponent>
+	}
+}
+
+@code {
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
+
+    private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
+    {
+        var typeMap = new Dictionary<Type, Type>()
+        {
+            {typeof(string), typeof(StringTemplate)},
+            {typeof(int), typeof(IntegerTemplate)},
+        };
+
+        if (typeMap.ContainsKey(property.PropertyType))
+        {
+            var controlType = typeMap[property.PropertyType];
+            return (controlType, property.GetValue(Details)!, property.Name);
+        }
+        else if (property.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
+        {
+            return (typeof(CollectionView), property.GetValue(Details)!, property.Name);
+        }
+        else
+        {
+            return (typeof(ContainerView), property.GetValue(Details)!, property.Name);
+        }
+    }
+}

@@ -1,11 +1,120 @@
-﻿@using Models.UseCases.DisplayOnly.UseCase2
+﻿@using Models.Metadata
+@using Models.UseCases.DisplayOnly.UseCase2
+@using System.Collections
+@using Attribute_Reflection_UseCase2_UserInteraction.Templates
+@using System.Reflection
+@using Radzen
+
+@inject DialogService DialogService
 
 @if (Details != null)
 {
-	
+	foreach (var item in Details.GetType().GetProperties())
+	{
+		if (!basicTypes.Contains(item.PropertyType))
+		{
+			<div>@GetContainerTypeFragment(item)</div>
+		}
+		else
+		{
+			<div>@GetBasicTypeRenderFragment(item)</div>
+		}
+	}
+
+	if (Details.GetType().GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute)))
+	{
+		<Radzen.Blazor.RadzenButton class=mt-3 Text=Save Click=this.SaveData></Radzen.Blazor.RadzenButton>
+	}
 }
 
 @code {
+	private Dictionary<string, string> propertyBindingMap;
+
+	private List<Type> basicTypes = new List<Type>()
+	{
+		typeof(bool),
+		typeof(string),
+		typeof(int),
+		typeof(double)
+	};
+
 	[Parameter]
 	public PersonalDetails? Details { get; set; }
+
+	protected override void OnInitialized()
+	{
+		propertyBindingMap = new Dictionary<string, string>();
+
+		if (Details != null)
+		{
+			foreach (var item in Details.GetType().GetProperties())
+			{
+				if (!basicTypes.Contains(item.PropertyType))
+				{
+					// Create sub map
+				}
+				else
+				{
+					if (item.GetValue(Details) == null)
+					{
+						item.SetValue(Details, string.Empty);
+					}
+
+					propertyBindingMap.Add(item.Name, item.GetValue(Details)!.ToString());
+				}
+			}
+		}
+	}
+
+	private RenderFragment GetContainerTypeFragment(PropertyInfo nonBasicTypeProperty)
+	{
+		if (nonBasicTypeProperty.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+		{
+			return new RenderFragment(
+	@<Radzen.Blazor.RadzenCard class=mt-3><div><CollectionView Data=@(nonBasicTypeProperty.GetValue(Details) as IEnumerable<object>)></CollectionView></div></Radzen.Blazor.RadzenCard>
+	);
+		}
+		else
+		{
+			return new RenderFragment(
+	@<Radzen.Blazor.RadzenCard class=mt-3>
+		<div>
+			<div class=row>
+				@foreach (var item in nonBasicTypeProperty.PropertyType.GetProperties())
+					{
+						<div class="col-12 col-lg-6">@GetBasicTypeRenderFragment(item)</div>
+					}
+				</div>
+			</div>
+		</Radzen.Blazor.RadzenCard>
+	);
+		}
+	}
+
+	private RenderFragment GetBasicTypeRenderFragment(PropertyInfo propertyInfo)
+	{
+		if (propertyInfo.PropertyType == typeof(string))
+		{
+			return new RenderFragment(
+	@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
+	);
+		}
+		else if (propertyInfo.PropertyType == typeof(int))
+		{
+			return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric Placeholder=@propertyInfo.Name class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+	);
+		}
+		else
+		{
+			throw new ArgumentException(nameof(propertyInfo), "Non basic type detected");
+		}
+	}
+
+	private async Task SaveData()
+	{
+		// View is borrowed for demonstration and confirmation that changes were made to object.
+		await DialogService.OpenAsync("Successfully saved in database", ds =>
+	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+	);
+	}
 }

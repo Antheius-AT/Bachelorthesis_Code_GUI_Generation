@@ -1,9 +1,10 @@
 ﻿
 
-using System.ComponentModel.DataAnnotations;
+using Models.Metadata;
 
 namespace Models.UseCases.DisplayOnly.UseCase2
 {
+    [Editable]
     public class PersonalDetails
     {
         public PersonalDetails()

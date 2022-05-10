@@ -1,0 +1,17 @@
+﻿@if (Data != null)
+{
+    <div class=row>
+        <div class=col-12>
+            @Label:
+            <Radzen.Blazor.RadzenNumeric Disabled TValue=int></Radzen.Blazor.RadzenNumeric>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public object? Data { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+}

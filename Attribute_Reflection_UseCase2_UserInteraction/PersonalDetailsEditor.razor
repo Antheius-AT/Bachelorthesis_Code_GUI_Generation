@@ -48,6 +48,7 @@
 		complexPropertyTypeMap = new Dictionary<string, Dictionary<string, object>>();
 		simplePropertyTypeMap = new Dictionary<string, object>();
 
+		// The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
 		if (Details != null)
 		{
 			foreach (var item in Details.GetType().GetProperties())
@@ -119,7 +120,7 @@
 
 	private RenderFragment GetBasicTypeRenderFragment(PropertyInfo propertyInfo)
 	{
-		string binding;
+		// Think about how to use generated binding map to bind values in on changed methods.
 
 		if (propertyInfo.PropertyType == typeof(string))
 		{

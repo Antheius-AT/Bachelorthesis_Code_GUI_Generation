@@ -28,9 +28,9 @@
 }
 
 @code {
-	// Maps are for data binding
-	private Dictionary<string, object> simplePropertyTypeMap;
-	private Dictionary<string, Dictionary<string, object>> complexPropertyTypeMap;
+	// An object mapping a property name to the complete path by which values can be bound to it, relative to the object
+	// passed as parameter and stored in Details
+	private Dictionary<string, List<string>> propertyBindingPathMap;
 
 	private List<Type> basicTypes = new List<Type>()
 	{
@@ -45,8 +45,7 @@
 
 	protected override void OnInitialized()
 	{
-		complexPropertyTypeMap = new Dictionary<string, Dictionary<string, object>>();
-		simplePropertyTypeMap = new Dictionary<string, object>();
+		propertyBindingPathMap = new Dictionary<string, List<string>>();
 
 		// The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
 		if (Details != null)
@@ -55,7 +54,7 @@
 			{
 				if (!basicTypes.Contains(item.PropertyType) && !item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
 				{
-					complexPropertyTypeMap.Add(item.Name, GetSimplePropertyTypeMap(item.PropertyType));
+					// Think about how to map complex type
 				}
 				else if (!basicTypes.Contains(item.PropertyType) && item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
 				{
@@ -63,12 +62,7 @@
 				}
 				else
 				{
-					if (item.GetValue(Details) == null)
-					{
-						item.SetValue(Details, string.Empty);
-					}
-
-					simplePropertyTypeMap.Add(item.Name, item.GetValue(Details)!);
+					propertyBindingPathMap.Add(item.Name, new List<string>(){item.Name});
 				}
 			}
 		}
@@ -122,15 +116,22 @@
 	{
 		// Think about how to use generated binding map to bind values in on changed methods.
 
+		IEnumerable<string> propertyPathList = Enumerable.Empty<string>();
+
+		if (this.propertyBindingPathMap.ContainsKey(propertyInfo.Name))
+		{
+			propertyPathList = propertyBindingPathMap[propertyInfo.Name];
+		}
+
 		if (propertyInfo.PropertyType == typeof(string))
 		{
 			return new RenderFragment(
-	@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
+	@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" ValueChanged=@((val) => StringValueChanged(val, propertyPathList)) Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
 	);
 		}
 		else if (propertyInfo.PropertyType == typeof(int))
 		{
-			return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric Placeholder=@propertyInfo.Name class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+			return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric ValueChanged=@((val) => IntValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
 	);
 		}
 		else
@@ -145,5 +146,36 @@
 		await DialogService.OpenAsync("Successfully saved in database", ds =>
 	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
 	);
+	}
+
+	private void StringValueChanged(string newValue, IEnumerable<string> propertyPathList)
+	{
+		var property = this.GetPropertyReferenceRecursively(propertyPathList, this.Details!.GetType());
+
+		property.SetValue(Details, newValue);
+	}
+
+	private void IntValueChanged(int newValue, IEnumerable<string> propertyPathList)
+	{
+		var property = this.GetPropertyReferenceRecursively(propertyPathList, this.Details!.GetType());
+
+		property.SetValue(Details, newValue);
+	}
+
+	private PropertyInfo GetPropertyReferenceRecursively(IEnumerable<string> propertyPathList, Type currentBase)
+	{
+		// Make this work on deeper nested types too. Probably need to use activator create instance?
+		if (!propertyPathList.Any())
+		{
+			throw new ArgumentException(nameof(propertyPathList), "PAth list must not be empty");
+		}
+
+		if (propertyPathList.Count() == 1)
+		{
+			return currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
+		}
+
+		currentBase = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First()).GetType();
+		return this.GetPropertyReferenceRecursively(propertyPathList.Skip(1), currentBase);
 	}
 }

@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Models.UseCases.DisplayOnly.UseCase2
 {
     public class PersonalDetails
@@ -27,8 +29,10 @@ namespace Models.UseCases.DisplayOnly.UseCase2
 
         public string Gender { get; set; }
 
+        [Required]
         public string FirstName { get; set; }
 
+        [Required]
         public string LastName { get; set; }
 
         public int Age { get; set; }

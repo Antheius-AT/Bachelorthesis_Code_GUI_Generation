@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,10 @@ namespace Models.UseCases.DisplayOnly.UseCase2
 
         public string Street { get; set; }
 
+        [Required]
         public string City { get; set; }
 
+        [Required]
         public int Zipcode { get; set; }
 
         public string HouseNumber { get; set; }

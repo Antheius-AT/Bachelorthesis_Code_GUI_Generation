@@ -61,7 +61,7 @@
     {
            var binding = propertyBindingMap[propertyInfo.Name];
             return new RenderFragment(
-    @<div><div class="col-6 mt-3">@propertyInfo.Name</div><div class="col-6 mt-3"><Radzen.Blazor.RadzenTextBox ValueChanged=@(p => HandleValueChanged(p, propertyInfo.Name))></Radzen.Blazor.RadzenTextBox></div></div>
+    @<div><div class="col-6 mt-3">@propertyInfo.Name</div><div class="col-6 mt-3"><Radzen.Blazor.RadzenTextBox ValueChanged=@(p => HandleStringPropertyChanged(p, propertyInfo.Name))></Radzen.Blazor.RadzenTextBox></div></div>
     );
     }
 
@@ -109,7 +109,7 @@
     );
     }
 
-    private void HandleValueChanged(string value, string propertyName)
+    private void HandleStringPropertyChanged(string value, string propertyName)
     {
         this.Data!.GetType().GetProperties().First(p => p.Name == propertyName).SetValue(Data, value);
     }

@@ -10,10 +10,8 @@ namespace Models.UseCases.IncludingUserInteraction.UseCase1
     [AuthenticationForm]
     public class LoginModel
     {
-        [Required]
         public string? UserName { get; set; }
 
-        [Required]
         public string? Password { get; set; }
 
         public string? PasswordConfirmation { get; set; }

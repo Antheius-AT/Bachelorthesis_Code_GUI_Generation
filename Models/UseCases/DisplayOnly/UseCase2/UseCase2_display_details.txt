@@ -8,3 +8,6 @@
 	Last name
 	Address (containing street, housenumber and zip code and city)
 	List of job educations (Job education consists of a name of the institution as well as the attendance duration)
+-) First and last name are mandatory (must not be empty or only white space)
+-) In address only city and post code are mandatory, rest are optional.
+-) In education both name and duration are mandatory when adding

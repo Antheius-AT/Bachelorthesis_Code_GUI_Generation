@@ -119,6 +119,8 @@
 
 	private RenderFragment GetBasicTypeRenderFragment(PropertyInfo propertyInfo)
 	{
+		string binding;
+
 		if (propertyInfo.PropertyType == typeof(string))
 		{
 			return new RenderFragment(

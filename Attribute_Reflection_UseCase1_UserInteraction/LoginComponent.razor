@@ -22,26 +22,6 @@
 }
 
 @code {
-    private Dictionary<string, string> propertyBindingMap;
-
-    protected override void OnInitialized()
-    {
-        propertyBindingMap = new Dictionary<string, string>();
-
-        if (Data != null)
-        {
-            foreach (var item in Data.GetType().GetProperties())
-            {
-                if (item.GetValue(Data) == null)
-                {
-                    item.SetValue(Data, string.Empty);
-                }
-
-                propertyBindingMap.Add(item.Name, item.GetValue(Data)!.ToString());
-            }
-        }
-    }
-
     [Parameter]
     public LoginModel? Data { get; set; }
 
@@ -59,7 +39,6 @@
 
     private RenderFragment GetStringFragment(PropertyInfo propertyInfo)
     {
-           var binding = propertyBindingMap[propertyInfo.Name];
             return new RenderFragment(
     @<div><div class="col-6 mt-3">@propertyInfo.Name</div><div class="col-6 mt-3"><Radzen.Blazor.RadzenTextBox ValueChanged=@(p => HandleStringPropertyChanged(p, propertyInfo.Name))></Radzen.Blazor.RadzenTextBox></div></div>
     );

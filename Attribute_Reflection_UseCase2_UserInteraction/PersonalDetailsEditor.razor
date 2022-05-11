@@ -49,6 +49,8 @@
 	protected override void OnInitialized()
 	{
 		this.instanceCollection = new List<object>();
+		instanceCollection.Add(Details);
+
 		propertyBindingPathMap = new Dictionary<string, List<string>>();
 
 		// The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
@@ -117,12 +119,12 @@
 		if (propertyInfo.PropertyType == typeof(string))
 		{
 			return new RenderFragment(
-	@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" ValueChanged=@((val) => StringValueChanged(val, propertyPathList)) Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
+	@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" Value=@GetPropertyValue(propertyInfo).ToString() ValueChanged=@((val) => StringValueChanged(val, propertyPathList)) Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
 	);
 		}
 		else if (propertyInfo.PropertyType == typeof(int))
 		{
-			return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric ValueChanged=@((val) => IntValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+			return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric Value=@Convert.ToInt32(GetPropertyValue(propertyInfo)) ValueChanged=@((val) => IntValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
 	);
 		}
 		else
@@ -137,6 +139,13 @@
 		await DialogService.OpenAsync("Successfully saved in database", ds =>
 	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
 	);
+	}
+
+	private object GetPropertyValue(PropertyInfo property)
+	{
+		var instance = this.instanceCollection.Single(o => o.GetType().GetProperties().Any(p => p.Name == property.Name));
+
+		return property.GetValue(instance)!;
 	}
 
 	private void StringValueChanged(string newValue, IEnumerable<string> propertyPathList)
@@ -183,9 +192,10 @@
 
 		if (propertyPathList.Count() == 1)
 		{
+			var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
 			var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
 
-			return (this.Details!, property);
+			return (instance!, property);
 		}
 
 		if (propertyPathList.Count() == 2)

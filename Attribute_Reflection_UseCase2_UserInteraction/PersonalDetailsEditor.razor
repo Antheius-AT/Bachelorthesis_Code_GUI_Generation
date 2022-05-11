@@ -28,6 +28,9 @@
 }
 
 @code {
+	// Storing instances in memory to prevent problems arising from calling Activator create instance every time (references not being kept)
+	private List<object> instanceCollection;
+
 	// An object mapping a property name to the complete path by which values can be bound to it, relative to the object
 	// passed as parameter and stored in Details
 	private Dictionary<string, List<string>> propertyBindingPathMap;
@@ -45,6 +48,7 @@
 
 	protected override void OnInitialized()
 	{
+		this.instanceCollection = new List<object>();
 		propertyBindingPathMap = new Dictionary<string, List<string>>();
 
 		// The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
@@ -54,7 +58,13 @@
 			{
 				if (!basicTypes.Contains(item.PropertyType) && !item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
 				{
-					// Think about how to map complex type
+					instanceCollection.Add(Activator.CreateInstance(item.PropertyType)!);
+
+					// Limitation to only go to the next level of depth. Divide and conquer approach would be better if this was to be expanded upon.
+					foreach (var subItem in item.PropertyType.GetProperties())
+					{
+						propertyBindingPathMap.Add(subItem.Name, new List<string>() { this.Details.GetType().Name, item.Name, subItem.Name });
+					}
 				}
 				else if (!basicTypes.Contains(item.PropertyType) && item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
 				{
@@ -62,29 +72,10 @@
 				}
 				else
 				{
-					propertyBindingPathMap.Add(item.Name, new List<string>(){item.Name});
+					propertyBindingPathMap.Add(item.Name, new List<string>() { item.Name });
 				}
 			}
 		}
-	}
-
-	private Dictionary<string, object> GetSimplePropertyTypeMap(Type type)
-	{
-		var map = new Dictionary<string, object>();
-
-		var activated = Activator.CreateInstance(type);
-
-		foreach (var item in type.GetProperties())
-		{
-			if (item.GetValue(activated) == null)
-			{
-				item.SetValue(activated, string.Empty);
-			}
-
-			map.Add(item.Name, item.GetValue(activated)!);
-		}
-
-		return map;
 	}
 
 	private RenderFragment GetContainerTypeFragment(PropertyInfo nonBasicTypeProperty)
@@ -150,19 +141,39 @@
 
 	private void StringValueChanged(string newValue, IEnumerable<string> propertyPathList)
 	{
-		var property = this.GetPropertyReferenceRecursively(propertyPathList, this.Details!.GetType());
+		var referenceTuple = this.GetPropertyAndObjectReferenceRecursively(propertyPathList, this.Details!.GetType());
 
-		property.SetValue(Details, newValue);
+		var instance = referenceTuple.Item1;
+		var property = referenceTuple.Item2;
+
+		property.SetValue(instance, newValue);
+
+		if (instance.GetType() != typeof(PersonalDetails))
+		{
+			var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+
+			upperLevelProperty.SetValue(Details, instance);
+		}
 	}
 
 	private void IntValueChanged(int newValue, IEnumerable<string> propertyPathList)
 	{
-		var property = this.GetPropertyReferenceRecursively(propertyPathList, this.Details!.GetType());
+		var referenceTuple = this.GetPropertyAndObjectReferenceRecursively(propertyPathList, this.Details!.GetType());
 
-		property.SetValue(Details, newValue);
+		var instance = referenceTuple.Item1;
+		var property = referenceTuple.Item2;
+
+		property.SetValue(instance, newValue);
+
+		if (instance.GetType() != typeof(PersonalDetails))
+		{
+			var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+
+			upperLevelProperty.SetValue(Details, instance);
+		}
 	}
 
-	private PropertyInfo GetPropertyReferenceRecursively(IEnumerable<string> propertyPathList, Type currentBase)
+	private (object, PropertyInfo) GetPropertyAndObjectReferenceRecursively(IEnumerable<string> propertyPathList, Type currentBase)
 	{
 		// Make this work on deeper nested types too. Probably need to use activator create instance?
 		if (!propertyPathList.Any())
@@ -172,10 +183,26 @@
 
 		if (propertyPathList.Count() == 1)
 		{
-			return currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
+			var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
+
+			return (this.Details!, property);
 		}
 
-		currentBase = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First()).GetType();
-		return this.GetPropertyReferenceRecursively(propertyPathList.Skip(1), currentBase);
+		if (propertyPathList.Count() == 2)
+		{
+			var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
+			var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.Skip(1).First());
+			
+			return (instance!, property);
+		}
+
+		var newList = propertyPathList.Skip(1).ToArray();
+
+		var newBaseName = newList.First();
+
+		currentBase = currentBase.GetProperties().Single(p => p.Name == newBaseName).PropertyType;
+		var debug = currentBase.Name;
+
+		return this.GetPropertyAndObjectReferenceRecursively(newList, currentBase);
 	}
 }

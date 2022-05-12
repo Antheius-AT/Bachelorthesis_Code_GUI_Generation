@@ -26,97 +26,67 @@ namespace GUI_Generator_UseCase1_Display
             this.data = data;
         }
 
-        public RenderFragment Emit(string specification)
+        public IEnumerable<(Type, string, string, string)> Emit(string specification)
         {
             var specificationToArray = specification.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            var components = new List<string>();
+            var result = new List<(Type, string, string, string)>();
 
             foreach (var item in specificationToArray)
             {
                 if (item.StartsWith("<element"))
                 {
                     var entry = item.Split(new string[] { "<element", "/>" }, StringSplitOptions.RemoveEmptyEntries).First();
-                    var component = MapEntry(entry);
-
-                    components.Add(component);
-                }
-                else if (item.StartsWith("<container"))
-                {
-                    throw new NotImplementedException();
+                    result.Add(TranslateEntry(entry));
                 }
                 else
                 {
-                    throw new ArgumentException(nameof(specification), "Specification is not valid");
+                    throw new ArgumentException(nameof(specification), "Specification is not valid for this use case");
                 }
             }
 
-
-            return new RenderFragment(builder =>
-            {
-                for (int i = 0; i < components.Count; i++)
-                {
-                    var markup = components[i].Replace(',', '.');
-                    Console.WriteLine(markup);
-                    builder.AddMarkupContent(i, markup);
-                }
-            });
+            return result;
         }
 
         /// <summary>
-        /// Maps an abstract definition to a concrete element and returns a html string that can be rendered by a render fragment.
+        /// Translates a line of formal interface specification into a more concrete format, which can be further used to
+        /// look for controls to render the data.
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="Exception"></exception>
-        private string MapEntry(string entry)
+        private (Type, string, string, string) TranslateEntry(string entry)
         {
             // At this point entry contains the attributes of the element tag.
             var elementAttributes = entry.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            string? typeName = null;
-            string? value = null;
-            string? label = null;
+            string typeName = null!;
+            string value = null!;
+            string label = string.Empty;
+            string flags = string.Empty;
 
             foreach (var item in elementAttributes)
             {
                 if (item.StartsWith("type"))
                 {
-                    typeName = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last();
+                    typeName = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last() ?? throw new ArgumentException("Data type could not be parsed but must be specified");
                 }
                 else if (item.StartsWith("value"))
                 {
-                    value = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last();
+                    value = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last() ?? throw new ArgumentException("Entry value could not be parsed.");
                 }
                 else if (item.StartsWith("label"))
                 {
-                    label = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last();
+                    label = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last() ?? throw new ArgumentException("Label must not be empty if specified");
+                }
+                else if (item.StartsWith("flags"))
+                {
+                    flags = item.Split("\"", StringSplitOptions.RemoveEmptyEntries).Last() ?? throw new ArgumentException("Flags must not be empty if specified");
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(typeName))
-            {
-                throw new ArgumentException(nameof(entry), "Type information was missing in abstract UI specification for entry");
-            }
-
             var type = Type.GetType(typeName) ?? throw new ArgumentException(nameof(entry), "Type information was missing in abstract UI specification for entry"); ;
-
-            var control = this.componentMap[type];
-
-            if (type == typeof(string) && control is FormComponent<string>)
-            {
-                return $"<input type=text disabled/>";
-            }
-            else if (type == typeof(double) && control is FormComponent<double>)
-            {
-                return $"<input type=number disabled @bind-Value={data.CurrentTemperature}/>";
-            }
-            else if (type == typeof(bool) && control is FormComponent<bool>)
-            {
-                return $"<input type=checkbox disabled @bind-Value={data.IsPoweredOn}>";
-            }
-
-            throw new Exception();
+            
+            return (type, value, label, flags);
         }
     }
 }

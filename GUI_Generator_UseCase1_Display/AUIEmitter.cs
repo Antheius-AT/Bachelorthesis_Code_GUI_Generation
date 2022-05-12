@@ -29,7 +29,15 @@ namespace GUI_Generator_UseCase1_Display
 
                 if (primitiveTypes.Contains(item.PropertyType))
                 {
-                    specification += $"<element type=\"{item.PropertyType}\" value=\"{item.GetValue(@object)}\" label=\"{item.Name}\"/>\n";
+                    // This could be properly done by either using attributes or by clean code guidelines (e.g enforcing public setter for writeable properties only, to allow for dynamic evaluation of whether a property is read only)
+                    if (item.PropertyType == typeof(bool))
+                    {
+                        specification += $"<element type=\"{item.PropertyType}\" value=\"{{{item.Name}}}\" label=\"{item.Name}\"/>\n";
+                    }
+                    else
+                    {
+                        specification += $"<element type=\"{item.PropertyType}\" flags=\"readonly\" value=\"{{{item.Name}}}\" label=\"{item.Name}\"/>\n";
+                    }
                 }
                 else
                 {

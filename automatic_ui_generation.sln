@@ -35,9 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase1_UserInteraction", "Attribute_Reflection_UseCase1_UserInteraction\Attribute_Reflection_UseCase1_UserInteraction.csproj", "{837F37B0-197C-43C5-A0F3-42643A90CF65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attribute_Reflection_UseCase2_Display", "Attribute_Reflection_UseCase2_Display\Attribute_Reflection_UseCase2_Display.csproj", "{888F5836-941E-446A-9EFA-8DFB23DD0490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase2_Display", "Attribute_Reflection_UseCase2_Display\Attribute_Reflection_UseCase2_Display.csproj", "{888F5836-941E-446A-9EFA-8DFB23DD0490}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attribute_Reflection_UseCase2_UserInteraction", "Attribute_Reflection_UseCase2_UserInteraction\Attribute_Reflection_UseCase2_UserInteraction.csproj", "{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase2_UserInteraction", "Attribute_Reflection_UseCase2_UserInteraction\Attribute_Reflection_UseCase2_UserInteraction.csproj", "{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

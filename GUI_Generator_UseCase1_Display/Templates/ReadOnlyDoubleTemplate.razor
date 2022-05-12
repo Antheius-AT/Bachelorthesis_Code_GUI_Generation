@@ -1,0 +1,11 @@
+﻿@using Models.Metadata
+@inherits TemplateBase
+@attribute [ReadOnly]
+@attribute [ValueKind(typeof(double))]
+
+	<Radzen.Blazor.RadzenNumeric Value=@Value></Radzen.Blazor.RadzenNumeric>
+
+@code {
+	[Parameter]
+	public double Value { get; set; }
+}

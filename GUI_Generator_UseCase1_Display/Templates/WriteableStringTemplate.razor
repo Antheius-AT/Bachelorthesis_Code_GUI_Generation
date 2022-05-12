@@ -1,0 +1,10 @@
+﻿@using Models.Metadata
+
+@inherits TemplateBase
+@attribute [ValueKind(typeof(string))]
+
+<Radzen.Blazor.RadzenTextBox @bind-Value="Value"></Radzen.Blazor.RadzenTextBox>
+@code {
+	[Parameter]
+	public string? Value { get; set; }
+}

@@ -1,24 +1,75 @@
 ﻿@page "/"
+@using GUI_Generator_UseCase1_Display.Templates
+@using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase1
 @using Radzen.Blazor
+@using System.Reflection
 @if (content != null)
 {
     @content    
 }
+
 @code {
     private RenderFragment? content;
 
+    private Dictionary<string, Type> constraintAttributeMap;
+
     protected override void OnInitialized()
     {
+        constraintAttributeMap = new Dictionary<string, Type>()
+        {
+            {"readonly", typeof(Type)}
+        };
+
         string specification = string.Empty;
-        var emitter = new AUIEmitter();
+        var auiEmitter = new AUIEmitter();
 
         var data = new SensorData();
-        specification = emitter.Emit(data, specification);
+        specification = auiEmitter.Emit(data, specification);
 
-        var test = new CUIEmitter(data);
+        var cuiEmitter = new CUIEmitter(data);
 
-        content = test.Emit(specification);
+        var tupleCollection = cuiEmitter.Emit(specification);
 
+        foreach (var item in tupleCollection)
+        {
+            var control = FindControl(item);
+        }
+    }
+
+    private TemplateBase FindControl((Type, string, string, string) tuple)
+    {
+        var asm = Assembly.GetExecutingAssembly();
+
+        var potentialMatches = asm.GetTypes().Where(p => p.BaseType != null && p.BaseType.Name == nameof(TemplateBase) && p.GetCustomAttributes().Any(a => a.GetType() == typeof(ValueKindAttribute) && Activator.CreateInstance<ValueKindAttribute>().ValueKind == tuple.Item1)).ToArray();
+
+        if (potentialMatches.Length == 1)
+        {
+            return Activator.CreateInstance(potentialMatches.First()) as TemplateBase ?? throw new ArgumentException("Instance could not be converted to type template base");
+        }
+        else if (potentialMatches.Length > 1)
+        {
+            var constraint = tuple.Item4;
+
+            if (string.IsNullOrWhiteSpace(constraint))
+            {
+                throw new ArgumentException(nameof(constraint), "Could not map to specific control due to missing constraints");
+            }
+
+            var attrType = constraintAttributeMap[constraint];
+
+            var result = potentialMatches.Where(p => p.GetCustomAttributes().Any(a => a.GetType() == attrType)).ToArray();
+
+            if (result.Length != 1)
+            {
+                throw new ArgumentException("Could not map tuple to one concrete control");
+            }
+
+            return Activator.CreateInstance(result.First()) as TemplateBase ?? throw new ArgumentException("Instance could not be converted to type template base");
+        }
+        else
+        {
+            throw new Exception("Could not find any potential matching controls");
+        }
     }
 }

@@ -1,0 +1,12 @@
+﻿@using Models.Metadata
+
+@inherits TemplateBase
+@attribute [ReadOnly]
+@attribute [ValueKind(typeof(string))]
+
+<Radzen.Blazor.RadzenTextBox Disabled Value=@Value></Radzen.Blazor.RadzenTextBox>
+
+@code {
+	[Parameter]
+	public string? Value { get; set; }
+}

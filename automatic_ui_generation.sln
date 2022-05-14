@@ -49,6 +49,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RenderFragments", "RenderFr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{78E8DFC5-0078-4A5D-AEC6-E2B2EF3291A7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceCodeGeneratorDll", "SourceCodeGeneratorDll", "{B3A5B5EF-CEAF-406C-B54A-34C5C6D98792}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceCodeGenerators", "SourceCodeGenerators\SourceCodeGenerators.csproj", "{CC9CCB13-C756-4683-8CCE-54871754A3E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestShell", "TestShell\TestShell.csproj", "{FBF041A6-EAE6-4CCA-9A1C-39DD432C999C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +117,14 @@ Global
 		{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC9CCB13-C756-4683-8CCE-54871754A3E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC9CCB13-C756-4683-8CCE-54871754A3E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC9CCB13-C756-4683-8CCE-54871754A3E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC9CCB13-C756-4683-8CCE-54871754A3E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBF041A6-EAE6-4CCA-9A1C-39DD432C999C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBF041A6-EAE6-4CCA-9A1C-39DD432C999C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBF041A6-EAE6-4CCA-9A1C-39DD432C999C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBF041A6-EAE6-4CCA-9A1C-39DD432C999C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +148,7 @@ Global
 		{8CE23F9C-FEAB-4505-A680-19436D537CC0} = {CBFC729F-941F-4B1E-A434-AFACECEF0254}
 		{58283476-2418-4F10-95C4-D5C84EC8482A} = {28EB5415-3A1A-496C-93EE-106BC52DACDB}
 		{78E8DFC5-0078-4A5D-AEC6-E2B2EF3291A7} = {28EB5415-3A1A-496C-93EE-106BC52DACDB}
+		{CC9CCB13-C756-4683-8CCE-54871754A3E8} = {B3A5B5EF-CEAF-406C-B54A-34C5C6D98792}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F5560A1-CB99-42C4-9147-19E7CAD908FD}

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace GUI_Generator_UseCase1_Display
+﻿namespace GUI_Generator_UseCase1_Display
 {
     public class AUIEmitter
     {

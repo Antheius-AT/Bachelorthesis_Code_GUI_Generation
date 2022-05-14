@@ -1,4 +1,4 @@
-using Basic_Reflection_UseCase1_Display;
+using Basic_Reflection_UseCase1_Display_Template;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

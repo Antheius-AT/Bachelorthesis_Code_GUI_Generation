@@ -1,7 +1,8 @@
-﻿@using Basic_Reflection_UseCase1_Display.Templates
+﻿@using Basic_Reflection_UseCase1_Display_Template.Templates
 @using Models.UseCases.DisplayOnly.UseCase1
 @using System.Reflection
 @using System.Collections
+@using Microsoft.AspNetCore.Components
 
 @if (Model != null)
 {
@@ -14,18 +15,17 @@
 }
 
 @code {
-	[Parameter]
-	public SensorData? Model { get; set; }
+    [Parameter]
+    public SensorData? Model { get; set; }
 
-	private Dictionary<Type, Type> typeMap;
+    private Dictionary<Type, Type> typeMap;
 
-	protected override void OnInitialized()
-	{
-		Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+    protected override void OnInitialized()
+    {
+        Model!.StateHasChanged += (_, _) => this.StateHasChanged();
 
-		typeMap = new Dictionary<Type, Type>()
+        typeMap = new Dictionary<Type, Type>()
 		{
-			{typeof(string), typeof(StringTemplate)},
 			{typeof(double), typeof(DoubleTemplate)},
 			{typeof(bool), typeof(BoolTemplate)},
 		};

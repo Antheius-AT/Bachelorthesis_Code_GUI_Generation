@@ -9,4 +9,3 @@
 	Save img button
 
 -) None of this functionality has to be implemented.
--) Simple callbacks to demonstrate functionality and possibility to invoke actions upon button pressing have to be implemented though

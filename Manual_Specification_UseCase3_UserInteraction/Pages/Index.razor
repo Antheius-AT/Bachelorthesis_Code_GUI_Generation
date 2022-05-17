@@ -1,9 +1,38 @@
-﻿@page "/"
+﻿
+<h1>This is some markup</h1>
+<h2>This is some other markup</h2>
 
-<PageTitle>Index</PageTitle>
+@code{
+    /// <summary>
+    /// This is a regular field of type string.
+    /// It can be modified from anywhere inside the component, it can
+    /// not be accessed in any way from outside the component however.
+    /// </summary>
+    private string privateStringField;
 
-<h1>Hello, world!</h1>
+    /// <summary>
+    /// This is a public property of type string that is annotated
+    /// with the parameter attribute.
+    /// It can therefore be passed to the component and bound to from the outside
+    /// during the component's initialization.
+    /// </summary>
+    public string ValueString { get; set; }
 
-Welcome to your new app.
+    /// <summary>
+    /// This is a public method of type void.
+    /// It can be called from anyhwere inside and outside the component.
+    /// </summary>
+    public void SomeMethod()
+    {
+        Console.WriteLine("Called some method");
+    }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    /// <summary>
+    /// This method overrides one of the virtual methods of the component base class,
+    /// which every component inherits per default, if no other base type is specified.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}

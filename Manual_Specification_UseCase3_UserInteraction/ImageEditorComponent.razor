@@ -1,0 +1,26 @@
+﻿@using Models.UseCases.IncludingUserInteraction.UseCase3
+
+@if (ToolBox != null)
+{
+    <div class="row">
+        <div class="col-12 col-lg-1 mt-3">
+            <Radzen.Blazor.RadzenButton class="btn-secondary" Text="Brush" Icon="brush"></Radzen.Blazor.RadzenButton>
+        </div>
+         <div class="col-12 col-lg-1 mt-3">
+            <Radzen.Blazor.RadzenButton class="btn-secondary" Text="Eraser" Icon="crop_square"></Radzen.Blazor.RadzenButton>
+        </div>
+        <div class="col-12 col-lg-1 mt-3">
+            <Radzen.Blazor.RadzenSlider Min="1" Max="5" @bind-Value=ToolBox.StrokeWidth></Radzen.Blazor.RadzenSlider>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <Radzen.Blazor.RadzenImage Path="testimg.png"></Radzen.Blazor.RadzenImage>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EditToolBox? ToolBox { get; set; }
+}

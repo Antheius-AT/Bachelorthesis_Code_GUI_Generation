@@ -1,0 +1,88 @@
+﻿@using Models
+@using Models.Metadata
+@using Models.UseCases.DisplayOnly.UseCase1
+@using System.Diagnostics
+@using System.Reflection
+@if (Model != null)
+{
+    @foreach (var item in Model.GetType().GetProperties())
+    {
+        @GetRenderFragment(item);
+    }
+}
+
+@code {
+    private bool isPoweredOn;
+
+    [Parameter]
+    public SensorData? Model { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Model!.StateHasChanged += (_, _) => { StateHasChanged(); };
+        isPoweredOn = Model.IsPoweredOn;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+
+    private RenderFragment GetRenderFragment(PropertyInfo info)
+    {
+        if (info.PropertyType == typeof(double))
+        {
+            return GetDoubleFragment(info);   
+        }
+        else if (info.PropertyType == typeof(bool))
+        {
+            return GetBoolFragment(info);
+        }
+        else
+        {
+            throw new ArgumentException(nameof(info), "Property type not recognized");
+        }
+    }
+
+    private RenderFragment GetDoubleFragment(PropertyInfo info)
+    {
+        var isReadOnly = info.GetCustomAttributes().Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+        var value = Convert.ToDouble(info.GetValue(Model));
+
+        return new RenderFragment(
+        @<div class="@(isPoweredOn ? "mt-3" : "visually-hidden mt-3")"><RadzenNumeric TValue="double" @bind-Value="value" Disabled=@isReadOnly></RadzenNumeric></div>
+    );
+    }
+
+    private RenderFragment GetBoolFragment(PropertyInfo info)
+    {
+        var attributes = info.GetCustomAttributes();
+
+        var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+        var isDataToggle = attributes.Any(a => a.GetType() == typeof(DataToggleAttribute));
+
+        var value = Convert.ToBoolean(info.GetValue(Model));
+
+        return new RenderFragment(
+        @<div class="mt-3"><RadzenSwitch Value="value" Disabled=@isReadOnly ValueChanged="@((changed) => HandleValueChanged(isDataToggle, changed))"></RadzenSwitch></div>
+    );
+    }
+
+    private void HandleValueChanged(bool isDataToggle, bool changed)
+    {
+        Console.WriteLine("Value changed");
+        if (isDataToggle)
+        {
+            Console.WriteLine("In value changed value " + isPoweredOn);
+            this.isPoweredOn = changed;
+            this.StateHasChanged();
+            Console.WriteLine("new value: " + isPoweredOn);
+        }
+    }
+}

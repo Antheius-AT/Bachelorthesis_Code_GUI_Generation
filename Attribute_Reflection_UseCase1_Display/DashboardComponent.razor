@@ -1,6 +1,7 @@
 ﻿@using Attribute_Reflection_UseCase1_Display_Templates.Templates
 @using System.Reflection
 @using System.Collections
+@using Models
 @using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase1
 
@@ -19,6 +20,9 @@
 	[Parameter]
 	public SensorData? Model { get; set; }
 
+	[Parameter]
+	public PerformanceMonitor? PerformanceMonitor { get; set; }
+
 	private Dictionary<Type, Type> typeMap;
 
 	protected override void OnInitialized()
@@ -30,6 +34,14 @@
 			{typeof(double), typeof(DoubleTemplate)},
 			{typeof(bool), typeof(BoolTemplate)},
 		};
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			PerformanceMonitor!.Stop();
+		}
 	}
 
 	private (Type, object, string) GetTypeValueTuple(PropertyInfo property)

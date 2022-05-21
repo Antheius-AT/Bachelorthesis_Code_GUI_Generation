@@ -46,6 +46,7 @@ namespace Models.UseCases.DisplayOnly.UseCase1
         public double CurrentAirHumidity { get; private set; }
 
         [ReadOnly]
+        [DataToggle]
         public bool IsPoweredOn { get; private set; }
 
 

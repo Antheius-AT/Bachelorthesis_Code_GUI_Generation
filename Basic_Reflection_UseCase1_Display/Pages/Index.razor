@@ -1,8 +1,27 @@
 ﻿@page "/"
+@using Models
 @using Models.UseCases.DisplayOnly.UseCase1
 
-<DashboardComponent Model=model></DashboardComponent>
+@if (!showGui)
+{
+    <Radzen.Blazor.RadzenButton Text="Render GUI" Click="() => showGui = true"></Radzen.Blazor.RadzenButton>
+}
+
+@if (showGui)
+{
+    performanceMonitor!.Start();
+    <DashboardComponent Monitor="performanceMonitor" Model=model></DashboardComponent>
+}
 
 @code{
-    private SensorData model = new SensorData();
+    private bool showGui;
+    private PerformanceMonitor? performanceMonitor;
+    private SensorData? model;
+
+    protected override void OnInitialized()
+    {
+        showGui = false;
+        model = new SensorData();
+        performanceMonitor = new PerformanceMonitor();
+    }
 }

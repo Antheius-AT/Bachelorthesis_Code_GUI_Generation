@@ -1,8 +1,10 @@
 ﻿@using Basic_Reflection_UseCase1_Display_Template.Templates
+@using Models
 @using Models.UseCases.DisplayOnly.UseCase1
 @using System.Reflection
 @using System.Collections
 @using Microsoft.AspNetCore.Components
+@using System.Diagnostics
 
 @if (Model != null)
 {
@@ -15,20 +17,33 @@
 }
 
 @code {
-    [Parameter]
-    public SensorData? Model { get; set; }
+	private bool isFirstRender = true;
 
-    private Dictionary<Type, Type> typeMap;
+	[Parameter]
+	public SensorData? Model { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+	[Parameter]
+	public PerformanceMonitor? Monitor { get; set; }
 
-        typeMap = new Dictionary<Type, Type>()
+	private Dictionary<Type, Type>? typeMap;
+
+	protected override void OnInitialized()
+	{
+		Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+
+		typeMap = new Dictionary<Type, Type>()
 		{
 			{typeof(double), typeof(DoubleTemplate)},
 			{typeof(bool), typeof(BoolTemplate)},
 		};
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			Monitor!.Stop();	
+		}
 	}
 
 	private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
@@ -42,7 +57,7 @@
 
 		if (basics.Contains(property.PropertyType))
 		{
-			return (typeMap[property.PropertyType], property.GetValue(Model)!, property.Name);
+			return (typeMap![property.PropertyType], property.GetValue(Model)!, property.Name);
 		}
 		else
 		{

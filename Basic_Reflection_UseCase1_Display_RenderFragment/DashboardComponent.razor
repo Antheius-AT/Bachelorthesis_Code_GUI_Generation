@@ -1,0 +1,55 @@
+﻿@using Models
+@using Models.UseCases.DisplayOnly.UseCase1
+@using System.Diagnostics
+@using System.Reflection
+@if (Data != null)
+{
+    @foreach (var item in Data.GetType().GetProperties())
+    {
+        @GetRenderFragment(item);
+    }
+}
+
+@code {
+    [Parameter]
+    public SensorData? Data { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? Monitor { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Data!.StateHasChanged += (_, _) => StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Monitor!.Stop();
+        }
+    }
+
+    private RenderFragment GetRenderFragment(PropertyInfo info)
+    {
+        if (info.PropertyType == typeof(double))
+        {
+            var value = Convert.ToDouble(info.GetValue(Data));
+
+            return new RenderFragment(
+    @<div class="mt-3">@info.Name: <RadzenNumeric TValue="double" @bind-Value="value"></RadzenNumeric></div>
+            );
+        }
+        else if (info.PropertyType == typeof(bool))
+        {
+            var value = Convert.ToBoolean(info.GetValue(Data));
+            return new RenderFragment(
+    @<div class="mt-3">@($"Sensor Enabled: {value.ToString()}") <RadzenSwitch @bind-Value="value"></RadzenSwitch></div>
+    );
+        }
+        else
+        {
+            throw new ArgumentException(nameof(info), "Unsupported property type");
+        }
+    }
+}

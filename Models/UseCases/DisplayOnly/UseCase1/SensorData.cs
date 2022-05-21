@@ -51,7 +51,7 @@ namespace Models.UseCases.DisplayOnly.UseCase1
 
         private void Elapsed(object? state)
         {
-            Console.WriteLine("Elapsed");
+            Console.WriteLine("Sensor gathered new data");
             this.CurrentTemperature = this.random.Next(0, 51);
             this.CurrentAirHumidity = this.random.Next(0, 101);
 

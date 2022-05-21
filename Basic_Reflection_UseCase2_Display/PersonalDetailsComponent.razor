@@ -1,4 +1,5 @@
 ﻿@using Basic_Reflection_UseCase2_Display_Template.Templates
+@using Models
 @using Models.UseCases.DisplayOnly.UseCase2
 @using System.Reflection
 @using Radzen
@@ -17,6 +18,17 @@
 @code {
     [Parameter]
     public PersonalDetails? Details { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor.Stop();
+        }
+    }
 
     private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
     {

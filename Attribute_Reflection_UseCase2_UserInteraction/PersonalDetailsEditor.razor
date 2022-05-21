@@ -1,4 +1,5 @@
-﻿@using Models.Metadata
+﻿@using Models
+@using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase2
 @using System.Collections
 @using Attribute_Reflection_UseCase2_UserInteraction_RenderFragment.Templates
@@ -46,6 +47,9 @@
 	[Parameter]
 	public PersonalDetails? Details { get; set; }
 
+	[Parameter]
+	public PerformanceMonitor? PerformanceMonitor { get; set; }
+
 	protected override void OnInitialized()
 	{
 		this.instanceCollection = new List<object>();
@@ -77,6 +81,14 @@
 					propertyBindingPathMap.Add(item.Name, new List<string>() { item.Name });
 				}
 			}
+		}
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			PerformanceMonitor!.Stop();
 		}
 	}
 

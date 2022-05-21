@@ -1,9 +1,30 @@
 ﻿@page "/"
+@using Models
 @using Models.UseCases.DisplayOnly.UseCase2
-@using Models.UseCases.IncludingUserInteraction
 
-<PersonalDetailsEditor Details=details></PersonalDetailsEditor>
+@if (details != null)
+{
+    if (!showGui)
+    {
+        <Radzen.Blazor.RadzenButton Text="Render GUI" Click="() => this.showGui = true"></Radzen.Blazor.RadzenButton>
+    }
 
-@code{
-    private PersonalDetails details = new PersonalDetails();
+    @if (showGui)
+    {
+        performanceMonitor!.Start();
+        <PersonalDetailsEditor PerformanceMonitor="performanceMonitor" Details="details"></PersonalDetailsEditor>
+    }
+}
+
+@code {
+    private bool showGui;
+    private PersonalDetails? details;
+    private PerformanceMonitor? performanceMonitor;
+
+    protected override void OnInitialized()
+    {
+        showGui = false;
+        details = new PersonalDetails();
+        performanceMonitor = new PerformanceMonitor();
+    }
 }

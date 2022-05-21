@@ -1,8 +1,26 @@
 ﻿@page "/"
+@using Models
 @using Models.UseCases.IncludingUserInteraction.UseCase1
 
-<LoginComponent LoginModel=this.model></LoginComponent>
+@if (!showGui)
+{
+    <RadzenButton Click="() => showGui = true" Text="Render GUI"></RadzenButton>
+}
+else
+{
+    PerformanceMonitor!.Start();
+    <LoginComponent Monitor="PerformanceMonitor" LoginModel=this.model></LoginComponent>
+}
 
 @code{
-    private LoginModel model = new LoginModel();
+    private bool showGui;
+    private LoginModel? model;
+    private PerformanceMonitor? PerformanceMonitor;
+
+    protected override void OnInitialized()
+    {
+        showGui = false;
+        model = new LoginModel();
+        PerformanceMonitor = new PerformanceMonitor();
+    }
 }

@@ -1,6 +1,7 @@
-﻿@using Models.UseCases.DisplayOnly.UseCase1
+﻿@using Models
+@using Models.UseCases.DisplayOnly.UseCase1
 
-@if (Model != null)
+@if (Data != null)
 {
     <h1>SENSOR DASHBOARD</h1>
 
@@ -10,16 +11,16 @@
                 <RadzenLabel Text="Is Sensor active"></RadzenLabel>
             </div>
             <div class="col-12">
-                <RadzenSwitch Disabled=true Value=Model.IsPoweredOn>
+                <RadzenSwitch Disabled=true Value=Data.IsPoweredOn>
                 </RadzenSwitch>
             </div>
             <div class="col-12">
-                <RadzenLabel Text="@(Model.IsPoweredOn ? "YES" : "NO")"></RadzenLabel>
+                <RadzenLabel Text="@(Data.IsPoweredOn ? "YES" : "NO")"></RadzenLabel>
             </div>
         </div>
     </div>
 
-    @if (Model.IsPoweredOn)
+    @if (Data.IsPoweredOn)
     {
        <div class="row mt-5">
         <div class="col-12 col-lg-6">
@@ -29,9 +30,9 @@
             <div class="col-12">
                 <RadzenArcGauge>
                     <RadzenArcGaugeScale Min=-10 Max=50 Radius=1>
-                        <RadzenArcGaugeScaleValue Value=Model.AverageTempAcrossWeek>
+                        <RadzenArcGaugeScaleValue Value=Data.AverageTempAcrossWeek>
                             <Template Context="pointer">
-                                <h1>@Model.AverageTempAcrossWeek</h1>
+                                <h1>@Data.AverageTempAcrossWeek</h1>
                             </Template>
                         </RadzenArcGaugeScaleValue>
                     </RadzenArcGaugeScale>
@@ -45,9 +46,9 @@
             <div class="col-12">
                 <RadzenArcGauge>
                     <RadzenArcGaugeScale Min=0 Max=500 Radius=1>
-                        <RadzenArcGaugeScaleValue Value=Model.AveragePowerConsumptionAcrossWeek>
+                        <RadzenArcGaugeScaleValue Value=Data.AveragePowerConsumptionAcrossWeek>
                             <Template Context="pointer">
-                                <h1>@Model.AveragePowerConsumptionAcrossWeek</h1>
+                                <h1>@Data.AveragePowerConsumptionAcrossWeek</h1>
                             </Template>
                         </RadzenArcGaugeScaleValue>
                     </RadzenArcGaugeScale>
@@ -63,9 +64,9 @@
             <div class="col-12">
                 <RadzenArcGauge>
                     <RadzenArcGaugeScale Min=0 Max=100 Radius=1>
-                        <RadzenArcGaugeScaleValue Value=Model.CurrentAirHumidity>
+                        <RadzenArcGaugeScaleValue Value=Data.CurrentAirHumidity>
                             <Template Context="pointer">
-                                <h1>@Model.CurrentAirHumidity</h1>
+                                <h1>@Data.CurrentAirHumidity</h1>
                             </Template>
                         </RadzenArcGaugeScaleValue>
                     </RadzenArcGaugeScale>
@@ -80,9 +81,9 @@
             <div class="col-12">
                 <RadzenArcGauge>
                     <RadzenArcGaugeScale Min=-10 Max=50 Radius=1>
-                        <RadzenArcGaugeScaleValue Value=Model.CurrentTemperature>
+                        <RadzenArcGaugeScaleValue Value=Data.CurrentTemperature>
                             <Template Context="pointer">
-                                <h1>@Model.CurrentTemperature</h1>
+                                <h1>@Data.CurrentTemperature</h1>
                             </Template>
                         </RadzenArcGaugeScaleValue>
                     </RadzenArcGaugeScale>
@@ -95,10 +96,21 @@
 
 @code {
     [Parameter]
-    public SensorData? Model { get; set; }
+    public SensorData? Data { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? Monitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Monitor.Stop();
+        }
+    }
 
     protected override void OnInitialized()
     {
-        Model!.StateHasChanged += (_, _) => this.StateHasChanged();
+        Data!.StateHasChanged += (_, _) => this.StateHasChanged();
     }
 }

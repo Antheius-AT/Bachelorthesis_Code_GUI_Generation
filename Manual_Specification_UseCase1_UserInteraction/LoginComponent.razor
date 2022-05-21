@@ -1,4 +1,5 @@
-﻿@using Models.UseCases.IncludingUserInteraction.UseCase1
+﻿@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase1
 @using Radzen
 
 @inject DialogService DialogService
@@ -56,7 +57,18 @@
     [Parameter]
     public LoginModel? LoginModel { get; set; }
 
+    [Parameter]
+    public PerformanceMonitor? Monitor { get; set; }
+
     private bool isRegistration = false;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Monitor!.Stop();
+        }
+    }
 
     private void ToggleVisibility()
     {

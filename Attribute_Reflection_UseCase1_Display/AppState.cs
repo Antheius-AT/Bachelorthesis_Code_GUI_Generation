@@ -1,4 +1,4 @@
-﻿namespace Attribute_Reflection_UseCase1_Display
+﻿namespace Attribute_Reflection_UseCase1_Display_Templates
 {
     public class AppState
     {

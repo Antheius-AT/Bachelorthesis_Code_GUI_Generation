@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase1_Display_Template", "Basic_Reflection_UseCase1_Display\Basic_Reflection_UseCase1_Display_Template.csproj", "{18CD734F-737D-4BD8-AA1A-C503EF281CEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase2_Display", "Basic_Reflection_UseCase2_Display\Basic_Reflection_UseCase2_Display.csproj", "{480C3699-C2EC-4126-9FF4-247453283F15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase2_Display_Template", "Basic_Reflection_UseCase2_Display\Basic_Reflection_UseCase2_Display_Template.csproj", "{480C3699-C2EC-4126-9FF4-247453283F15}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase1_Display", "Manual_Specification_UseCase1_Display\Manual_Specification_UseCase1_Display.csproj", "{D09C1C16-DCDD-4CEF-A96F-5F5C0A373BC5}"
 EndProject
@@ -31,13 +31,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUI_Generator_UseCase1_Disp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Attribute_Reflection", "Attribute_Reflection", "{28EB5415-3A1A-496C-93EE-106BC52DACDB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase1_Display", "Attribute_Reflection_UseCase1_Display\Attribute_Reflection_UseCase1_Display.csproj", "{A2410CA3-C609-47CB-9BCB-817C9EF27E9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase1_Display_Templates", "Attribute_Reflection_UseCase1_Display\Attribute_Reflection_UseCase1_Display_Templates.csproj", "{A2410CA3-C609-47CB-9BCB-817C9EF27E9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase1_UserInteraction", "Attribute_Reflection_UseCase1_UserInteraction\Attribute_Reflection_UseCase1_UserInteraction.csproj", "{837F37B0-197C-43C5-A0F3-42643A90CF65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase1_UserInteraction_RenderFragment", "Attribute_Reflection_UseCase1_UserInteraction\Attribute_Reflection_UseCase1_UserInteraction_RenderFragment.csproj", "{837F37B0-197C-43C5-A0F3-42643A90CF65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase2_Display", "Attribute_Reflection_UseCase2_Display\Attribute_Reflection_UseCase2_Display.csproj", "{888F5836-941E-446A-9EFA-8DFB23DD0490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase2_Display_Templates", "Attribute_Reflection_UseCase2_Display\Attribute_Reflection_UseCase2_Display_Templates.csproj", "{888F5836-941E-446A-9EFA-8DFB23DD0490}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase2_UserInteraction", "Attribute_Reflection_UseCase2_UserInteraction\Attribute_Reflection_UseCase2_UserInteraction.csproj", "{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCase2_UserInteraction_RenderFragment", "Attribute_Reflection_UseCase2_UserInteraction\Attribute_Reflection_UseCase2_UserInteraction_RenderFragment.csproj", "{1CBF2EA1-174B-4021-8C93-89A6A1FDC929}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{F3048695-AF90-40C0-A349-8406AA606836}"
 EndProject
@@ -55,7 +55,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceCodeGenerators", "Sou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestShell", "TestShell\TestShell.csproj", "{FBF041A6-EAE6-4CCA-9A1C-39DD432C999C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manual_Specification_UseCase3_UserInteraction", "Manual_Specification_UseCase3_UserInteraction\Manual_Specification_UseCase3_UserInteraction.csproj", "{CFF4CC66-98CA-474E-BCDB-2C32C15D1566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manual_Specification_UseCase3_UserInteraction", "Manual_Specification_UseCase3_UserInteraction\Manual_Specification_UseCase3_UserInteraction.csproj", "{CFF4CC66-98CA-474E-BCDB-2C32C15D1566}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase1_Display_RenderFragment", "Basic_Reflection_UseCase1_Display_RenderFragment\Basic_Reflection_UseCase1_Display_RenderFragment.csproj", "{7444AEB6-2DCC-4725-989E-4CCEFC98E55A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic_Reflection_UseCase2_Display_RenderFragment", "Basic_Reflection_UseCase2_Display_RenderFragment\Basic_Reflection_UseCase2_Display_RenderFragment.csproj", "{5C0A9676-7E74-4BA7-82CB-5C4D933F22EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic_Reflection_UseCase3_UserInteraction", "Basic_Reflection_UseCase3_UserInteraction\Basic_Reflection_UseCase3_UserInteraction.csproj", "{DF5C8D15-E2F9-42D2-A9F4-E13EE2D610AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +137,18 @@ Global
 		{CFF4CC66-98CA-474E-BCDB-2C32C15D1566}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFF4CC66-98CA-474E-BCDB-2C32C15D1566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFF4CC66-98CA-474E-BCDB-2C32C15D1566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7444AEB6-2DCC-4725-989E-4CCEFC98E55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7444AEB6-2DCC-4725-989E-4CCEFC98E55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7444AEB6-2DCC-4725-989E-4CCEFC98E55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7444AEB6-2DCC-4725-989E-4CCEFC98E55A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C0A9676-7E74-4BA7-82CB-5C4D933F22EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C0A9676-7E74-4BA7-82CB-5C4D933F22EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C0A9676-7E74-4BA7-82CB-5C4D933F22EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C0A9676-7E74-4BA7-82CB-5C4D933F22EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF5C8D15-E2F9-42D2-A9F4-E13EE2D610AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF5C8D15-E2F9-42D2-A9F4-E13EE2D610AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF5C8D15-E2F9-42D2-A9F4-E13EE2D610AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF5C8D15-E2F9-42D2-A9F4-E13EE2D610AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,9 +164,9 @@ Global
 		{DB53A63D-501A-4F85-9600-AEF669D910E9} = {80E36DFA-0F6F-42E3-8E29-2843674A79B9}
 		{3014DDB0-1320-471B-B332-FACC94382590} = {E7641A68-BE21-481E-98B0-DC7B1A2FDCC7}
 		{A2410CA3-C609-47CB-9BCB-817C9EF27E9F} = {78E8DFC5-0078-4A5D-AEC6-E2B2EF3291A7}
-		{837F37B0-197C-43C5-A0F3-42643A90CF65} = {28EB5415-3A1A-496C-93EE-106BC52DACDB}
-		{888F5836-941E-446A-9EFA-8DFB23DD0490} = {28EB5415-3A1A-496C-93EE-106BC52DACDB}
-		{1CBF2EA1-174B-4021-8C93-89A6A1FDC929} = {28EB5415-3A1A-496C-93EE-106BC52DACDB}
+		{837F37B0-197C-43C5-A0F3-42643A90CF65} = {58283476-2418-4F10-95C4-D5C84EC8482A}
+		{888F5836-941E-446A-9EFA-8DFB23DD0490} = {78E8DFC5-0078-4A5D-AEC6-E2B2EF3291A7}
+		{1CBF2EA1-174B-4021-8C93-89A6A1FDC929} = {58283476-2418-4F10-95C4-D5C84EC8482A}
 		{F3048695-AF90-40C0-A349-8406AA606836} = {CBFC729F-941F-4B1E-A434-AFACECEF0254}
 		{5FB44371-1F31-459F-BC32-E40882F3E09B} = {CBFC729F-941F-4B1E-A434-AFACECEF0254}
 		{8CE23F9C-FEAB-4505-A680-19436D537CC0} = {CBFC729F-941F-4B1E-A434-AFACECEF0254}
@@ -156,6 +174,9 @@ Global
 		{78E8DFC5-0078-4A5D-AEC6-E2B2EF3291A7} = {28EB5415-3A1A-496C-93EE-106BC52DACDB}
 		{CC9CCB13-C756-4683-8CCE-54871754A3E8} = {B3A5B5EF-CEAF-406C-B54A-34C5C6D98792}
 		{CFF4CC66-98CA-474E-BCDB-2C32C15D1566} = {80E36DFA-0F6F-42E3-8E29-2843674A79B9}
+		{7444AEB6-2DCC-4725-989E-4CCEFC98E55A} = {8CE23F9C-FEAB-4505-A680-19436D537CC0}
+		{5C0A9676-7E74-4BA7-82CB-5C4D933F22EB} = {8CE23F9C-FEAB-4505-A680-19436D537CC0}
+		{DF5C8D15-E2F9-42D2-A9F4-E13EE2D610AB} = {5FB44371-1F31-459F-BC32-E40882F3E09B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F5560A1-CB99-42C4-9147-19E7CAD908FD}

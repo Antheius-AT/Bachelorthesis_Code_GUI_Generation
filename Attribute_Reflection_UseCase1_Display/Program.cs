@@ -1,4 +1,4 @@
-using Attribute_Reflection_UseCase1_Display;
+using Attribute_Reflection_UseCase1_Display_Templates;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

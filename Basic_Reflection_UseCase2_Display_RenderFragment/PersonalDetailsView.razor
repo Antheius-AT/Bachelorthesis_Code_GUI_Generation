@@ -1,5 +1,115 @@
-﻿<h3>PersonalDetailsView</h3>
+﻿@using Models
+@using Models.UseCases.DisplayOnly.UseCase2
+@using System.Reflection
+@using System.Collections
+
+@if (Details != null)
+{
+    foreach (var item in Details.GetType().GetProperties())
+    {
+        @GetRenderFragment(item, Details);
+    }
+}
 
 @code {
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
 
-}
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+
+    private RenderFragment GetRenderFragment(PropertyInfo info, object instance)
+    {
+        if (info.PropertyType == typeof(string))
+        {
+            var value = info.GetValue(instance)?.ToString() ?? string.Empty;
+
+            return new RenderFragment(
+    @<div class="mt-3"><RadzenTextBox @bind-Value="value"></RadzenTextBox></div>
+    );
+        }
+        else if (info.PropertyType == typeof(int))
+        {
+            var value = Convert.ToInt32(info.GetValue(instance));
+
+            return new RenderFragment(
+        @<div class="mt-3"><RadzenNumeric @bind-Value="value"></RadzenNumeric></div>
+    );
+        }
+        else if (info.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        {
+            return GetCollectionFragment(info);
+        }
+        else
+        {
+            return GetContainerTypeFragment(info);
+        }
+    }
+
+    private RenderFragment GetCollectionFragment(PropertyInfo info)
+    {
+        Console.WriteLine("Collection");
+        if (!info.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        {
+            throw new ArgumentException(nameof(info), "Argument must be a property of an enumerable type");
+        }
+
+        var value = info.GetValue(this.Details) as IEnumerable<object>;
+
+        if (value == null)
+        {
+            throw new ArgumentException(nameof(info), "Argument could not be instantiated as Enumerable");
+        }
+
+        return new RenderFragment(
+    @<div class="mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    @foreach (var property in value.First().GetType().GetProperties())
+                    {
+                            <th>@property.Name</th>
+                    }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in value)
+                {
+                        <tr>
+                            @foreach (var property in item.GetType().GetProperties())
+                        {
+                                <td>
+                                    @property.GetValue(item)
+                                </td>
+                        }
+                        </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    );
+    }
+
+    private RenderFragment GetContainerTypeFragment(PropertyInfo info)
+    {
+        var value = info.GetValue(Details) ?? throw new ArgumentException(nameof(info), "Property could not be instantiated");
+        Console.WriteLine(value);
+
+        return new RenderFragment(
+    @<div class="row mt-3">
+        @foreach (var item in value.GetType().GetProperties())
+        {
+                <div class="mt-3 col-12 col-lg-3">@GetRenderFragment(item, value)</div>
+        }
+        </div>
+    );
+    }
+    }

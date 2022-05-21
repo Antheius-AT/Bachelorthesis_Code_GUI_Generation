@@ -19,10 +19,8 @@ namespace Models.UseCases.DisplayOnly.UseCase2
             this.Duration = 6;
         }
 
-        [Required]
         public string InstitutionName { get; set; }
 
-        [Required]
         public int Duration { get; set; }
     }
 }

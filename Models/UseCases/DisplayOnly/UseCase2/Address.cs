@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Models.Metadata;
 
 namespace Models.UseCases.DisplayOnly.UseCase2
 {
@@ -14,17 +9,19 @@ namespace Models.UseCases.DisplayOnly.UseCase2
             this.City = "Demo city";
             this.Zipcode = 12459;
             this.HouseNumber = "196/Object C/Entrance 5A";
-            this.Street = "Research street 24";
+            this.Street = "This is a very very long street name";
         }
 
+        [StringLength(100)]
         public string Street { get; set; }
 
-        [Required]
+        [StringLength(20)]
         public string City { get; set; }
 
-        [Required]
+        [StringLength(10)]
         public int Zipcode { get; set; }
 
+        [StringLength(10)]
         public string HouseNumber { get; set; }
     }
 }

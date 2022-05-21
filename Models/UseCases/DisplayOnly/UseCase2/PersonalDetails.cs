@@ -9,10 +9,10 @@ namespace Models.UseCases.DisplayOnly.UseCase2
     {
         public PersonalDetails()
         {
-            this.Gender = "Undefined";
+            this.Gender = "Spaghetti Monster does not have a defined gender";
             this.FirstName = "Spaghetti";
             this.LastName = "Monster";
-            this.Age = 96;
+            this.Age = 96291;
             this.Address = new Address();
             this.Educations = new List<JobEducation>()
             {
@@ -28,12 +28,13 @@ namespace Models.UseCases.DisplayOnly.UseCase2
             };
         }
 
+        [StringLength(50)]
         public string Gender { get; set; }
 
-        [Required]
+        [StringLength(15)]
         public string FirstName { get; set; }
 
-        [Required]
+        [StringLength(15)]
         public string LastName { get; set; }
 
         public int Age { get; set; }

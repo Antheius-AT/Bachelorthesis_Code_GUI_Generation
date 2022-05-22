@@ -10,10 +10,16 @@ namespace Models.UseCases.IncludingUserInteraction.UseCase1
     [AuthenticationForm]
     public class LoginModel
     {
+        [Editable]
+        [StringLength(10)]
         public string? UserName { get; set; }
 
+        [Editable]
+        [StringLength(20)]
         public string? Password { get; set; }
 
+        [Editable]
+        [StringLength(20)]
         public string? PasswordConfirmation { get; set; }
     }
 }

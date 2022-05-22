@@ -1,9 +1,26 @@
 ﻿@page "/"
+@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase1
 
-<PageTitle>Index</PageTitle>
+@if (!showGui)
+{
+    <RadzenButton Click="() => showGui = true" Text="Render GUI"></RadzenButton>
+}
+else
+{
+    performanceMonitor!.Start();
+    <LoginComponent Monitor="performanceMonitor" Data=this.model></LoginComponent>
+}
 
-<h1>Hello, world!</h1>
+@code{
+    private bool showGui;
+    private LoginModel? model;
+    private PerformanceMonitor? performanceMonitor;
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override void OnInitialized()
+    {
+        showGui = false;
+        model = new LoginModel();
+        performanceMonitor = new PerformanceMonitor();
+    }
+}

@@ -1,0 +1,26 @@
+﻿@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+
+@if (Tools != null)
+{
+    @foreach (var item in Tools.GetType().GetProperties())
+    {
+
+    }
+}
+
+@code {
+    [Parameter]
+    public EditToolBox? Tools { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? Monitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Monitor!.Stop();
+        }
+    }
+}

@@ -1,8 +1,6 @@
-﻿
+﻿using Models.Metadata;
 
-using Models.Metadata;
-
-namespace Models.UseCases.DisplayOnly.UseCase2
+namespace Models.UseCases.IncludingUserInteraction.UseCase2
 {
     public class PersonalDetails
     {
@@ -28,24 +26,24 @@ namespace Models.UseCases.DisplayOnly.UseCase2
         }
 
         [StringLength(50)]
-        [ReadOnly]
+        [Editable]
         public string Gender { get; set; }
 
         [StringLength(15)]
-        [ReadOnly]
+        [Editable]
         public string FirstName { get; set; }
 
         [StringLength(15)]
-        [ReadOnly]
+        [Editable]
         public string LastName { get; set; }
 
-        [ReadOnly]
+        [Editable]
         public int Age { get; set; }
 
-        [ReadOnly]
+        [Editable]
         public Address Address { get; set; }
 
-        [ReadOnly]
+        [Editable]
         public List<JobEducation> Educations { get; set; }
     }
 }

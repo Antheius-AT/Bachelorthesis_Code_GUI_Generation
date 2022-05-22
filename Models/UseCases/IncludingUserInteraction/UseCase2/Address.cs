@@ -1,6 +1,6 @@
 ﻿using Models.Metadata;
 
-namespace Models.UseCases.DisplayOnly.UseCase2
+namespace Models.UseCases.IncludingUserInteraction.UseCase2
 {
     public class Address
     {
@@ -13,19 +13,19 @@ namespace Models.UseCases.DisplayOnly.UseCase2
         }
 
         [StringLength(100)]
-        [ReadOnly]
+        [Editable]
         public string Street { get; set; }
 
         [StringLength(20)]
-        [ReadOnly]
+        [Editable]
         public string City { get; set; }
 
         [StringLength(10)]
-        [ReadOnly]
+        [Editable]
         public int Zipcode { get; set; }
 
         [StringLength(10)]
-        [ReadOnly]
+        [Editable]
         public string HouseNumber { get; set; }
     }
 }

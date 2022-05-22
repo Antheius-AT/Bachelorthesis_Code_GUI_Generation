@@ -1,6 +1,7 @@
-﻿@using Models
+﻿@using Attribute_Reflection_UseCase2_UserInteraction_RenderFragment.Helpers
+@using Models
 @using Models.Metadata
-@using Models.UseCases.DisplayOnly.UseCase2
+@using Models.UseCases.IncludingUserInteraction.UseCase2
 @using System.Collections
 @using Attribute_Reflection_UseCase2_UserInteraction_RenderFragment.Templates
 @using System.Reflection
@@ -10,221 +11,329 @@
 
 @if (Details != null)
 {
-	foreach (var item in Details.GetType().GetProperties())
-	{
-		if (!basicTypes.Contains(item.PropertyType))
-		{
-			<div>@GetContainerTypeFragment(item)</div>
-		}
-		else
-		{
-			<div>@GetBasicTypeRenderFragment(item)</div>
-		}
-	}
+    foreach (var item in Details.GetType().GetProperties())
+    {
+        @GetRenderFragment(item, Details)
+        ;
+    }
 
-	if (Details.GetType().GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute)))
-	{
-		<Radzen.Blazor.RadzenButton class=mt-3 Text=Save Click=this.SaveData></Radzen.Blazor.RadzenButton>
-	}
+    if (Details.GetType().GetProperties().Any(p => p.GetCustomAttributes().Any(m => m.GetType() == typeof(EditableAttribute))))
+    {
+        <Radzen.Blazor.RadzenButton class=mt-3 Text=Save Click=this.SaveData></Radzen.Blazor.RadzenButton>
+    }
 }
 
 @code {
-	// Storing instances in memory to prevent problems arising from calling Activator create instance every time (references not being kept)
-	private List<object> instanceCollection;
+    // Storing instances in memory to prevent problems arising from calling Activator create instance every time (references not being kept)
+    private List<object> instanceCollection;
 
-	// An object mapping a property name to the complete path by which values can be bound to it, relative to the object
-	// passed as parameter and stored in Details
-	private Dictionary<string, List<string>> propertyBindingPathMap;
+    // An object mapping a property name to the complete path by which values can be bound to it, relative to the object
+    // passed as parameter and stored in Details
+    private Dictionary<string, List<string>> propertyBindingPathMap;
 
-	private List<Type> basicTypes = new List<Type>()
-	{
-		typeof(bool),
-		typeof(string),
-		typeof(int),
-		typeof(double)
-	};
+    private List<Type> basicTypes = new List<Type>()
+                    {
+        typeof(bool),
+        typeof(string),
+        typeof(int),
+        typeof(double)
+                    };
 
-	[Parameter]
-	public PersonalDetails? Details { get; set; }
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
 
-	[Parameter]
-	public PerformanceMonitor? PerformanceMonitor { get; set; }
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
 
-	protected override void OnInitialized()
-	{
-		this.instanceCollection = new List<object>();
-		instanceCollection.Add(Details);
+    protected override void OnInitialized()
+    {
+        this.instanceCollection = new List<object>();
+        instanceCollection.Add(Details);
 
-		propertyBindingPathMap = new Dictionary<string, List<string>>();
+        propertyBindingPathMap = new Dictionary<string, List<string>>();
 
-		// The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
-		if (Details != null)
-		{
-			foreach (var item in Details.GetType().GetProperties())
-			{
-				if (!basicTypes.Contains(item.PropertyType) && !item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
-				{
-					instanceCollection.Add(Activator.CreateInstance(item.PropertyType)!);
+        // The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
+        if (Details != null)
+        {
+            foreach (var item in Details.GetType().GetProperties())
+            {
+                if (!basicTypes.Contains(item.PropertyType) && !item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+                {
+                    instanceCollection.Add(Activator.CreateInstance(item.PropertyType)!);
 
-					// Limitation to only go to the next level of depth. Divide and conquer approach would be better if this was to be expanded upon.
-					foreach (var subItem in item.PropertyType.GetProperties())
-					{
-						propertyBindingPathMap.Add(subItem.Name, new List<string>() { this.Details.GetType().Name, item.Name, subItem.Name });
-					}
-				}
-				else if (!basicTypes.Contains(item.PropertyType) && item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
-				{
-					// Think about how to map collection
-				}
-				else
-				{
-					propertyBindingPathMap.Add(item.Name, new List<string>() { item.Name });
-				}
-			}
-		}
-	}
+                    // Limitation to only go to the next level of depth. Divide and conquer approach would be better if this was to be expanded upon.
+                    foreach (var subItem in item.PropertyType.GetProperties())
+                    {
+                        propertyBindingPathMap.Add(subItem.Name, new List<string>() { this.Details.GetType().Name, item.Name, subItem.Name });
+                    }
+                }
+                else if (!basicTypes.Contains(item.PropertyType) && item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+                {
+                    // Think about how to map collection
+                }
+                else
+                {
+                    propertyBindingPathMap.Add(item.Name, new List<string>() { item.Name });
+                }
+            }
+        }
+    }
 
-	protected override void OnAfterRender(bool firstRender)
-	{
-		if (firstRender)
-		{
-			PerformanceMonitor!.Stop();
-		}
-	}
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
 
-	private RenderFragment GetContainerTypeFragment(PropertyInfo nonBasicTypeProperty)
-	{
-		if (nonBasicTypeProperty.PropertyType.IsAssignableTo(typeof(IEnumerable)))
-		{
-			return new RenderFragment(
-	@<Radzen.Blazor.RadzenCard class=mt-3><div><CollectionView Data=@(nonBasicTypeProperty.GetValue(Details) as IEnumerable<object>)></CollectionView></div></Radzen.Blazor.RadzenCard>
-	);
-		}
-		else
-		{
-			return new RenderFragment(
-	@<Radzen.Blazor.RadzenCard class=mt-3>
-		<div>
-			<div class=row>
-				@foreach (var item in nonBasicTypeProperty.PropertyType.GetProperties())
-					{
-						<div class="col-12 col-lg-6">@GetBasicTypeRenderFragment(item)</div>
-					}
-				</div>
-			</div>
-		</Radzen.Blazor.RadzenCard>
-	);
-		}
-	}
+    private RenderFragment GetRenderFragment(PropertyInfo info, object instance)
+    {
+        if (info.PropertyType == typeof(string))
+        {
+            return GetStringRenderFragment(info, instance);
+        }
+        else if (info.PropertyType == typeof(int))
+        {
+            return GetIntegerRenderFragment(info, instance);
+        }
+        else if (info.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        {
+            return GetCollectionFragment(info, instance);
+        }
+        else
+        {
+            return GetContainerTypeFragment(info);
+        }
+    }
 
-	private RenderFragment GetBasicTypeRenderFragment(PropertyInfo propertyInfo)
-	{
-		// Think about how to use generated binding map to bind values in on changed methods.
+    private RenderFragment GetContainerTypeFragment(PropertyInfo nonBasicTypeProperty)
+    {
+        var instance = Activator.CreateInstance(nonBasicTypeProperty.PropertyType);
 
-		IEnumerable<string> propertyPathList = Enumerable.Empty<string>();
+        return new RenderFragment(
+    @<Radzen.Blazor.RadzenCard class=mt-3>
+        <div>
+            <div class=row>
+                @foreach (var item in nonBasicTypeProperty.PropertyType.GetProperties())
+                    {
+                        <div class="col-12 col-lg-6">@GetRenderFragment(item, instance!)</div>
+                    }
+                </div>
+            </div>
+        </Radzen.Blazor.RadzenCard>
+    );
+    }
 
-		if (this.propertyBindingPathMap.ContainsKey(propertyInfo.Name))
-		{
-			propertyPathList = propertyBindingPathMap[propertyInfo.Name];
-		}
+    ////private RenderFragment GetBasicTypeRenderFragment(PropertyInfo propertyInfo, object accessorInstance)
+    ////{
+    ////    IEnumerable<string> propertyPathList = Enumerable.Empty<string>();
 
-		if (propertyInfo.PropertyType == typeof(string))
-		{
-			return new RenderFragment(
-	@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" Value=@GetPropertyValue(propertyInfo).ToString() ValueChanged=@((val) => StringValueChanged(val, propertyPathList)) Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
-	);
-		}
-		else if (propertyInfo.PropertyType == typeof(int))
-		{
-			return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric Value=@Convert.ToInt32(GetPropertyValue(propertyInfo)) ValueChanged=@((val) => IntValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
-	);
-		}
-		else
-		{
-			throw new ArgumentException(nameof(propertyInfo), "Non basic type detected");
-		}
-	}
+    ////    if (this.propertyBindingPathMap.ContainsKey(propertyInfo.Name))
+    ////    {
+    ////        propertyPathList = propertyBindingPathMap[propertyInfo.Name];
+    ////    }
 
-	private async Task SaveData()
-	{
-		// View is borrowed for demonstration and confirmation that changes were made to object.
-		await DialogService.OpenAsync("Successfully saved in database", ds =>
-	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
-	);
-	}
+    ////    var startingValue = propertyInfo.GetValue(accessorInstance);
 
-	private object GetPropertyValue(PropertyInfo property)
-	{
-		var instance = this.instanceCollection.Single(o => o.GetType().GetProperties().Any(p => p.Name == property.Name));
+    ////    if (propertyInfo.PropertyType == typeof(string))
+    ////    {
+    ////        return new RenderFragment(
+    ////@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" Value="@startingValue" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
+    ////);
+    ////    }
+    ////    else if (propertyInfo.PropertyType == typeof(int))
+    ////    {
+    ////        return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric Value=@Convert.ToInt32(GetPropertyValue(propertyInfo)) ValueChanged=@((val) => ValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+    ////  );
+    ////    }
+    ////    else
+    ////    {
+    ////        throw new ArgumentException(nameof(propertyInfo), "Non basic type detected");
+    ////    }
+    ////}
 
-		return property.GetValue(instance)!;
-	}
+    private RenderFragment GetStringRenderFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<string>(info);
 
-	private void StringValueChanged(string newValue, IEnumerable<string> propertyPathList)
-	{
-		var referenceTuple = this.GetPropertyAndObjectReferenceRecursively(propertyPathList, this.Details!.GetType());
+        Console.WriteLine(value);
+        var attributes = info.GetCustomAttributes();
 
-		var instance = referenceTuple.Item1;
-		var property = referenceTuple.Item2;
+        var propertyPathList = propertyBindingPathMap[info.Name];
+        var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
+        var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
 
-		property.SetValue(instance, newValue);
+        if (isReadOnly)
+        {
+            throw new NotImplementedException("Read Only not implemented");
+        }
+        else
+        {
+            if (stringLengthAttribute != null && stringLengthAttribute.MaxLength < 30)
+            {
+                return new RenderFragment(
+    @<div>@info.Name <RadzenTextBox class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) Placeholder=@info.Name></RadzenTextBox></div>
+          );
+            }
+            else
+            {
+                return new RenderFragment(
+        @<div>@info.Name <RadzenTextArea class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) Placeholder=@info.Name></RadzenTextArea></div>
+    );
+            }
+        }
+    }
 
-		if (instance.GetType() != typeof(PersonalDetails))
-		{
-			var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+    private RenderFragment GetIntegerRenderFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<int>(info);
+        var attributes = info.GetCustomAttributes();
 
-			upperLevelProperty.SetValue(Details, instance);
-		}
-	}
+        var propertyPathList = propertyBindingPathMap[info.Name];
 
-	private void IntValueChanged(int newValue, IEnumerable<string> propertyPathList)
-	{
-		var referenceTuple = this.GetPropertyAndObjectReferenceRecursively(propertyPathList, this.Details!.GetType());
+        var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
 
-		var instance = referenceTuple.Item1;
-		var property = referenceTuple.Item2;
+        if (isReadOnly)
+        {
+            throw new NotImplementedException("Readonly properties not supported");
+        }
+        else
+        {
+            return new RenderFragment(
+    @<div class=col-6>@info.Name <Radzen.Blazor.RadzenNumeric Value="@value" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+        );
+        }
+    }
 
-		property.SetValue(instance, newValue);
+    private async Task SaveData()
+    {
+        // View is borrowed for demonstration and confirmation that changes were made to object.
+        await DialogService.OpenAsync("Successfully saved in database", ds =>
+        @<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+    );
+    }
 
-		if (instance.GetType() != typeof(PersonalDetails))
-		{
-			var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+    private TOutput GetPropertyValue<TOutput>(PropertyInfo property)
+    {
+        if (property.PropertyType != typeof(TOutput))
+        {
+            throw new ArgumentException(nameof(property), "Property type did not match generic type parameter");
+        }
 
-			upperLevelProperty.SetValue(Details, instance);
-		}
-	}
+        var instance = this.instanceCollection.Single(o => o.GetType().GetProperties().Any(p => p.Name == property.Name));
 
-	private (object, PropertyInfo) GetPropertyAndObjectReferenceRecursively(IEnumerable<string> propertyPathList, Type currentBase)
-	{
-		// Make this work on deeper nested types too. Probably need to use activator create instance?
-		if (!propertyPathList.Any())
-		{
-			throw new ArgumentException(nameof(propertyPathList), "PAth list must not be empty");
-		}
+        return (TOutput)property.GetValue(instance)!;
+    }
 
-		if (propertyPathList.Count() == 1)
-		{
-			var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
-			var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
+    private void ValueChanged(string newValue, IEnumerable<string> propertyPathList)
+    {
+        ActivatableContainer activatableContainer = this.GetActivatableContainer(propertyPathList, this.Details!.GetType());
 
-			return (instance!, property);
-		}
+        var instance = activatableContainer.Instance;
+        var property = activatableContainer.Property;
 
-		if (propertyPathList.Count() == 2)
-		{
-			var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
-			var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.Skip(1).First());
-			
-			return (instance!, property);
-		}
+        property.SetValue(instance, newValue);
 
-		var newList = propertyPathList.Skip(1).ToArray();
+        if (instance.GetType() != typeof(PersonalDetails))
+        {
+            var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+            upperLevelProperty.SetValue(Details, instance);
+        }
+    }
 
-		var newBaseName = newList.First();
+    private void ValueChanged(int newValue, IEnumerable<string> propertyPathList)
+    {
+        ActivatableContainer activatableContainer = this.GetActivatableContainer(propertyPathList, this.Details!.GetType());
 
-		currentBase = currentBase.GetProperties().Single(p => p.Name == newBaseName).PropertyType;
-		var debug = currentBase.Name;
+        var instance = activatableContainer.Instance;
+        var property = activatableContainer.Property;
 
-		return this.GetPropertyAndObjectReferenceRecursively(newList, currentBase);
-	}
-}
+        property.SetValue(instance, newValue);
+
+        if (instance.GetType() != typeof(PersonalDetails))
+        {
+            var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+
+            upperLevelProperty.SetValue(Details, instance);
+        }
+    }
+
+    private ActivatableContainer GetActivatableContainer(IEnumerable<string> propertyPathList, Type currentBase)
+    {
+        if (!propertyPathList.Any())
+        {
+            throw new ArgumentException(nameof(propertyPathList), "PAth list must not be empty");
+        }
+
+        if (propertyPathList.Count() == 1)
+        {
+            var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
+            var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
+
+            return new ActivatableContainer(instance, property);
+        }
+
+        if (propertyPathList.Count() == 2)
+        {
+            var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
+            var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.Skip(1).First());
+
+            return new ActivatableContainer(instance, property);
+        }
+
+        var newList = propertyPathList.Skip(1).ToArray();
+
+        var newBaseName = newList.First();
+
+        currentBase = currentBase.GetProperties().Single(p => p.Name == newBaseName).PropertyType;
+        var debug = currentBase.Name;
+
+        return this.GetActivatableContainer(newList, currentBase);
+    }
+
+    private RenderFragment GetCollectionFragment(PropertyInfo info, object instance)
+    {
+        if (!info.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        {
+            throw new ArgumentException(nameof(info), "Argument must be a property of an enumerable type");
+        }
+
+        var value = info.GetValue(instance) as IEnumerable<object>;
+
+        if (value == null)
+        {
+            throw new ArgumentException(nameof(info), "Argument could not be instantiated as Enumerable");
+        }
+
+        return new RenderFragment(
+    @<RadzenCard class="mt-3">
+        <div class="mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        @foreach (var property in value.First().GetType().GetProperties())
+                        {
+                                <th>@property.Name</th>
+                        }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in value)
+                    {
+                            <tr>
+                                @foreach (var property in item.GetType().GetProperties())
+                            {
+                                    <td>
+                                        @property.GetValue(item)
+                                    </td>
+                            }
+                            </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </RadzenCard>
+    );
+    }
+    }

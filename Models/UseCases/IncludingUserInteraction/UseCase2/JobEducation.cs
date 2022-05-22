@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.UseCases.DisplayOnly.UseCase2
+namespace Models.UseCases.IncludingUserInteraction.UseCase2
 {
     public class JobEducation
     {
@@ -19,10 +19,11 @@ namespace Models.UseCases.DisplayOnly.UseCase2
             this.Duration = 6;
         }
 
-        [ReadOnly]
+        [Editable]
+        [StringLength(25)]
         public string InstitutionName { get; set; }
 
-        [ReadOnly]
+        [Editable]
         public int Duration { get; set; }
     }
 }

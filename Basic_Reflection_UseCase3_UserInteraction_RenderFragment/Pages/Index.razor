@@ -1,0 +1,26 @@
+﻿@page "/"
+@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+
+@if (!showGui)
+{
+    <RadzenButton Text="Render GUI" Click="() => this.showGui = true"></RadzenButton>
+}
+else
+{
+    performanceMonitor!.Start();
+    <ImageEditorComponent Monitor="performanceMonitor" Tools="editTools"></ImageEditorComponent>
+}
+
+
+@code{
+    private bool showGui;
+    private PerformanceMonitor? performanceMonitor;
+    private EditToolBox? editTools;
+
+    protected override void OnInitialized()
+    {
+        performanceMonitor = new PerformanceMonitor();
+        editTools = new EditToolBox();
+    }
+}

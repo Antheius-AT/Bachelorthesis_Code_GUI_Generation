@@ -1,21 +1,26 @@
 ﻿@using Models.Metadata
 
 @inherits TemplateBase
+@attribute [Editable]
 @attribute [StringLength(20)]
 
-@if (Data != null)
-{
-    <div class=row>
-        <div class=col-12>
-            @Label:
-            <Radzen.Blazor.RadzenTextBox Disabled @bind-Value=@Data></Radzen.Blazor.RadzenTextBox>
-        </div>
-    </div>
-}
-@code {
-    [Parameter]
-    public string? Data { get; set; }
+<div class=row>
+	<div class=col-12>
+		@Label:
+		<Radzen.Blazor.RadzenTextBox ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
+	</div>
+</div>
 
-    [Parameter]
-    public string? Label { get; set; }
+@code {
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public string? Value { get; set; }
+
+	private void HandleValueChanged(string newValue)
+	{
+		this.Value = newValue;
+		this.RaiseValueChanged(this.Value, this.Label ?? "UNDEFINED");
+	}
 }

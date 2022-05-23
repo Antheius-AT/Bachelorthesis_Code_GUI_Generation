@@ -1,33 +1,20 @@
-﻿@inject AppState AppState
+﻿@using Attribute_Reflection_UseCase1_DisplayOnly_Templates.Templates
+@using Models.Metadata
 
-    @if (Label != null)
-{
-    <label>@Label</label>
-}
-<Radzen.Blazor.RadzenSwitch Disabled="@this.ReadOnly" Value=@this.Value></Radzen.Blazor.RadzenSwitch>
+@inherits TemplateBase
+@attribute [ValueKind(typeof(bool))]
 
-
-
+<div class=row>
+	<div class=col-12>
+		@Label:
+		<Radzen.Blazor.RadzenSwitch Disabled @bind-Value="Value"></Radzen.Blazor.RadzenSwitch>
+	</div>
+</div>
 
 @code {
-    private bool value;
+	[Parameter]
+	public string? Label { get; set; }
 
-    [Parameter]
-    public bool Value {get{ return value; }
-        set
-        {
-            if (value != this.value)
-            {
-                this.value = value;
-                AppState.Visible = this.value;
-                AppState.RaiseEvent();
-            }
-        }
-    }
-
-    [Parameter]
-    public string? Label { get; set; }
-
-    [Parameter]
-    public bool ReadOnly{ get; set; }
+	[Parameter]
+	public bool Value { get; set; }
 }

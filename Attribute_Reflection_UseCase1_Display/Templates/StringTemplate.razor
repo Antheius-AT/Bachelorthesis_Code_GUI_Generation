@@ -1,0 +1,26 @@
+﻿@using Attribute_Reflection_UseCase1_DisplayOnly_Templates.Templates
+@using Models.Metadata
+
+@inherits TemplateBase
+@attribute [Editable]
+@attribute [StringLength(20)]
+@attribute [ValueKind(typeof(string))]
+<div class=row>
+	<div class=col-12>
+		@Label:
+		<Radzen.Blazor.RadzenTextBox ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public string? Value { get; set; }
+
+	private void HandleValueChanged(string newValue)
+	{
+		this.Value = newValue;
+	}
+}

@@ -1,12 +1,12 @@
 ﻿@using Models.Metadata
 
 @inherits TemplateBase
-@attribute [Editable]
+@attribute [Multiline]
 @attribute [ValueKind(typeof(string))]
 <div class=row>
 	<div class=col-12>
 		@Label:
-		<Radzen.Blazor.RadzenTextBox Disabled ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
+		<Radzen.Blazor.RadzenTextArea Disabled @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
 	</div>
 </div>
 
@@ -16,9 +16,4 @@
 
 	[Parameter]
 	public string? Value { get; set; }
-
-	private void HandleValueChanged(string newValue)
-	{
-		this.Value = newValue;
-	}
 }

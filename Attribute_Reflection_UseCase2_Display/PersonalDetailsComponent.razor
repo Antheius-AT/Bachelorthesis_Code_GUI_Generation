@@ -1,4 +1,6 @@
-﻿@using Attribute_Reflection_UseCase2_Display_Templates.Templates
+﻿@using Attribute_Reflection_UseCase1_Display_Templates.Helpers
+@using Attribute_Reflection_UseCase2_Display_Templates.Templates
+@using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase2
 @using System.Reflection
 @using Radzen
@@ -9,35 +11,134 @@
 {
 	foreach (var propertyInfo in Details.GetType().GetProperties())
 	{
-		(Type, object, string) tuple = GetTypeValueTuple(propertyInfo);
-        <DynamicComponent Type=tuple.Item1 Parameters="@(new Dictionary<string, object>(){{"Data", tuple.Item2}, {"Label", tuple.Item3}})"></DynamicComponent>
+		TemplateResult template = DecideTemplate(propertyInfo);
+		var parameters = new Dictionary<string, object>()
+		{
+			{"Value", template.Value},
+			{"Label", template.Label}
+		};
+
+		<DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
 	}
 }
 
 @code {
-    [Parameter]
-    public PersonalDetails? Details { get; set; }
+	[Parameter]
+	public PersonalDetails? Details { get; set; }
 
-    private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
-    {
-        var typeMap = new Dictionary<Type, Type>()
-        {
-            {typeof(string), typeof(StringTemplate)},
-            {typeof(int), typeof(IntegerTemplate)},
-        };
+	private TemplateResult DecideTemplate(PropertyInfo info)
+	{
+		var asm = Assembly.GetExecutingAssembly();
+		var templates = asm.GetTypes().Where(t => typeof(TemplateBase).IsAssignableFrom(t)).ToArray();
+		var attributes = info.GetCustomAttributes().ToArray();
 
-        if (typeMap.ContainsKey(property.PropertyType))
-        {
-            var controlType = typeMap[property.PropertyType];
-            return (controlType, property.GetValue(Details)!, property.Name);
-        }
-        else if (property.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
-        {
-            return (typeof(CollectionView), property.GetValue(Details)!, property.Name);
-        }
-        else
-        {
-            return (typeof(ContainerView), property.GetValue(Details)!, property.Name);
-        }
-    }
+		if (info.PropertyType == typeof(int))
+		{
+			return GetIntegerTemplate(templates, attributes, info);
+		}
+		else if (info.PropertyType == typeof(bool))
+		{
+			return GetBoolTemplate(templates, attributes, info);
+		}
+		else if (info.PropertyType == typeof(string))
+		{
+			return GetStringTemplate(templates, attributes, info);
+		}
+		else if (info.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
+		{
+			return GetCollectionViewTemplate(templates, attributes, info);
+		}
+		else
+		{
+			return GetContainerViewTemplate(templates, attributes, info);
+		}
+	}
+
+	private TemplateResult GetStringTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(string)).ToArray();
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
+
+		var value = info.GetValue(Details);
+
+		return new TemplateResult(template, value, info.Name);
+	}
+
+	private TemplateResult GetBoolTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(bool)).ToArray();
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
+
+		var value = info.GetValue(Details);
+
+		return new TemplateResult(template, Convert.ToBoolean(value), info.Name);
+	}
+
+	private TemplateResult GetIntegerTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(int)).ToArray();
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
+
+		var value = info.GetValue(Details);
+
+		return new TemplateResult(template, value!, info.Name);
+	}
+
+	private TemplateResult GetCollectionViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(IEnumerable)).ToArray();
+
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
+
+		var value = info.GetValue(Details);
+
+		return new TemplateResult(template, value!, info.Name);
+
+	}
+
+	private TemplateResult GetContainerViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(object)).ToArray();
+
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
+
+		var value = info.GetValue(Details);
+
+		return new TemplateResult(template, value!, info.Name);
+	}
+
+	private Type ApplyFurtherTemplateConstraints(IEnumerable<Type> templates, Attribute[] attributes)
+	{
+		bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
+		var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
+
+		if (isEditable)
+		{
+			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();
+		}
+
+		if (stringLengthAttribute != null)
+		{
+			if (stringLengthAttribute.MaxLength > 49)
+			{
+				templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
+			}
+			else
+			{
+				templates = templates.Where(t => !t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
+			}
+		}
+
+		if (templates.Count() > 1)
+		{
+			throw new InvalidOperationException("Constraints not specific enough. Could not map to single template");
+		}
+		else if (!templates.Any())
+		{
+			throw new InvalidOperationException("No matching template found.");
+		}
+
+		return templates.First();
+	}
+
 }

@@ -1,16 +1,20 @@
-﻿@if (Data != null)
+﻿@using Models.Metadata
+@inherits TemplateBase
+@attribute [ValueKind(typeof(object))]
+
+@if (Value != null)
 {
-    @foreach (var item in Data.GetType().GetProperties())
+    @foreach (var item in Value.GetType().GetProperties())
     {
         <span>@item.Name:</span>
-        <span>@item.GetValue(Data)</span>
+        <span>@item.GetValue(Value)</span>
         <br />
     }
 }
 
 @code {
     [Parameter]
-    public object? Data{ get; set; }
+    public object? Value{ get; set; }
 
     [Parameter]
     public string? Label{ get; set; }

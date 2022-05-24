@@ -24,60 +24,11 @@
 }
 
 @code {
-    // Storing instances in memory to prevent problems arising from calling Activator create instance every time (references not being kept)
-    private List<object> instanceCollection;
-
-    // An object mapping a property name to the complete path by which values can be bound to it, relative to the object
-    // passed as parameter and stored in Details
-    private Dictionary<string, List<string>> propertyBindingPathMap;
-
-    private List<Type> basicTypes = new List<Type>()
-                    {
-        typeof(bool),
-        typeof(string),
-        typeof(int),
-        typeof(double)
-                    };
-
     [Parameter]
     public PersonalDetails? Details { get; set; }
 
     [Parameter]
     public PerformanceMonitor? PerformanceMonitor { get; set; }
-
-    protected override void OnInitialized()
-    {
-        this.instanceCollection = new List<object>();
-        instanceCollection.Add(Details);
-
-        propertyBindingPathMap = new Dictionary<string, List<string>>();
-
-        // The idea is to build a binding map consisting of a key (the property name) and the property to use for reading/writing.
-        if (Details != null)
-        {
-            foreach (var item in Details.GetType().GetProperties())
-            {
-                if (!basicTypes.Contains(item.PropertyType) && !item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
-                {
-                    instanceCollection.Add(Activator.CreateInstance(item.PropertyType)!);
-
-                    // Limitation to only go to the next level of depth. Divide and conquer approach would be better if this was to be expanded upon.
-                    foreach (var subItem in item.PropertyType.GetProperties())
-                    {
-                        propertyBindingPathMap.Add(subItem.Name, new List<string>() { this.Details.GetType().Name, item.Name, subItem.Name });
-                    }
-                }
-                else if (!basicTypes.Contains(item.PropertyType) && item.PropertyType.IsAssignableTo(typeof(IEnumerable)))
-                {
-                    // Think about how to map collection
-                }
-                else
-                {
-                    propertyBindingPathMap.Add(item.Name, new List<string>() { item.Name });
-                }
-            }
-        }
-    }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -125,42 +76,12 @@
     );
     }
 
-    ////private RenderFragment GetBasicTypeRenderFragment(PropertyInfo propertyInfo, object accessorInstance)
-    ////{
-    ////    IEnumerable<string> propertyPathList = Enumerable.Empty<string>();
-
-    ////    if (this.propertyBindingPathMap.ContainsKey(propertyInfo.Name))
-    ////    {
-    ////        propertyPathList = propertyBindingPathMap[propertyInfo.Name];
-    ////    }
-
-    ////    var startingValue = propertyInfo.GetValue(accessorInstance);
-
-    ////    if (propertyInfo.PropertyType == typeof(string))
-    ////    {
-    ////        return new RenderFragment(
-    ////@<div>@propertyInfo.Name <Radzen.Blazor.RadzenTextBox class="mt-3" Value="@startingValue" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) Placeholder=@propertyInfo.Name></Radzen.Blazor.RadzenTextBox></div>
-    ////);
-    ////    }
-    ////    else if (propertyInfo.PropertyType == typeof(int))
-    ////    {
-    ////        return new RenderFragment(@<div class=col-6>@propertyInfo.Name <Radzen.Blazor.RadzenNumeric Value=@Convert.ToInt32(GetPropertyValue(propertyInfo)) ValueChanged=@((val) => ValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
-    ////  );
-    ////    }
-    ////    else
-    ////    {
-    ////        throw new ArgumentException(nameof(propertyInfo), "Non basic type detected");
-    ////    }
-    ////}
-
     private RenderFragment GetStringRenderFragment(PropertyInfo info, object instance)
     {
-        var value = GetPropertyValue<string>(info);
+        var value = GetPropertyValue<string>(info, instance);
 
-        Console.WriteLine(value);
         var attributes = info.GetCustomAttributes();
 
-        var propertyPathList = propertyBindingPathMap[info.Name];
         var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
         var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
 
@@ -173,13 +94,13 @@
             if (stringLengthAttribute != null && stringLengthAttribute.MaxLength < 30)
             {
                 return new RenderFragment(
-    @<div>@info.Name <RadzenTextBox class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) Placeholder=@info.Name></RadzenTextBox></div>
+    @<div>@info.Name <RadzenTextBox class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextBox></div>
           );
             }
             else
             {
                 return new RenderFragment(
-        @<div>@info.Name <RadzenTextArea class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) Placeholder=@info.Name></RadzenTextArea></div>
+        @<div>@info.Name <RadzenTextArea class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextArea></div>
     );
             }
         }
@@ -187,10 +108,8 @@
 
     private RenderFragment GetIntegerRenderFragment(PropertyInfo info, object instance)
     {
-        var value = GetPropertyValue<int>(info);
+        var value = GetPropertyValue<int>(info, instance);
         var attributes = info.GetCustomAttributes();
-
-        var propertyPathList = propertyBindingPathMap[info.Name];
 
         var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
 
@@ -201,7 +120,7 @@
         else
         {
             return new RenderFragment(
-    @<div class=col-6>@info.Name <Radzen.Blazor.RadzenNumeric Value="@value" ValueChanged=@((val) => ValueChanged(val, propertyPathList)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+    @<div class=col-6>@info.Name <Radzen.Blazor.RadzenNumeric Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
         );
         }
     }
@@ -214,82 +133,36 @@
     );
     }
 
-    private TOutput GetPropertyValue<TOutput>(PropertyInfo property)
+    private TOutput GetPropertyValue<TOutput>(PropertyInfo property, object instance)
     {
         if (property.PropertyType != typeof(TOutput))
         {
             throw new ArgumentException(nameof(property), "Property type did not match generic type parameter");
         }
 
-        var instance = this.instanceCollection.Single(o => o.GetType().GetProperties().Any(p => p.Name == property.Name));
-
         return (TOutput)property.GetValue(instance)!;
     }
 
-    private void ValueChanged(string newValue, IEnumerable<string> propertyPathList)
+    private void ValueChanged(string newValue, PropertyInfo info, object instance)
     {
-        ActivatableContainer activatableContainer = this.GetActivatableContainer(propertyPathList, this.Details!.GetType());
-
-        var instance = activatableContainer.Instance;
-        var property = activatableContainer.Property;
-
-        property.SetValue(instance, newValue);
+        info.SetValue(instance, newValue);
 
         if (instance.GetType() != typeof(PersonalDetails))
         {
-            var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
+            var upperLevelProperty = this.Details!.GetType().GetProperties().First(p => p.PropertyType == instance.GetType());
             upperLevelProperty.SetValue(Details, instance);
         }
     }
 
-    private void ValueChanged(int newValue, IEnumerable<string> propertyPathList)
+    private void ValueChanged(int newValue, PropertyInfo info, object instance)
     {
-        ActivatableContainer activatableContainer = this.GetActivatableContainer(propertyPathList, this.Details!.GetType());
-
-        var instance = activatableContainer.Instance;
-        var property = activatableContainer.Property;
-
-        property.SetValue(instance, newValue);
+        info.SetValue(instance, newValue);
 
         if (instance.GetType() != typeof(PersonalDetails))
         {
-            var upperLevelProperty = typeof(PersonalDetails).GetProperties().First(p => p.PropertyType == instance.GetType());
-
+            var upperLevelProperty = this.Details!.GetType().GetProperties().First(p => p.PropertyType == instance.GetType());
             upperLevelProperty.SetValue(Details, instance);
         }
-    }
-
-    private ActivatableContainer GetActivatableContainer(IEnumerable<string> propertyPathList, Type currentBase)
-    {
-        if (!propertyPathList.Any())
-        {
-            throw new ArgumentException(nameof(propertyPathList), "PAth list must not be empty");
-        }
-
-        if (propertyPathList.Count() == 1)
-        {
-            var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
-            var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.First());
-
-            return new ActivatableContainer(instance, property);
-        }
-
-        if (propertyPathList.Count() == 2)
-        {
-            var instance = this.instanceCollection.Single(p => p.GetType() == currentBase);
-            var property = currentBase.GetProperties().Single(p => p.Name == propertyPathList.Skip(1).First());
-
-            return new ActivatableContainer(instance, property);
-        }
-
-        var newList = propertyPathList.Skip(1).ToArray();
-
-        var newBaseName = newList.First();
-
-        currentBase = currentBase.GetProperties().Single(p => p.Name == newBaseName).PropertyType;
-        var debug = currentBase.Name;
-
-        return this.GetActivatableContainer(newList, currentBase);
     }
 
     private RenderFragment GetCollectionFragment(PropertyInfo info, object instance)

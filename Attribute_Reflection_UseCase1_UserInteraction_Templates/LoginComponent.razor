@@ -20,7 +20,7 @@
 			{"Label", template.Label}
 		};
 
-		<DynamicComponent @ref="dynamicComponent" Type="template.TemplateType" Parameters="parameters"></DynamicComponent>
+		<DynamicComponent Type="template.TemplateType" Parameters="parameters"></DynamicComponent>
 	}
 
 	if (Data.GetType().GetCustomAttributes().Any(p => p.GetType() == typeof(AuthenticationFormAttribute)))
@@ -31,43 +31,18 @@
 }
 
 @code {
-	private List<DynamicComponent> components;
-	private DynamicComponent? dynamicComponent;
-
 	[Parameter]
 	public LoginModel? Data { get; set; }
 
 	[Parameter]
 	public PerformanceMonitor? Monitor { get; set; }
 
-	protected override void OnInitialized()
-	{
-		components = new List<DynamicComponent>();
-	}
-
 	protected override void OnAfterRender(bool firstRender)
 	{
-		CreateBinding();
-
 		if (firstRender)
 		{
 			Monitor!.Stop();
 		}
-	}
-
-	private void CreateBinding()
-	{ 
-		var instance = @dynamicComponent?.Instance as TemplateBase;
-
-		if (instance == null)
-		{
-			throw new InvalidOperationException("Dynamic component instance must be of type template base");
-		}
-
-		instance.ValueChanged += (_, e) =>
-		{
-			Data!.GetType().GetProperties().Single(p => p.Name == e.PropertyName).SetValue(Data, e.NewValue);
-		};
 	}
 
 	private TemplateResult DecideTemplate(PropertyInfo info)

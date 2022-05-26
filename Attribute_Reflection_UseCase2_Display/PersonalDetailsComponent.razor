@@ -59,7 +59,7 @@
 		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(string)).ToArray();
 		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
-		var value = info.GetValue(Details);
+		var value = info.GetValue(Details)!;
 
 		return new TemplateResult(template, value, info.Name);
 	}

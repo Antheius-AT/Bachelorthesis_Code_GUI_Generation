@@ -1,9 +1,30 @@
 ﻿@page "/"
+@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase2
 
-<PageTitle>Index</PageTitle>
+@if (details != null)
+{
+    if (!showGui)
+    {
+        <Radzen.Blazor.RadzenButton Text="Render GUI" Click="() => this.showGui = true"></Radzen.Blazor.RadzenButton>
+    }
 
-<h1>Hello, world!</h1>
+    @if (showGui)
+    {
+        performanceMonitor!.Start();
+        <PersonalDetailsEditor PerformanceMonitor="performanceMonitor" Details="details"></PersonalDetailsEditor>
+    }
+}
 
-Welcome to your new app.
+@code {
+    private bool showGui;
+    private PersonalDetails? details;
+    private PerformanceMonitor? performanceMonitor;
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override void OnInitialized()
+    {
+        showGui = false;
+        details = new PersonalDetails();
+        performanceMonitor = new PerformanceMonitor();
+    }
+}

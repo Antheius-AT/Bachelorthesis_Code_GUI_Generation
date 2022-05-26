@@ -1,0 +1,212 @@
+﻿@using Attribute_Reflection_UseCase2_UserInteraction_RenderFragment.Helpers
+@using Models
+@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase2
+@using System.Collections
+@using Attribute_Reflection_UseCase2_UserInteraction_RenderFragment.Templates
+@using System.Reflection
+@using Radzen
+
+@inject DialogService DialogService
+
+@if (Details != null)
+{
+    foreach (var item in Details.GetType().GetProperties())
+    {
+        @GetRenderFragment(item, Details)
+        ;
+    }
+
+    if (Details.GetType().GetProperties().Any(p => p.GetCustomAttributes().Any(m => m.GetType() == typeof(EditableAttribute))))
+    {
+        <Radzen.Blazor.RadzenButton class=mt-3 Text=Save Click=this.SaveData></Radzen.Blazor.RadzenButton>
+    }
+}
+
+@code {
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+
+    private RenderFragment GetRenderFragment(PropertyInfo info, object instance)
+    {
+        if (info.PropertyType == typeof(string))
+        {
+            return GetStringRenderFragment(info, instance);
+        }
+        else if (info.PropertyType == typeof(int))
+        {
+            return GetIntegerRenderFragment(info, instance);
+        }
+        else if (info.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        {
+            return GetCollectionFragment(info, instance);
+        }
+        else
+        {
+            return GetContainerTypeFragment(info);
+        }
+    }
+
+    private RenderFragment GetContainerTypeFragment(PropertyInfo nonBasicTypeProperty)
+    {
+        var instance = Activator.CreateInstance(nonBasicTypeProperty.PropertyType);
+
+        return new RenderFragment(
+    @<Radzen.Blazor.RadzenCard class=mt-3>
+        <div>
+            <div class=row>
+                @foreach (var item in nonBasicTypeProperty.PropertyType.GetProperties())
+                    {
+                        <div class="col-12 col-lg-6">@GetRenderFragment(item, instance!)</div>
+                    }
+                </div>
+            </div>
+        </Radzen.Blazor.RadzenCard>
+    );
+    }
+
+    private RenderFragment GetStringRenderFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<string>(info, instance);
+
+        var attributes = info.GetCustomAttributes();
+
+        var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
+        var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+
+        if (isReadOnly)
+        {
+            throw new NotImplementedException("Read Only not implemented");
+        }
+        else
+        {
+            if (stringLengthAttribute != null && stringLengthAttribute.MaxLength < 30)
+            {
+                return new RenderFragment(
+    @<div>@info.Name <RadzenTextBox class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextBox></div>
+          );
+            }
+            else
+            {
+                return new RenderFragment(
+        @<div>@info.Name <RadzenTextArea class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextArea></div>
+    );
+            }
+        }
+    }
+
+    private RenderFragment GetIntegerRenderFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<int>(info, instance);
+        var attributes = info.GetCustomAttributes();
+
+        var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+
+        if (isReadOnly)
+        {
+            throw new NotImplementedException("Readonly properties not supported");
+        }
+        else
+        {
+            return new RenderFragment(
+    @<div class=col-6>@info.Name <Radzen.Blazor.RadzenNumeric Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+        );
+        }
+    }
+
+    private async Task SaveData()
+    {
+        // View is borrowed for demonstration and confirmation that changes were made to object.
+        await DialogService.OpenAsync("Successfully saved in database", ds =>
+        @<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+    );
+    }
+
+    private TOutput GetPropertyValue<TOutput>(PropertyInfo property, object instance)
+    {
+        if (property.PropertyType != typeof(TOutput))
+        {
+            throw new ArgumentException(nameof(property), "Property type did not match generic type parameter");
+        }
+
+        return (TOutput)property.GetValue(instance)!;
+    }
+
+    private void ValueChanged(string newValue, PropertyInfo info, object instance)
+    {
+        info.SetValue(instance, newValue);
+
+        if (instance.GetType() != typeof(PersonalDetails))
+        {
+            var upperLevelProperty = this.Details!.GetType().GetProperties().First(p => p.PropertyType == instance.GetType());
+            upperLevelProperty.SetValue(Details, instance);
+        }
+    }
+
+    private void ValueChanged(int newValue, PropertyInfo info, object instance)
+    {
+        info.SetValue(instance, newValue);
+
+        if (instance.GetType() != typeof(PersonalDetails))
+        {
+            var upperLevelProperty = this.Details!.GetType().GetProperties().First(p => p.PropertyType == instance.GetType());
+            upperLevelProperty.SetValue(Details, instance);
+        }
+    }
+
+    private RenderFragment GetCollectionFragment(PropertyInfo info, object instance)
+    {
+        if (!info.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+        {
+            throw new ArgumentException(nameof(info), "Argument must be a property of an enumerable type");
+        }
+
+        var value = info.GetValue(instance) as IEnumerable<object>;
+
+        if (value == null)
+        {
+            throw new ArgumentException(nameof(info), "Argument could not be instantiated as Enumerable");
+        }
+
+        return new RenderFragment(
+    @<RadzenCard class="mt-3">
+        <div class="mt-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        @foreach (var property in value.First().GetType().GetProperties())
+                        {
+                                <th>@property.Name</th>
+                        }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in value)
+                    {
+                            <tr>
+                                @foreach (var property in item.GetType().GetProperties())
+                            {
+                                    <td>
+                                        @property.GetValue(item)
+                                    </td>
+                            }
+                            </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </RadzenCard>
+    );
+    }
+    }

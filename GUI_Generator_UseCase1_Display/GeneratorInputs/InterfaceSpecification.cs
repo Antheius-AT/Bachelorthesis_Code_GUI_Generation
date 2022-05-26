@@ -7,16 +7,16 @@ namespace GUI_Generator_UseCase1_Display.GeneratorInputs
     /// </summary>
     public class InterfaceSpecification
     {
-        public InterfaceSpecification(IEnumerable<AbstractInterfaceElement> elements, IEnumerable<AbstractInterfaceConstraint> constraints)
+        public InterfaceSpecification(IEnumerable<InterfaceSpecificationElement> elements, IEnumerable<AbstractInterfaceConstraint> constraints)
         {
-            Elements = elements;
+            InterfaceElements = elements;
             Constraints = constraints;
         }
 
         /// <summary>
         /// Represents the set of interface element as defined by the Supple paper.
         /// </summary>
-        public IEnumerable<AbstractInterfaceElement> Elements { get; set; }
+        public IEnumerable<InterfaceSpecificationElement> InterfaceElements { get; set; }
 
         /// <summary>
         /// Represents the set of interface constraint as defined by the supple paper.

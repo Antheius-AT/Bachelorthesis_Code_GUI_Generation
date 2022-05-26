@@ -2,7 +2,7 @@
 
 namespace GUI_Generator_UseCase1_Display.Widgets
 {
-    public class WidgetBase : ComponentBase
+    public abstract class WidgetBase : ComponentBase
     {
     }
 }

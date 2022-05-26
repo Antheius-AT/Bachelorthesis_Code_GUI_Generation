@@ -1,34 +1,54 @@
 ﻿@page "/"
+@using GUI_Generator_UseCase1_Display.GeneratorInputs
+@using GUI_Generator_UseCase1_Display.Helpers
+@using GUI_Generator_UseCase1_Display.IndividualParts
+@using GUI_Generator_UseCase1_Display.InitialExperiments
 @using GUI_Generator_UseCase1_Display.Widgets
 @using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase1
 @using Radzen.Blazor
 @using System.Reflection
-@if (content != null)
-{
-    @content    
-}
+@using System.Xml.Linq
+
+<AdaptiveInterfaceRenderer DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceRenderer>
 
 @code {
-    private RenderFragment? content;
-
-    private Dictionary<string, Type> constraintAttributeMap;
+    private XmlConverter converter;
+    private DeviceModel deviceModel;
+    private InterfaceSpecification interfaceSpecification;
+    private UserModel userModel;
 
     protected override void OnInitialized()
     {
-        constraintAttributeMap = new Dictionary<string, Type>()
+        converter = new XmlConverter();
+        var asm = Assembly.GetExecutingAssembly();
+        var widgets = asm.GetTypes().GetDescendantElementsOfType<WidgetBase>().ToArray();
+
+        var xml = BuildSpecification();
+        var elementCollection = converter.TransformToElementCollection(xml);
+
+        foreach (var item in elementCollection)
         {
-            {"readonly", typeof(Type)}
-        };
+            // Debugging
+            Console.WriteLine(item.ElementType.StringRepresentation);    
+        }
 
-        string specification = string.Empty;
-        var auiEmitter = new AUIEmitter();
+        interfaceSpecification = new InterfaceSpecification(elementCollection, null!);
+        userModel = new UserModel();
+        deviceModel = new DeviceModel(widgets, null!, HeuristicCalculator.CalculateWidgetScore);
+    }
 
-        var data = new SensorData();
-        specification = auiEmitter.Emit(data, specification);
+    private XElement BuildSpecification()
+    {
+        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
+        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
+        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
+        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
 
-        var cuiEmitter = new CUIEmitter(data);
+        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"));
 
-        var tupleCollection = cuiEmitter.Emit(specification);
+        var rootElement = new XElement("Sensor", avgTempElement, avgPowerConsumptionelement, currentHumidityElement, currentTemperatureElement, hasPowerElement);
+
+        return rootElement;
     }
 }

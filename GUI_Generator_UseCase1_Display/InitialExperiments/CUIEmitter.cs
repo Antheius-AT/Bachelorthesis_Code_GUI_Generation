@@ -6,7 +6,7 @@ using Models.UseCases.DisplayOnly.UseCase1;
 using Radzen;
 using Radzen.Blazor;
 
-namespace GUI_Generator_UseCase1_Display
+namespace GUI_Generator_UseCase1_Display.InitialExperiments
 {
     public class CUIEmitter
     {
@@ -85,7 +85,7 @@ namespace GUI_Generator_UseCase1_Display
             }
 
             var type = Type.GetType(typeName) ?? throw new ArgumentException(nameof(entry), "Type information was missing in abstract UI specification for entry"); ;
-            
+
             return (type, value, label, flags);
         }
     }

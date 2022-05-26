@@ -1,4 +1,4 @@
-﻿namespace GUI_Generator_UseCase1_Display
+﻿namespace GUI_Generator_UseCase1_Display.InitialExperiments
 {
     public class AUIEmitter
     {
@@ -6,7 +6,7 @@
 
         public AUIEmitter()
         {
-            this.primitiveTypes = new List<Type>()
+            primitiveTypes = new List<Type>()
             {
                 typeof(string),
                 typeof(int),
@@ -40,7 +40,7 @@
                 else
                 {
                     specification += "<container>";
-                    var containerContent = this.Emit(item, specification);
+                    var containerContent = Emit(item, specification);
                     specification += $"{containerContent}</container>";
                 }
             }

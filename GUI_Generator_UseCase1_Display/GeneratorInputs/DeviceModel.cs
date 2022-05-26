@@ -10,7 +10,7 @@ namespace GUI_Generator_UseCase1_Display.GeneratorInputs
     /// </summary>
     public class DeviceModel
     {
-        public DeviceModel(IEnumerable<WidgetBase> templates, IEnumerable<AbstractDeviceConstraint> deviceConstraints, Func<AbstractInterfaceElement, WidgetBase, int> appropriatenessMeasuringFunction)
+        public DeviceModel(IEnumerable<WidgetBase> templates, IEnumerable<AbstractDeviceConstraint> deviceConstraints, Func<InterfaceSpecificationElement, WidgetBase, int> appropriatenessMeasuringFunction)
         {
             this.templates = templates;
             DeviceConstraints = deviceConstraints;
@@ -32,6 +32,6 @@ namespace GUI_Generator_UseCase1_Display.GeneratorInputs
         /// interface element.
         /// The resulting integer is the appropriateness score, the higher it is, the more appropriate the widget is.
         /// </summary>
-        public Func<AbstractInterfaceElement, WidgetBase, int> AppropriatenessMeasuringFunction { get; set; }
+        public Func<InterfaceSpecificationElement, WidgetBase, int> AppropriatenessMeasuringFunction { get; set; }
     }
 }

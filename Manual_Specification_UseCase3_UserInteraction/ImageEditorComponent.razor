@@ -1,21 +1,46 @@
-﻿@using Models.UseCases.IncludingUserInteraction.UseCase3
+﻿@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase3
 
 @if (ToolBox != null)
 {
     <div class="row">
         <div class="col-12 col-lg-1 mt-3">
-            <Radzen.Blazor.RadzenButton class="btn-secondary" Text="Brush" Icon="brush"></Radzen.Blazor.RadzenButton>
-        </div>
-         <div class="col-12 col-lg-1 mt-3">
-            <Radzen.Blazor.RadzenButton class="btn-secondary" Text="Eraser" Icon="crop_square"></Radzen.Blazor.RadzenButton>
+            <div class="col-12">
+                <Radzen.Blazor.RadzenLabel Text="Brush"></Radzen.Blazor.RadzenLabel>
+            </div>
+            <div class="col-12">
+                <Radzen.Blazor.RadzenButton Click="() => this.ToolBox.SelectedTool = Tools.Pencil" class=@(ToolBox.SelectedTool == Tools.Pencil ? "btn-primary" : "btn-secondary") Icon="brush"></Radzen.Blazor.RadzenButton>
+            </div>
         </div>
         <div class="col-12 col-lg-1 mt-3">
-            <Radzen.Blazor.RadzenSlider Min="1" Max="5" @bind-Value=ToolBox.StrokeWidth></Radzen.Blazor.RadzenSlider>
+            <div class="col-12">
+                <Radzen.Blazor.RadzenLabel Text="Eraser"></Radzen.Blazor.RadzenLabel>
+            </div>
+            <div class="col-12">
+                <Radzen.Blazor.RadzenButton Click="() => this.ToolBox.SelectedTool = Tools.Eraser" class=@(ToolBox.SelectedTool == Tools.Eraser ? "btn-primary" : "btn-secondary") Icon="crop_square"></Radzen.Blazor.RadzenButton>
+            </div>
+        </div>
+        <div class="col-12 col-lg-1 mt-3">
+            <div class="col-12">
+                <Radzen.Blazor.RadzenLabel Text="StrokeWidth"></Radzen.Blazor.RadzenLabel>
+            </div>
+            <div class="col-12">
+                <Radzen.Blazor.RadzenSlider Min="1" Max="5" @bind-Value=ToolBox.StrokeWidth></Radzen.Blazor.RadzenSlider>
+                <Radzen.Blazor.RadzenLabel Text="@ToolBox.StrokeWidth.ToString()"></Radzen.Blazor.RadzenLabel>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-12">
-            <Radzen.Blazor.RadzenImage Path="testimg.png"></Radzen.Blazor.RadzenImage>
+            <Radzen.Blazor.RadzenImage Style="width:60%" Path="https://farm6.staticflickr.com/5591/15008867125_b61960af01_h.jpg"></Radzen.Blazor.RadzenImage>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-1 mt-3">
+            <Radzen.Blazor.RadzenButton Text="Save"></Radzen.Blazor.RadzenButton>
+        </div>
+        <div class="col-12 col-lg-1 mt-3">
+            <Radzen.Blazor.RadzenButton Text="Load"></Radzen.Blazor.RadzenButton>
         </div>
     </div>
 }
@@ -23,4 +48,15 @@
 @code {
     [Parameter]
     public EditToolBox? ToolBox { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
 }

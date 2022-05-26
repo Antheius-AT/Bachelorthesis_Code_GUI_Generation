@@ -8,6 +8,12 @@ namespace Models.UseCases.IncludingUserInteraction.UseCase3
 {
     public class EditToolBox
     {
+        public EditToolBox()
+        {
+            SelectedTool = Tools.Pencil;
+            StrokeWidth = 1;
+        }
+
         public Tools SelectedTool { get; set; }
 
         public int StrokeWidth { get; set; }

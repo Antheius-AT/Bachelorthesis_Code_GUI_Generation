@@ -1,38 +1,30 @@
-﻿
-<h1>This is some markup</h1>
-<h2>This is some other markup</h2>
+﻿@page "/"
+@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase3
 
-@code{
-    /// <summary>
-    /// This is a regular field of type string.
-    /// It can be modified from anywhere inside the component, it can
-    /// not be accessed in any way from outside the component however.
-    /// </summary>
-    private string privateStringField;
-
-    /// <summary>
-    /// This is a public property of type string that is annotated
-    /// with the parameter attribute.
-    /// It can therefore be passed to the component and bound to from the outside
-    /// during the component's initialization.
-    /// </summary>
-    public string ValueString { get; set; }
-
-    /// <summary>
-    /// This is a public method of type void.
-    /// It can be called from anyhwere inside and outside the component.
-    /// </summary>
-    public void SomeMethod()
+@if (editTools != null)
+{
+    if (!showGui)
     {
-        Console.WriteLine("Called some method");
+        <Radzen.Blazor.RadzenButton Text="Render GUI" Click="() => this.showGui = true"></Radzen.Blazor.RadzenButton>
     }
 
-    /// <summary>
-    /// This method overrides one of the virtual methods of the component base class,
-    /// which every component inherits per default, if no other base type is specified.
-    /// </summary>
+    @if (showGui)
+    {
+        performanceMonitor!.Start();
+        <ImageEditorComponent PerformanceMonitor="performanceMonitor" ToolBox="editTools"></ImageEditorComponent>
+    }
+}
+
+@code {
+    private bool showGui;
+    private EditToolBox? editTools;
+    private PerformanceMonitor? performanceMonitor;
+
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        editTools = new EditToolBox();
+        showGui = false;
+        performanceMonitor = new PerformanceMonitor();
     }
 }

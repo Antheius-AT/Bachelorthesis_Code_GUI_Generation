@@ -1,3 +1,8 @@
-﻿<SensorDashboard>
-	
-</SensorDashboard>
+﻿<Sensor Type="container">
+	<IsPoweredOn Type="bool">
+		<AvgTemperature Type="float"></AvgTemperature>
+		<AvgPowerConsumption Type="float"></AvgPowerConsumption>
+		<CurrentTemperature Type="float"></CurrentTemperature>
+		<CurrentHumidity Type="float"></CurrentHumidity>
+	</IsPoweredOn>
+</Sensor>

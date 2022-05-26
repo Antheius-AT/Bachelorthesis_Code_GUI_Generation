@@ -8,7 +8,7 @@ namespace GUI_Generator_UseCase1_Display.IndividualParts.ElementTypes
     /// </summary>
     public class DerivativeElementType : InterfaceElementType
     {
-        public DerivativeElementType(InterfaceElementType type, IEnumerable<ElementConstraint> constraints)
+        public DerivativeElementType(InterfaceElementType type, IEnumerable<ElementConstraint> constraints) : base("derivative")
         {
             Type = type;
             Constraints = constraints;

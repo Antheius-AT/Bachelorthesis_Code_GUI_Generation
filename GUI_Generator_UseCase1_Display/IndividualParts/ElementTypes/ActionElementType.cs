@@ -2,7 +2,7 @@
 {
     public class ActionElementType : InterfaceElementType
     {
-        public ActionElementType(InterfaceElementType actionType)
+        public ActionElementType(InterfaceElementType actionType) : base("action")
         {
             ActionType = actionType;
         }

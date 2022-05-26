@@ -2,7 +2,7 @@
 {
     public class ContainerElementType : InterfaceElementType
     {
-        public ContainerElementType(IEnumerable<InterfaceElementType> contentElements)
+        public ContainerElementType(IEnumerable<InterfaceElementType> contentElements) : base("container")
         {
             ContentElements = contentElements;
         }

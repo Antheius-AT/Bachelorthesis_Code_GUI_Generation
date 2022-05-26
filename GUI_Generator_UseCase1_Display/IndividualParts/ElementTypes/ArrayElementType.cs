@@ -2,7 +2,7 @@
 {
     public class ArrayElementType : InterfaceElementType
     {
-        public ArrayElementType(InterfaceElementType vectorType)
+        public ArrayElementType(InterfaceElementType vectorType) : base("array")
         {
             VectorType = vectorType;
         }

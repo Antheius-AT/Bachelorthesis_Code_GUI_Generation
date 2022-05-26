@@ -1,0 +1,19 @@
+﻿@using Models.Metadata
+
+@inherits TemplateBase
+@attribute [Multiline]
+@attribute [ValueKind(typeof(string))]
+<div class=row>
+	<div class=col-12>
+		@Label:
+		<Radzen.Blazor.RadzenTextArea Disabled @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string? Label { get; set; }
+
+	[Parameter]
+	public string? Value { get; set; }
+}

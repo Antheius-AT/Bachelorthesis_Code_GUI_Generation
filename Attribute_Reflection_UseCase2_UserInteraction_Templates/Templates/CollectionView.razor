@@ -1,0 +1,42 @@
+﻿@using Models.Metadata
+@using System.Collections
+
+@inherits TemplateBase
+@attribute [ValueKind(typeof(IEnumerable))]
+
+@if (Value != null && Value.Any())
+{
+	<span>@Label:</span>
+	<br />
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				@foreach (var property in Value.First().GetType().GetProperties())
+				{
+					<th>@property.Name</th>
+				}
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Value)
+			{
+				<tr>
+					@foreach (var property in item.GetType().GetProperties())
+					{
+						<td>
+							@property.GetValue(item)
+						</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter]
+	public IEnumerable<object>? Value { get; set; }
+
+	[Parameter]
+	public string? Label { get; set; }
+}

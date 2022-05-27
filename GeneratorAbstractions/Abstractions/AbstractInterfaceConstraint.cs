@@ -1,4 +1,4 @@
-﻿namespace GUI_Generator_UseCase1_Display.IndividualParts
+﻿namespace GeneratorSharedComponents.Abstractions
 {
     public class AbstractInterfaceConstraint
     {

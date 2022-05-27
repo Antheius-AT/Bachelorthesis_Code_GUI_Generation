@@ -1,8 +1,6 @@
-﻿using GUI_Generator_UseCase1_Display.IndividualParts;
-using GUI_Generator_UseCase1_Display.IndividualParts.Constraints.DeviceConstraints;
-using GUI_Generator_UseCase1_Display.Widgets;
+﻿using GeneratorSharedComponents.Abstractions;
 
-namespace GUI_Generator_UseCase1_Display.GeneratorInputs
+namespace GeneratorSharedComponents
 {
     /// <summary>
     /// Represent the device model as per Supple's specification.

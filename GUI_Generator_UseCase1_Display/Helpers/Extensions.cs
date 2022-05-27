@@ -1,8 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
-using GUI_Generator_UseCase1_Display.IndividualParts;
-using GUI_Generator_UseCase1_Display.Widgets;
-
+﻿
 namespace GUI_Generator_UseCase1_Display.Helpers
 {
     public static class Extensions

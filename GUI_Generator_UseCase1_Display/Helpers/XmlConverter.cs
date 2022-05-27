@@ -1,7 +1,7 @@
-﻿using GUI_Generator_UseCase1_Display.IndividualParts;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using System.Xml;
-using GUI_Generator_UseCase1_Display.IndividualParts.ElementTypes;
+using GeneratorSharedComponents.Abstractions;
+using GeneratorSharedComponents;
 
 namespace GUI_Generator_UseCase1_Display.Helpers
 {

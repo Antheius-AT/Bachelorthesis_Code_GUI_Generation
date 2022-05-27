@@ -1,6 +1,7 @@
-﻿using GUI_Generator_UseCase1_Display.IndividualParts;
+﻿
+using GeneratorSharedComponents.Abstractions;
 
-namespace GUI_Generator_UseCase1_Display.GeneratorInputs
+namespace GeneratorSharedComponents
 {
     /// <summary>
     /// Represents a formal declarative interface specification.

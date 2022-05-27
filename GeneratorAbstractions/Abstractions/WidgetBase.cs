@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace GUI_Generator_UseCase1_Display.Widgets
+namespace GeneratorSharedComponents.Abstractions
 {
     public abstract class WidgetBase : ComponentBase
     {

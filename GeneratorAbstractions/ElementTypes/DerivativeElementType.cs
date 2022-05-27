@@ -1,6 +1,4 @@
-﻿using GUI_Generator_UseCase1_Display.IndividualParts.Constraints.ElementConstraints;
-
-namespace GUI_Generator_UseCase1_Display.IndividualParts.ElementTypes
+﻿namespace GeneratorSharedComponents
 {
     /// <summary>
     /// Represents a derivative element type of a functional interface specification.

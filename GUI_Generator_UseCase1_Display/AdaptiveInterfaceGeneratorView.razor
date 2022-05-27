@@ -1,0 +1,23 @@
+﻿@using GUI_Generator_UseCase1_Display.Generator
+@using GeneratorSharedComponents
+@using Models.UseCases.DisplayOnly.UseCase1
+
+@inject AdaptiveInterfaceGenerator InterfaceGenerator
+
+@if (UserModel != null && DeviceModel != null && InterfaceSpecification != null)
+{
+    @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel)
+}
+@code {
+    [Parameter]
+    public SensorData ModelData { get; set; }
+
+    [Parameter]
+    public UserModel? UserModel { get; set; }
+
+    [Parameter]
+    public DeviceModel? DeviceModel { get; set; }
+
+    [Parameter]
+    public InterfaceSpecification? InterfaceSpecification { get; set; }
+}

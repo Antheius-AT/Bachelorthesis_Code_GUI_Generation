@@ -1,4 +1,4 @@
-﻿using GUI_Generator_UseCase1_Display.IndividualParts;
+﻿using GeneratorSharedComponents.Abstractions;
 using GUI_Generator_UseCase1_Display.Widgets;
 
 namespace GUI_Generator_UseCase1_Display.Helpers

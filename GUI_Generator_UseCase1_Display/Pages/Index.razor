@@ -1,36 +1,38 @@
 ﻿@page "/"
-@using GUI_Generator_UseCase1_Display.GeneratorInputs
 @using GUI_Generator_UseCase1_Display.Helpers
-@using GUI_Generator_UseCase1_Display.IndividualParts
 @using GUI_Generator_UseCase1_Display.InitialExperiments
-@using GUI_Generator_UseCase1_Display.Widgets
+@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
 @using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase1
 @using Radzen.Blazor
 @using System.Reflection
 @using System.Xml.Linq
 
-<AdaptiveInterfaceRenderer DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceRenderer>
+@inject XmlConverter xmlConverter
+
+<AdaptiveInterfaceGeneratorView ModelData="sensorData" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
 
 @code {
-    private XmlConverter converter;
     private DeviceModel deviceModel;
     private InterfaceSpecification interfaceSpecification;
     private UserModel userModel;
+    private SensorData sensorData;
 
     protected override void OnInitialized()
     {
-        converter = new XmlConverter();
+        sensorData = new SensorData();
+
         var asm = Assembly.GetExecutingAssembly();
         var widgets = asm.GetTypes().GetDescendantElementsOfType<WidgetBase>().ToArray();
 
         var xml = BuildSpecification();
-        var elementCollection = converter.TransformToElementCollection(xml);
+        var elementCollection = xmlConverter.TransformToElementCollection(xml);
 
         foreach (var item in elementCollection)
         {
             // Debugging
-            Console.WriteLine(item.ElementType.StringRepresentation);    
+            Console.WriteLine(item.ElementType);    
         }
 
         interfaceSpecification = new InterfaceSpecification(elementCollection, null!);

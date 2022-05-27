@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeneratorSharedComponents
 {
-    public abstract class InterfaceElementType : ISpecificationElementVisitable
+    public abstract class InterfaceElementType<TModelType> : ISpecificationElementVisitable<TModelType> where TModelType : class
     {
         public InterfaceElementType(string stringRepresentation)
         {
@@ -12,6 +12,6 @@ namespace GeneratorSharedComponents
 
         public string StringRepresentation { get; }
 
-        public abstract RenderFragment Accept(ISpecificationElementVisitor visitor);
+        public abstract RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor);
     }
 }

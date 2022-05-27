@@ -1,52 +1,67 @@
 ﻿using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
 using Microsoft.AspNetCore.Components;
+using Models.UseCases.DisplayOnly.UseCase1;
 
 namespace GUI_Generator_UseCase1_Display.Helpers
 {
-    public class ConcreteElementVisitor : ISpecificationElementVisitor
+    public class ConcreteElementVisitor : ISpecificationElementVisitor<SensorData>
     {
-        public RenderFragment Visit(StringElementType element)
+        private SensorData? concreteData;
+
+        public void SetData(SensorData data)
+        {
+            concreteData = data;
+        }
+
+        public RenderFragment Visit(StringElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(FloatElementType element)
+        public RenderFragment Visit(FloatElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(IntegerElementType element)
+        public RenderFragment Visit(integerelementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(DerivativeElementType element)
+        public RenderFragment Visit(DerivativeElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(ActionElementType element)
+        public RenderFragment Visit(ActionElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(BooleanElementType element)
+        public RenderFragment Visit(BooleanElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(ArrayElementType element)
+        public RenderFragment Visit(ArrayElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(ConditionalElementType element)
+        public RenderFragment Visit(ConditionalElementType<SensorData> element)
         {
-            throw new NotImplementedException();
+            if (element.ConstraintSatisfied)
+            {
+                return element.ElementType.Accept(this);
+            }
+            else
+            {
+                return new RenderFragment(_ => { });
+            }
         }
 
-        public RenderFragment Visit(ContainerElementType element)
+        public RenderFragment Visit(ContainerElementType<SensorData> element)
         {
             throw new NotImplementedException();
         }

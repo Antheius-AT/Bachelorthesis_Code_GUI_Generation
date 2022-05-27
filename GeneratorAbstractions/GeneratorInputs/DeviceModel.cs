@@ -6,9 +6,9 @@ namespace GeneratorSharedComponents
     /// Represent the device model as per Supple's specification.
     /// The N function for mapping user effort required in navigating between components is not implemented.
     /// </summary>
-    public class DeviceModel
+    public class DeviceModel<TUnderlyingModelType> where TUnderlyingModelType : class
     {
-        public DeviceModel(IEnumerable<WidgetBase> templates, IEnumerable<AbstractDeviceConstraint> deviceConstraints, Func<InterfaceSpecificationElement, WidgetBase, int> appropriatenessMeasuringFunction)
+        public DeviceModel(IEnumerable<WidgetBase> templates, IEnumerable<AbstractDeviceConstraint> deviceConstraints, Func<InterfaceSpecificationElement<TUnderlyingModelType>, WidgetBase, int> appropriatenessMeasuringFunction)
         {
             this.templates = templates;
             DeviceConstraints = deviceConstraints;
@@ -30,6 +30,6 @@ namespace GeneratorSharedComponents
         /// interface element.
         /// The resulting integer is the appropriateness score, the higher it is, the more appropriate the widget is.
         /// </summary>
-        public Func<InterfaceSpecificationElement, WidgetBase, int> AppropriatenessMeasuringFunction { get; set; }
+        public Func<InterfaceSpecificationElement<TUnderlyingModelType>, WidgetBase, int> AppropriatenessMeasuringFunction { get; set; }
     }
 }

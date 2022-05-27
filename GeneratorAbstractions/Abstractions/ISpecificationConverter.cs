@@ -7,8 +7,8 @@ using System.Xml.Linq;
 
 namespace GeneratorSharedComponents.Abstractions
 {
-    public interface IXMLSpecificationConverter
+    public interface IXMLSpecificationConverter<TModelType> where TModelType : class
     {
-        IEnumerable<InterfaceSpecificationElement> TransformToElementCollection(XElement root);
+        IEnumerable<InterfaceSpecificationElement<TModelType>> TransformToElementCollection(XElement root);
     }
 }

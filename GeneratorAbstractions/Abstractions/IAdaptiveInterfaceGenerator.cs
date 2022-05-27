@@ -2,8 +2,8 @@
 
 namespace GeneratorSharedComponents.Abstractions
 {
-    public interface IAdaptiveInterfaceGenerator
+    public interface IAdaptiveInterfaceGenerator<TUnderlyingModelType> where TUnderlyingModelType : class
     {
-        RenderFragment GenerateGUI(InterfaceSpecification specification, DeviceModel deviceModel, UserModel userModel);
+        RenderFragment GenerateGUI(InterfaceSpecification<TUnderlyingModelType> specification, DeviceModel<TUnderlyingModelType> deviceModel, UserModel userModel, TUnderlyingModelType concreteData);
     }
 }

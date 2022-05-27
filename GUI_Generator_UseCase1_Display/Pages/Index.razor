@@ -9,13 +9,13 @@
 @using System.Reflection
 @using System.Xml.Linq
 
-@inject IXMLSpecificationConverter xmlConverter
+@inject IXMLSpecificationConverter<SensorData> xmlConverter
 
 <AdaptiveInterfaceGeneratorView ModelData="sensorData" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
 
 @code {
-    private DeviceModel deviceModel;
-    private InterfaceSpecification interfaceSpecification;
+    private DeviceModel<SensorData> deviceModel;
+    private InterfaceSpecification<SensorData> interfaceSpecification;
     private UserModel userModel;
     private SensorData sensorData;
 
@@ -35,9 +35,9 @@
             Console.WriteLine(item.ElementType);    
         }
 
-        interfaceSpecification = new InterfaceSpecification(elementCollection, null!);
+        interfaceSpecification = new InterfaceSpecification<SensorData>(elementCollection, null!);
         userModel = new UserModel();
-        deviceModel = new DeviceModel(widgets, null!, HeuristicCalculator.CalculateWidgetScore);
+        deviceModel = new DeviceModel<SensorData>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);
     }
 
     private XElement BuildSpecification()

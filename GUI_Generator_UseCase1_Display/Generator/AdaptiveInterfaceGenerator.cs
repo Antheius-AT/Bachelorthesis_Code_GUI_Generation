@@ -1,20 +1,23 @@
 ﻿using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
 using Microsoft.AspNetCore.Components;
+using Models.UseCases.DisplayOnly.UseCase1;
 
 namespace GUI_Generator_UseCase1_Display.Generator
 {
-    public class AdaptiveInterfaceGenerator : IAdaptiveInterfaceGenerator
+    public class AdaptiveInterfaceGenerator : IAdaptiveInterfaceGenerator<SensorData>
     {
-        private readonly ISpecificationElementVisitor visitor;
+        private readonly ISpecificationElementVisitor<SensorData> visitor;
 
-        public AdaptiveInterfaceGenerator(ISpecificationElementVisitor visitor)
+        public AdaptiveInterfaceGenerator(ISpecificationElementVisitor<SensorData> visitor)
         {
             this.visitor = visitor;
         }
 
-        public RenderFragment GenerateGUI(InterfaceSpecification specification, DeviceModel deviceModel, UserModel userModel)
+        public RenderFragment GenerateGUI(InterfaceSpecification<SensorData> specification, DeviceModel<SensorData> deviceModel, UserModel userModel, SensorData sensorData)
         {
+            visitor.SetData(sensorData);
+
             // For this demo there aren't any interface constraints. 
             // The variable was kept for the argument sake and
             // to stay as true to the original definition of Supple as possible.

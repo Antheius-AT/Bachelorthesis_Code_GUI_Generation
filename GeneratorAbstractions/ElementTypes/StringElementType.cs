@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeneratorSharedComponents
 {
-    public class StringElementType : InterfaceElementType
+    public class StringElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
         public StringElementType() : base("string")
         {
         }
 
-        public override RenderFragment Accept(ISpecificationElementVisitor visitor)
+        public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)
         {
             return visitor.Visit(this);
         }

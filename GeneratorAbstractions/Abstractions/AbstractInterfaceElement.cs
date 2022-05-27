@@ -4,13 +4,13 @@ namespace GeneratorSharedComponents.Abstractions
     /// <summary>
     /// Represents a single element of an abstract interface specification.
     /// </summary>
-    public class InterfaceSpecificationElement
+    public class InterfaceSpecificationElement<TModelType> where TModelType : class
     {
-        public InterfaceSpecificationElement(InterfaceElementType elementType)
+        public InterfaceSpecificationElement(InterfaceElementType<TModelType> elementType)
         {
             ElementType = elementType;
         }
 
-        public InterfaceElementType ElementType { get; }
+        public InterfaceElementType<TModelType> ElementType { get; }
     }
 }

@@ -2,11 +2,11 @@
 @using GeneratorSharedComponents.Abstractions
 @using Models.UseCases.DisplayOnly.UseCase1
 
-@inject IAdaptiveInterfaceGenerator InterfaceGenerator
+@inject IAdaptiveInterfaceGenerator<SensorData> InterfaceGenerator
 
 @if (UserModel != null && DeviceModel != null && InterfaceSpecification != null)
 {
-    @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel)
+    @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel, ModelData)
 }
 @code {
     [Parameter]
@@ -16,8 +16,8 @@
     public UserModel? UserModel { get; set; }
 
     [Parameter]
-    public DeviceModel? DeviceModel { get; set; }
+    public DeviceModel<SensorData>? DeviceModel { get; set; }
 
     [Parameter]
-    public InterfaceSpecification? InterfaceSpecification { get; set; }
+    public InterfaceSpecification<SensorData>? InterfaceSpecification { get; set; }
 }

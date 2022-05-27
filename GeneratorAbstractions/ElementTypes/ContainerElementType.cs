@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Components;
 
 namespace GeneratorSharedComponents
 {
-    public class ContainerElementType : InterfaceElementType
+    public class ContainerElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ContainerElementType(IEnumerable<InterfaceElementType> contentElements) : base("container")
+        public ContainerElementType(IEnumerable<InterfaceElementType<TModelType>> contentElements) : base("container")
         {
             ContentElements = contentElements;
         }
 
-        public IEnumerable<InterfaceElementType> ContentElements { get; }
+        public IEnumerable<InterfaceElementType<TModelType>> ContentElements { get; }
 
-        public override RenderFragment Accept(ISpecificationElementVisitor visitor)
+        public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)
         {
             return visitor.Visit(this);
         }

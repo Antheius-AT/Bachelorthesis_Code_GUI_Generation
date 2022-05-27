@@ -8,9 +8,9 @@ namespace GeneratorSharedComponents
     /// </summary>
     public class DeviceModel<TUnderlyingModelType> where TUnderlyingModelType : class
     {
-        public DeviceModel(IEnumerable<WidgetBase> templates, IEnumerable<AbstractDeviceConstraint> deviceConstraints, Func<InterfaceSpecificationElement<TUnderlyingModelType>, WidgetBase, int> appropriatenessMeasuringFunction)
+        public DeviceModel(IEnumerable<WidgetBase> templates, IEnumerable<AbstractDeviceConstraint> deviceConstraints, Func<InterfaceElementType<TUnderlyingModelType>, WidgetBase, int> appropriatenessMeasuringFunction)
         {
-            this.templates = templates;
+            this.Templates = templates;
             DeviceConstraints = deviceConstraints;
             AppropriatenessMeasuringFunction = appropriatenessMeasuringFunction;
         }
@@ -18,18 +18,18 @@ namespace GeneratorSharedComponents
         /// <summary>
         /// Represent a set of widgets available on a specific device.
         /// </summary>
-        IEnumerable<WidgetBase> templates { get; set; }
+        public IEnumerable<WidgetBase> Templates { get; set; }
 
         /// <summary>
         /// Represents a set of device constraints.
         /// </summary>
-        IEnumerable<AbstractDeviceConstraint> DeviceConstraints { get; set; }
+        public IEnumerable<AbstractDeviceConstraint> DeviceConstraints { get; set; }
 
         /// <summary>
         /// Represent a function capable of measuring how appropriate a widget is to render a specific abstract
         /// interface element.
         /// The resulting integer is the appropriateness score, the higher it is, the more appropriate the widget is.
         /// </summary>
-        public Func<InterfaceSpecificationElement<TUnderlyingModelType>, WidgetBase, int> AppropriatenessMeasuringFunction { get; set; }
+        public Func<InterfaceElementType<TUnderlyingModelType>, WidgetBase, int> AppropriatenessMeasuringFunction { get; set; }
     }
 }

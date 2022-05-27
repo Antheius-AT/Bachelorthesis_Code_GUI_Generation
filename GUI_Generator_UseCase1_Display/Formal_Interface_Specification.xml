@@ -1,7 +1,7 @@
 ﻿<Sensor Type="container">
-		<IsPoweredOn Name="isOn" Type="bool"></IsPoweredOn>
-		<AvgTemperature Type="conditional" SubType="float" Condition="isOn"></AvgTemperature>
-		<AvgPowerConsumption Type="conditional" SubType="float" Condition="isOn"></AvgPowerConsumption>
-		<CurrentTemperature Type="conditional" SubType="float" Condition="isOn"></CurrentTemperature>
-		<CurrentHumidity Type="conditional" SubType="float" Condition="isOn"></CurrentHumidity>
+		<IsPoweredOn Name="isOn" Type="bool" Binding="IsPoweredOn"></IsPoweredOn>
+		<AvgTemperature Type="conditional" SubType="float" Condition="isOn" Binding="AverageTemperature"></AvgTemperature>
+		<AvgPowerConsumption Type="conditional" SubType="float" Condition="isOn" Binding="AveragePowerConsumption"></AvgPowerConsumption>
+		<CurrentTemperature Type="conditional" SubType="float" Condition="isOn" Binding="CurrentTemperature"></CurrentTemperature>
+		<CurrentHumidity Type="conditional" SubType="float" Condition="isOn" Binding="CurrentHumidity"></CurrentHumidity>
 </Sensor>

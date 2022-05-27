@@ -21,10 +21,10 @@ namespace Models.UseCases.DisplayOnly.UseCase1
         /// </summary>
         public SensorData()
         {
-            this.AverageTempAcrossWeek = 27.6;
-            this.AveragePowerConsumptionAcrossWeek = 170.59;
+            this.AverageTemperature = 27.6;
+            this.AveragePowerConsumption = 170.59;
             this.CurrentTemperature = 35.9;
-            this.CurrentAirHumidity = 70;
+            this.CurrentHumidity = 70;
             this.IsPoweredOn = true;
 
             this.random = new Random();
@@ -34,16 +34,16 @@ namespace Models.UseCases.DisplayOnly.UseCase1
         public event EventHandler StateHasChanged;
 
         [ReadOnly]
-        public double AverageTempAcrossWeek { get; private set; }
+        public double AverageTemperature { get; private set; }
 
         [ReadOnly]
-        public double AveragePowerConsumptionAcrossWeek { get; private set; }
+        public double AveragePowerConsumption { get; private set; }
 
         [ReadOnly]
         public double CurrentTemperature { get; private set; }
 
         [ReadOnly]
-        public double CurrentAirHumidity { get; private set; }
+        public double CurrentHumidity { get; private set; }
 
         [ReadOnly]
         [DataToggle]
@@ -54,7 +54,7 @@ namespace Models.UseCases.DisplayOnly.UseCase1
         {
             Console.WriteLine("Sensor gathered new data");
             this.CurrentTemperature = this.random.Next(0, 51);
-            this.CurrentAirHumidity = this.random.Next(0, 101);
+            this.CurrentHumidity = this.random.Next(0, 101);
 
             if (this.random.Next(0, 11) == 10)
             {

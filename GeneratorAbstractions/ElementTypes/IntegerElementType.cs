@@ -5,7 +5,7 @@ namespace GeneratorSharedComponents
 {
     public class integerelementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public integerelementType() : base("int")
+        public integerelementType() : base("int", typeof(int))
         {
         }
 

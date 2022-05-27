@@ -1,11 +1,12 @@
 ﻿using GeneratorSharedComponents.Abstractions;
+using GeneratorSharedComponents.MarkerTypes;
 using Microsoft.AspNetCore.Components;
 
 namespace GeneratorSharedComponents
 {
     public class ConditionalElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ConditionalElementType(InterfaceElementType<TModelType> elementType, bool constraintSatisfied) : base("conditional")
+        public ConditionalElementType(InterfaceElementType<TModelType> elementType, bool constraintSatisfied) : base("conditional", typeof(Conditional))
         {
             ElementType = elementType;
             ConstraintSatisfied = constraintSatisfied;

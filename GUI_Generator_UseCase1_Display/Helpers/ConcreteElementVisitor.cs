@@ -1,17 +1,26 @@
-﻿using GeneratorSharedComponents;
+﻿using System.Xml.Linq;
+using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
+using GUI_Generator_UseCase1_Display.Widgets;
 using Microsoft.AspNetCore.Components;
 using Models.UseCases.DisplayOnly.UseCase1;
+using Radzen.Blazor;
 
 namespace GUI_Generator_UseCase1_Display.Helpers
 {
     public class ConcreteElementVisitor : ISpecificationElementVisitor<SensorData>
     {
         private SensorData? concreteData;
+        private DeviceModel<SensorData>? deviceModel;
 
         public void SetData(SensorData data)
         {
             concreteData = data;
+        }
+
+        public void SetDeviceModel(DeviceModel<SensorData> deviceModel)
+        {
+            this.deviceModel = deviceModel;
         }
 
         public RenderFragment Visit(StringElementType<SensorData> element)
@@ -21,7 +30,20 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(FloatElementType<SensorData> element)
         {
-            throw new NotImplementedException();
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
+
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            float value = Convert.ToSingle(property.GetValue(concreteData));
+
+            return BuildRenderTree(value, element);
         }
 
         public RenderFragment Visit(integerelementType<SensorData> element)
@@ -41,7 +63,20 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(BooleanElementType<SensorData> element)
         {
-            throw new NotImplementedException();
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
+
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            bool value = Convert.ToBoolean(property.GetValue(concreteData));
+
+            return BuildRenderTree(value, element);
         }
 
         public RenderFragment Visit(ArrayElementType<SensorData> element)
@@ -64,6 +99,37 @@ namespace GUI_Generator_UseCase1_Display.Helpers
         public RenderFragment Visit(ContainerElementType<SensorData> element)
         {
             throw new NotImplementedException();
+        }
+
+        private WidgetBase GetMostAppropriateWidget(InterfaceElementType<SensorData> element)
+        {
+            int currentHigh = -1;
+            WidgetBase? currentWidget = null;
+
+            foreach (var item in deviceModel!.Templates)
+            {
+                var elementScore = deviceModel.AppropriatenessMeasuringFunction.Invoke(element, item);
+
+                if (currentHigh < elementScore)
+                {
+                    currentHigh = elementScore;
+                    currentWidget = item;
+                }
+            }
+
+            return currentWidget ?? throw new ArgumentException(nameof(element), $"No widget could be found for the specified element: {element}");
+        }
+
+        private RenderFragment BuildRenderTree(object value, InterfaceElementType<SensorData> element)
+        {
+            var widget = this.GetMostAppropriateWidget(element);
+
+            return new RenderFragment(builder =>
+            {
+                builder.OpenComponent(1, widget.GetType());
+                builder.AddAttribute(2, "Value", value);
+                builder.CloseComponent();
+            });
         }
     }
 }

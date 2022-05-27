@@ -5,7 +5,7 @@ namespace GeneratorSharedComponents
 {
     public class StringElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public StringElementType() : base("string")
+        public StringElementType() : base("string", typeof(string))
         {
         }
 

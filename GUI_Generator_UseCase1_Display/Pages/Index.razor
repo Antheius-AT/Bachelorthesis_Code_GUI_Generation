@@ -12,7 +12,6 @@
 @inject IXMLSpecificationConverter<SensorData> xmlConverter
 
 <AdaptiveInterfaceGeneratorView ModelData="sensorData" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
-
 @code {
     private DeviceModel<SensorData> deviceModel;
     private InterfaceSpecification<SensorData> interfaceSpecification;
@@ -29,12 +28,6 @@
         var xml = BuildSpecification();
         var elementCollection = xmlConverter.TransformToElementCollection(xml);
 
-        foreach (var item in elementCollection)
-        {
-            // Debugging
-            Console.WriteLine(item.ElementType);    
-        }
-
         interfaceSpecification = new InterfaceSpecification<SensorData>(elementCollection, null!);
         userModel = new UserModel();
         deviceModel = new DeviceModel<SensorData>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);
@@ -42,12 +35,12 @@
 
     private XElement BuildSpecification()
     {
-        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
-        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
-        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
-        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"));
+        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "AverageTemperature"));
+        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "AveragePowerConsumption"));
+        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "CurrentHumidity"));
+        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "CurrentTemperature"));
 
-        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"));
+        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"), new XAttribute("Binding", "IsPoweredOn"));
 
         var rootElement = new XElement("Sensor", avgTempElement, avgPowerConsumptionelement, currentHumidityElement, currentTemperatureElement, hasPowerElement);
 

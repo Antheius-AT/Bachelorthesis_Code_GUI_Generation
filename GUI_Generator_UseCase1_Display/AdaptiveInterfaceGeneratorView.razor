@@ -4,13 +4,13 @@
 
 @inject IAdaptiveInterfaceGenerator<SensorData> InterfaceGenerator
 
-@if (UserModel != null && DeviceModel != null && InterfaceSpecification != null)
+@if (UserModel != null && DeviceModel != null && InterfaceSpecification != null && ModelData != null)
 {
     @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel, ModelData)
 }
 @code {
     [Parameter]
-    public SensorData ModelData { get; set; }
+    public SensorData? ModelData { get; set; }
 
     [Parameter]
     public UserModel? UserModel { get; set; }
@@ -20,4 +20,9 @@
 
     [Parameter]
     public InterfaceSpecification<SensorData>? InterfaceSpecification { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ModelData!.StateHasChanged += (_, _) => this.StateHasChanged();
+    }
 }

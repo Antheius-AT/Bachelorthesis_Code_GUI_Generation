@@ -1,4 +1,5 @@
 ﻿using GeneratorSharedComponents.Abstractions;
+using GeneratorSharedComponents.MarkerTypes;
 using Microsoft.AspNetCore.Components;
 
 namespace GeneratorSharedComponents
@@ -9,7 +10,7 @@ namespace GeneratorSharedComponents
     /// </summary>
     public class DerivativeElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public DerivativeElementType(InterfaceElementType<TModelType> type, IEnumerable<ElementConstraint> constraints) : base("derivative")
+        public DerivativeElementType(InterfaceElementType<TModelType> type, IEnumerable<ElementConstraint> constraints) : base("derivative", typeof(Derivative))
         {
             Type = type;
             Constraints = constraints;

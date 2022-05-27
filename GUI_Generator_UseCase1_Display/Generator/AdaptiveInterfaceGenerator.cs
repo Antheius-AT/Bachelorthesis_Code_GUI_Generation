@@ -16,17 +16,24 @@ namespace GUI_Generator_UseCase1_Display.Generator
 
         public RenderFragment GenerateGUI(InterfaceSpecification<SensorData> specification, DeviceModel<SensorData> deviceModel, UserModel userModel, SensorData sensorData)
         {
-            visitor.SetData(sensorData);
-
-            // For this demo there aren't any interface constraints. 
-            // The variable was kept for the argument sake and
-            // to stay as true to the original definition of Supple as possible.
-            foreach (var item in specification.InterfaceElements)
+            if (!specification.InterfaceElements.Any())
             {
-                item.ElementType.Accept(visitor);
+                throw new ArgumentException(nameof(specification), "Interface specification did not contain any elements");
             }
+            else
+            {
+                visitor.SetData(sensorData);
+                visitor.SetDeviceModel(deviceModel);
 
-            throw new ArgumentException(nameof(specification), "Interface specification did not contain any elements");
+                return new RenderFragment(builder =>
+                {
+                    foreach (var item in specification.InterfaceElements)
+                    {
+                        var fragment = item.ElementType.Accept(visitor);
+                        builder.AddContent(1, fragment);
+                    }
+                });
+            }
         }
     }
 }

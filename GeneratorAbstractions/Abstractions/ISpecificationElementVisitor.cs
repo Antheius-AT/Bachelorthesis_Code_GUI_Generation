@@ -19,6 +19,16 @@ namespace GeneratorSharedComponents.Abstractions
         RenderFragment Visit(ConditionalElementType<THandledModelType> element);
         RenderFragment Visit(ContainerElementType<THandledModelType> element);
 
+        /// <summary>
+        /// Sets an instance of the concrete model for the specific use case.
+        /// </summary>
+        /// <param name="data"></param>
         void SetData(THandledModelType data);
+
+        /// <summary>
+        /// Sets the device model, containing additional constraints and available widgets.
+        /// </summary>
+        /// <param name="deviceModel"></param>
+        void SetDeviceModel(DeviceModel<THandledModelType> deviceModel);
     }
 }

@@ -5,7 +5,7 @@ namespace GeneratorSharedComponents
 {
     public class BooleanElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public BooleanElementType(string bindingPath) : base("bool", typeof(bool))
+        public BooleanElementType(string bindingPath, string? label) : base("bool", typeof(bool), label)
         {
             BindingPath = bindingPath;
         }

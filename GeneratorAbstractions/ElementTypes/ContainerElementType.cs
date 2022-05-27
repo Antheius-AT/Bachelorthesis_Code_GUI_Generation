@@ -6,7 +6,7 @@ namespace GeneratorSharedComponents
 {
     public class ContainerElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ContainerElementType(IEnumerable<InterfaceElementType<TModelType>> contentElements) : base("container", typeof(Container))
+        public ContainerElementType(IEnumerable<InterfaceElementType<TModelType>> contentElements, string? label) : base("container", typeof(Container), label)
         {
             ContentElements = contentElements;
         }

@@ -35,12 +35,12 @@
 
     private XElement BuildSpecification()
     {
-        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "AverageTemperature"));
-        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "AveragePowerConsumption"));
-        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "CurrentHumidity"));
-        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "CurrentTemperature"));
+        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "AverageTemperature"), new XAttribute("Label", "Durchschnittliche Temperatur"));
+        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "AveragePowerConsumption"), new XAttribute("Label", "Durchschnittlicher Stromverbrauch"));
+        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "CurrentHumidity"), new XAttribute("Label", "Aktuelle Luftfeuchtigkeit"));
+        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsOn"), new XAttribute("Binding", "CurrentTemperature"), new XAttribute("Label", "Aktuelle Temperatur"));
 
-        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"), new XAttribute("Binding", "IsPoweredOn"));
+        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"), new XAttribute("Binding", "IsPoweredOn"), new XAttribute("Label", "Sensor aktuell aktiv"));
 
         var rootElement = new XElement("Sensor", avgTempElement, avgPowerConsumptionelement, currentHumidityElement, currentTemperatureElement, hasPowerElement);
 

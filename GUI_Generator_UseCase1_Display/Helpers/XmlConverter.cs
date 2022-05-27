@@ -47,7 +47,9 @@ namespace GUI_Generator_UseCase1_Display.Helpers
         private InterfaceSpecificationElement<SensorData> ParseFloatType(XElement element)
         {
             var bindingPath = element.Attributes().Single(a => a.Name == "Binding")?.Value ?? throw new ArgumentException(nameof(element), "Element missing Binding attribute");
-            return new InterfaceSpecificationElement<SensorData>(new FloatElementType<SensorData>(bindingPath));
+            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+
+            return new InterfaceSpecificationElement<SensorData>(new FloatElementType<SensorData>(bindingPath, label));
         }
 
         private InterfaceSpecificationElement<SensorData> ParseConditionalType(XElement element)
@@ -55,27 +57,29 @@ namespace GUI_Generator_UseCase1_Display.Helpers
             var subType = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "subtype")?.Value ?? throw new ArgumentException(nameof(element), "Element was supposed to be of type conditional but required attributes were not found");
             var condition = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "condition")?.Value ?? throw new ArgumentException(nameof(element), "Element was supposed to be of type conditional but required attributes were not found");
             var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
-           
-            var subElementType = this.GetSubElementType(subType, binding);
+            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<SensorData>(new ConditionalElementType<SensorData>(subElementType, true));
+            var subElementType = this.GetSubElementType(subType, binding, label);
+
+            return new InterfaceSpecificationElement<SensorData>(new ConditionalElementType<SensorData>(subElementType, true, label));
         }
 
         private InterfaceSpecificationElement<SensorData> ParseBoolType(XElement element)
         {
             var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
+            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<SensorData>(new BooleanElementType<SensorData>(binding));
+            return new InterfaceSpecificationElement<SensorData>(new BooleanElementType<SensorData>(binding, label));
         }
 
-        private InterfaceElementType<SensorData> GetSubElementType(string subType, string binding)
+        private InterfaceElementType<SensorData> GetSubElementType(string subType, string binding, string? label)
         {
             switch (subType)
             {
                 case "float":
-                    return new FloatElementType<SensorData>(binding);
+                    return new FloatElementType<SensorData>(binding, label);
                 case "int":
-                    return new integerelementType<SensorData>();
+                    return new integerelementType<SensorData>(label);
                 default:
                     throw new ArgumentException(nameof(subType), "Sub type not recognized");
             }

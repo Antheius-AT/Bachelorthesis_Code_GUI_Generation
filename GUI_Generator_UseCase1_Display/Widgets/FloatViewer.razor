@@ -4,6 +4,7 @@
 @inherits WidgetBase
 @attribute [ValueKind(typeof(float))]
 
+<span>@Label</span>
 <Radzen.Blazor.RadzenNumeric Disabled Min="0" Max="10" @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
 @code {
 	[Parameter]

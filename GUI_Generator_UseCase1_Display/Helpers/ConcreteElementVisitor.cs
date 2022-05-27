@@ -128,7 +128,9 @@ namespace GUI_Generator_UseCase1_Display.Helpers
             {
                 builder.OpenComponent(1, widget.GetType());
                 builder.AddAttribute(2, "Value", value);
+                builder.AddAttribute(3, "Label", element.Label);
                 builder.CloseComponent();
+                builder.AddMarkupContent(3, "<br/>");
             });
         }
     }

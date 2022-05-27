@@ -5,7 +5,7 @@ namespace GeneratorSharedComponents
 {
     public class ActionElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ActionElementType(InterfaceElementType<TModelType> actionType) : base("action", typeof(Delegate))
+        public ActionElementType(InterfaceElementType<TModelType> actionType, string? label) : base("action", typeof(Delegate), label)
         {
             ActionType = actionType;
         }

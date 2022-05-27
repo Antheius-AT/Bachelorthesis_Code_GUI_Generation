@@ -4,8 +4,9 @@
 @inherits WidgetBase
 @attribute [ValueKind(typeof(bool))]
 
-<Radzen.Blazor.RadzenCheckBox @bind-Value="Value"></Radzen.Blazor.RadzenCheckBox>
+<span>@Label</span>
+<Radzen.Blazor.RadzenCheckBox Disabled @bind-Value="Value"></Radzen.Blazor.RadzenCheckBox>
 @code {
-	[Parameter]
-	public bool Value { get; set; }
+    [Parameter]
+    public bool Value { get; set; }
 }

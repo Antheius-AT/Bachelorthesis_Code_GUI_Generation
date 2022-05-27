@@ -5,7 +5,7 @@ namespace GeneratorSharedComponents
 {
     public class FloatElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public FloatElementType(string bindingPath) : base("float", typeof(float))
+        public FloatElementType(string bindingPath, string? label) : base("float", typeof(float), label)
         {
             BindingPath = bindingPath;
         }

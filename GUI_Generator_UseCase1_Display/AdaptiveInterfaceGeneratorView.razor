@@ -1,8 +1,8 @@
-﻿@using GUI_Generator_UseCase1_Display.Generator
-@using GeneratorSharedComponents
+﻿@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
 @using Models.UseCases.DisplayOnly.UseCase1
 
-@inject AdaptiveInterfaceGenerator InterfaceGenerator
+@inject IAdaptiveInterfaceGenerator InterfaceGenerator
 
 @if (UserModel != null && DeviceModel != null && InterfaceSpecification != null)
 {

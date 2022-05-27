@@ -5,7 +5,7 @@ using GeneratorSharedComponents;
 
 namespace GUI_Generator_UseCase1_Display.Helpers
 {
-    public class XmlConverter
+    public class XmlConverter : IXMLSpecificationConverter
     {
         /// <summary>
         /// Transforms an interface specification from XML to C# objects.

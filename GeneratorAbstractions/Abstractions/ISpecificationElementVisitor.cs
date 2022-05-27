@@ -1,7 +1,6 @@
-﻿using GeneratorSharedComponents;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
-namespace GUI_Generator_UseCase1_Display.Generator
+namespace GeneratorSharedComponents.Abstractions
 {
     public interface ISpecificationElementVisitor
     {

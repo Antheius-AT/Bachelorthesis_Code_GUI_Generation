@@ -6,9 +6,11 @@ namespace GUI_Generator_UseCase1_Display.Generator
 {
     public class AdaptiveInterfaceGenerator : IAdaptiveInterfaceGenerator
     {
-        public AdaptiveInterfaceGenerator()
-        {
+        private readonly ISpecificationElementVisitor visitor;
 
+        public AdaptiveInterfaceGenerator(ISpecificationElementVisitor visitor)
+        {
+            this.visitor = visitor;
         }
 
         public RenderFragment GenerateGUI(InterfaceSpecification specification, DeviceModel deviceModel, UserModel userModel)
@@ -18,10 +20,7 @@ namespace GUI_Generator_UseCase1_Display.Generator
             // to stay as true to the original definition of Supple as possible.
             foreach (var item in specification.InterfaceElements)
             {
-                return new RenderFragment(builder =>
-                {
-                    throw new NotImplementedException();
-                });
+                item.ElementType.Accept(visitor);
             }
 
             throw new ArgumentException(nameof(specification), "Interface specification did not contain any elements");

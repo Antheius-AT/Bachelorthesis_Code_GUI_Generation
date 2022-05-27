@@ -1,4 +1,7 @@
-﻿namespace GeneratorSharedComponents
+﻿using GeneratorSharedComponents.Abstractions;
+using Microsoft.AspNetCore.Components;
+
+namespace GeneratorSharedComponents
 {
     public class ConditionalElementType : InterfaceElementType
     {
@@ -14,5 +17,10 @@
         /// Rethink how to use this, wont stay a string.
         /// </summary>
         public string ConstraintSatisfied { get; }
+
+        public override RenderFragment Accept(ISpecificationElementVisitor visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 }

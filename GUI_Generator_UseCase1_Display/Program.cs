@@ -10,7 +10,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddSingleton<ISpecificationElementVisitor<SensorData>, ConcreteElementVisitor>();
+builder.Services.AddSingleton<ISpecificationElementVisitor<SensorData>, DefaultElementVisitor>();
 builder.Services.AddSingleton<IXMLSpecificationConverter<SensorData>, XmlConverter>();
 builder.Services.AddSingleton<IAdaptiveInterfaceGenerator<SensorData>, AdaptiveInterfaceGenerator>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

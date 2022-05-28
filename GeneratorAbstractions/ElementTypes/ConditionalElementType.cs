@@ -6,10 +6,10 @@ namespace GeneratorSharedComponents
 {
     public class ConditionalElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ConditionalElementType(InterfaceElementType<TModelType> elementType, bool constraintSatisfied, string? label) : base("conditional", typeof(Conditional), label)
+        public ConditionalElementType(InterfaceElementType<TModelType> elementType, string constraintPropertyName, string? label) : base("conditional", typeof(Conditional), label)
         {
             ElementType = elementType;
-            ConstraintSatisfied = constraintSatisfied;
+            ConstraintPropertyName = constraintPropertyName;
         }
 
         public InterfaceElementType<TModelType> ElementType { get; }
@@ -17,7 +17,7 @@ namespace GeneratorSharedComponents
         /// <summary>
         /// Rethink how to use this, wont stay a string.
         /// </summary>
-        public bool ConstraintSatisfied { get; }
+        public string ConstraintPropertyName { get; }
 
         public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)
         {

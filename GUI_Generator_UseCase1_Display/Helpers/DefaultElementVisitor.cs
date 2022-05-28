@@ -8,7 +8,7 @@ using Radzen.Blazor;
 
 namespace GUI_Generator_UseCase1_Display.Helpers
 {
-    public class ConcreteElementVisitor : ISpecificationElementVisitor<SensorData>
+    public class DefaultElementVisitor : ISpecificationElementVisitor<SensorData>
     {
         private SensorData? concreteData;
         private DeviceModel<SensorData>? deviceModel;
@@ -86,7 +86,20 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(ConditionalElementType<SensorData> element)
         {
-            if (element.ConstraintSatisfied)
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
+
+            var constraintProperty = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.ConstraintPropertyName) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.ConstraintPropertyName}");
+            bool value = Convert.ToBoolean(constraintProperty.GetValue(concreteData));
+
+            if (value)
             {
                 return element.ElementType.Accept(this);
             }

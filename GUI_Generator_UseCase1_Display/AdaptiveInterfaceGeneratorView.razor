@@ -1,5 +1,6 @@
 ﻿@using GeneratorSharedComponents
 @using GeneratorSharedComponents.Abstractions
+@using Models
 @using Models.UseCases.DisplayOnly.UseCase1
 
 @inject IAdaptiveInterfaceGenerator<SensorData> InterfaceGenerator
@@ -9,6 +10,9 @@
     @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel, ModelData)
 }
 @code {
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
     [Parameter]
     public SensorData? ModelData { get; set; }
 
@@ -24,5 +28,13 @@
     protected override void OnInitialized()
     {
         ModelData!.StateHasChanged += (_, _) => this.StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
     }
 }

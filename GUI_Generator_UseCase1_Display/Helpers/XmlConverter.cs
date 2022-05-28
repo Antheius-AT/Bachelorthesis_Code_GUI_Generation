@@ -21,13 +21,13 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
             foreach (var item in xmlElements)
             {
-                interfaceElementCollection.Add(TransformXmlNodeToElement(item));
+                interfaceElementCollection.Add(TransformXmlNodeToElement(item, root));
             }
 
             return interfaceElementCollection;
         }
 
-        private InterfaceSpecificationElement<SensorData> TransformXmlNodeToElement(XElement node)
+        private InterfaceSpecificationElement<SensorData> TransformXmlNodeToElement(XElement node, XElement root)
         {
             var type = node.Attribute("Type")?.Value ?? throw new XmlException($"Could not parse type attribute of node {node}");
 
@@ -36,7 +36,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 case "float":
                     return ParseFloatType(node);
                 case "conditional":
-                    return ParseConditionalType(node);
+                    return ParseConditionalType(node, root);
                 case "bool":
                     return ParseBoolType(node);
                 default:
@@ -52,16 +52,20 @@ namespace GUI_Generator_UseCase1_Display.Helpers
             return new InterfaceSpecificationElement<SensorData>(new FloatElementType<SensorData>(bindingPath, label));
         }
 
-        private InterfaceSpecificationElement<SensorData> ParseConditionalType(XElement element)
+        private InterfaceSpecificationElement<SensorData> ParseConditionalType(XElement element, XElement root)
         {
-            var subType = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "subtype")?.Value ?? throw new ArgumentException(nameof(element), "Element was supposed to be of type conditional but required attributes were not found");
-            var condition = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "condition")?.Value ?? throw new ArgumentException(nameof(element), "Element was supposed to be of type conditional but required attributes were not found");
-            var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
-            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+            var attributes = element.Attributes();
 
+            var subType = attributes.Single(a => a.Name.LocalName.ToLower() == "subtype")?.Value ?? throw new ArgumentException(nameof(element), "Element was supposed to be of type conditional but required attributes were not found");
+            var condition = attributes.Single(a => a.Name.LocalName.ToLower() == "condition")?.Value ?? throw new ArgumentException(nameof(element), "Element was supposed to be of type conditional but required attributes were not found");
+            var binding = attributes.Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
+            var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+           
             var subElementType = this.GetSubElementType(subType, binding, label);
+            XElement conditionElement = root.Descendants().FirstOrDefault(p => p.Name.LocalName == condition) ?? throw new ArgumentException(nameof(condition), $"Conditional element {condition} not found in descendants of root node");
+            var conditionBindingPath = conditionElement.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Conditional element reference found, but no conditional binding specified");
 
-            return new InterfaceSpecificationElement<SensorData>(new ConditionalElementType<SensorData>(subElementType, true, label));
+            return new InterfaceSpecificationElement<SensorData>(new ConditionalElementType<SensorData>(subElementType, conditionBindingPath, label));
         }
 
         private InterfaceSpecificationElement<SensorData> ParseBoolType(XElement element)

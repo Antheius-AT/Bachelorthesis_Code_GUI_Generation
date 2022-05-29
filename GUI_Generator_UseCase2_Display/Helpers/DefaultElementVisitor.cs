@@ -39,7 +39,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
             }
 
-            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             float value = Convert.ToSingle(property.GetValue(concreteData));
 
             return BuildRenderTree(value, element);
@@ -72,7 +72,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
             }
 
-            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             bool value = Convert.ToBoolean(property.GetValue(concreteData));
 
             return BuildRenderTree(value, element);
@@ -110,7 +110,29 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(ContainerElementType<PersonalDetails> element)
         {
-            throw new NotImplementedException();
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
+
+            var containerProperty = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
+            var containerInstance = containerProperty.GetValue(concreteData);
+            // Think about how to best do this.
+            throw new Exception();
+            //return new RenderFragment(builder =>
+            //{
+            //    builder.OpenComponent(1, )
+            //    foreach (var item in element.ContentElements)
+            //    {
+            //        var elementProperty = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == item.ElementType.Binding) ?? throw new InvalidOperationException($"Specified container type did not contain property associated with the specified binding. Path: {element.Binding}/{item.ElementType.Binding}");
+            //        var elementValue = elementProperty.GetValue(containerInstance);
+            //    }
+            //});
         }
 
         private WidgetBase GetMostAppropriateWidget(InterfaceElementType<PersonalDetails> element)

@@ -6,7 +6,7 @@ namespace GeneratorSharedComponents
 {
     public class ConditionalElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ConditionalElementType(InterfaceElementType<TModelType> elementType, string constraintPropertyName, string? label) : base("conditional", typeof(Conditional), label)
+        public ConditionalElementType(InterfaceElementType<TModelType> elementType, string constraintPropertyName, string? label) : base("conditional", typeof(Conditional), string.Empty, label)
         {
             ElementType = elementType;
             ConstraintPropertyName = constraintPropertyName;

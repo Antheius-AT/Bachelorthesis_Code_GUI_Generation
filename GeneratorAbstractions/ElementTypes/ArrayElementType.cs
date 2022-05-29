@@ -5,7 +5,7 @@ namespace GeneratorSharedComponents
 {
     public class ArrayElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ArrayElementType(InterfaceElementType<TModelType> vectorType, string? label) : base("array", typeof(Array), label)
+        public ArrayElementType(InterfaceElementType<TModelType> vectorType, string binding, string? label) : base("array", typeof(Array), binding, label)
         {
             VectorType = vectorType;
         }

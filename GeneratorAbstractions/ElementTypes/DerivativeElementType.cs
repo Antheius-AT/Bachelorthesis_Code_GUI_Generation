@@ -10,7 +10,7 @@ namespace GeneratorSharedComponents
     /// </summary>
     public class DerivativeElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public DerivativeElementType(InterfaceElementType<TModelType> type, IEnumerable<ElementConstraint> constraints, string? label) : base("derivative", typeof(Derivative), label)
+        public DerivativeElementType(InterfaceElementType<TModelType> type, IEnumerable<ElementConstraint> constraints, string binding, string? label) : base("derivative", typeof(Derivative), binding, label)
         {
             Type = type;
             Constraints = constraints;

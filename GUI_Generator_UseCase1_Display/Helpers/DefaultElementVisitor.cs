@@ -40,7 +40,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
             }
 
-            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             float value = Convert.ToSingle(property.GetValue(concreteData));
 
             return BuildRenderTree(value, element);
@@ -73,7 +73,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
             }
 
-            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             bool value = Convert.ToBoolean(property.GetValue(concreteData));
 
             return BuildRenderTree(value, element);

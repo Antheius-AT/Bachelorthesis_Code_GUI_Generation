@@ -5,11 +5,12 @@ namespace GeneratorSharedComponents
 {
     public abstract class InterfaceElementType<TModelType> : ISpecificationElementVisitable<TModelType> where TModelType : class
     {
-        public InterfaceElementType(string stringRepresentation, Type dotnetTypeRepresentation, string? label)
+        public InterfaceElementType(string stringRepresentation, Type dotnetTypeRepresentation, string binding, string? label)
         {
             StringRepresentation = stringRepresentation;
             DotnetTypeRepresentation = dotnetTypeRepresentation;
             Label = label;
+            Binding = binding;
         }
 
         public Type DotnetTypeRepresentation { get; }
@@ -17,6 +18,7 @@ namespace GeneratorSharedComponents
 
         public string? Label { get; }
 
+        public string Binding { get; }
         public abstract RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor);
     }
 }

@@ -6,12 +6,12 @@ namespace GeneratorSharedComponents
 {
     public class ContainerElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public ContainerElementType(IEnumerable<InterfaceElementType<TModelType>> contentElements, string? label) : base("container", typeof(Container), label)
+        public ContainerElementType(IEnumerable<InterfaceSpecificationElement<TModelType>> contentElements, string binding, string? label) : base("container", typeof(Container), binding, label)
         {
             ContentElements = contentElements;
         }
 
-        public IEnumerable<InterfaceElementType<TModelType>> ContentElements { get; }
+        public IEnumerable<InterfaceSpecificationElement<TModelType>> ContentElements { get; }
 
         public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)
         {

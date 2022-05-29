@@ -1,16 +1,15 @@
 ﻿@page "/"
 @using GUI_Generator_UseCase1_Display.Helpers
-@using GUI_Generator_UseCase1_Display.InitialExperiments
 @using GeneratorSharedComponents
 @using GeneratorSharedComponents.Abstractions
 @using Models
 @using Models.Metadata
-@using Models.UseCases.DisplayOnly.UseCase1
+@using Models.UseCases.DisplayOnly.UseCase2
 @using Radzen.Blazor
 @using System.Reflection
 @using System.Xml.Linq
 
-@inject IXMLSpecificationConverter<SensorData> xmlConverter
+@inject IXMLSpecificationConverter<PersonalDetails> xmlConverter
 
 @if (!showGui)
 {
@@ -20,20 +19,20 @@ else
 {
     performanceMonitor.Start();
     InitializeGenerator();
-    <AdaptiveInterfaceGeneratorView PerformanceMonitor="performanceMonitor" ModelData="sensorData" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
+    <AdaptiveInterfaceGeneratorView PerformanceMonitor="performanceMonitor" ModelData="personalDetails" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
 }
 
 @code {
-    private DeviceModel<SensorData> deviceModel;
+    private DeviceModel<PersonalDetails> deviceModel;
     private PerformanceMonitor performanceMonitor;
-    private InterfaceSpecification<SensorData> interfaceSpecification;
+    private InterfaceSpecification<PersonalDetails> interfaceSpecification;
     private UserModel userModel;
-    private SensorData sensorData;
+    private PersonalDetails personalDetails;
     private bool showGui;
 
     protected override void OnInitialized()
     {
-        sensorData = new SensorData();
+        personalDetails = new PersonalDetails();
         performanceMonitor = new PerformanceMonitor();
     }
 
@@ -46,22 +45,29 @@ else
 
         var elementCollection = xmlConverter.TransformToElementCollection(xml);
 
-        interfaceSpecification = new InterfaceSpecification<SensorData>(elementCollection, null!);
+        interfaceSpecification = new InterfaceSpecification<PersonalDetails>(elementCollection, null!);
         userModel = new UserModel();
-        deviceModel = new DeviceModel<SensorData>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);        
+        deviceModel = new DeviceModel<PersonalDetails>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);        
     }
 
     private XElement BuildSpecification()
     {
-        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "AverageTemperature"), new XAttribute("Label", "Durchschnittliche Temperatur"));
-        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "AveragePowerConsumption"), new XAttribute("Label", "Durchschnittlicher Stromverbrauch"));
-        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "CurrentHumidity"), new XAttribute("Label", "Aktuelle Luftfeuchtigkeit"));
-        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "CurrentTemperature"), new XAttribute("Label", "Aktuelle Temperatur"));
+        var rootelement = new XElement("PersonalDetails", new XAttribute("Type", "root"));
 
-        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"), new XAttribute("Binding", "IsPoweredOn"), new XAttribute("Label", "Sensor aktuell aktiv"));
+        var firstNameElement = new XElement("FirstName", new XAttribute("Type", "string"), new XAttribute("Binding", "FirstName"));
+        var lastNameElement = new XElement("LastName", new XAttribute("Type", "string"), new XAttribute("Binding", "LastName"));
+        var genderElement = new XElement("Gender", new XAttribute("Type", "string"), new XAttribute("Binding", "Gender"));
+        var ageElement = new XElement("Age", new XAttribute("Type", "int"), new XAttribute("Binding", "Age"));
 
-        var rootElement = new XElement("Sensor", avgTempElement, avgPowerConsumptionelement, currentHumidityElement, currentTemperatureElement, hasPowerElement);
+        var addressElement = new XElement("Address", new XAttribute("Type", "container"), new XAttribute("Binding", "Address"));
+        var streetElement = new XElement("Street", new XAttribute("Type", "string"), new XAttribute("Binding", "Street"));
+        var houseNumberElement = new XElement("HouseNumber", new XAttribute("Type", "string"), new XAttribute("Binding", "HouseNumber"));
+        var zipCodeElement = new XElement("ZipCode", new XAttribute("Type", "string"), new XAttribute("Binding", "ZipCode"));
+        var cityElement = new XElement("City", new XAttribute("Type", "string"), new XAttribute("Binding", "City"));
 
-        return rootElement;
+        addressElement.Add(streetElement, houseNumberElement, zipCodeElement, cityElement);
+        rootelement.Add(firstNameElement, lastNameElement, genderElement, ageElement, addressElement);
+
+        return rootelement;
     }
 }

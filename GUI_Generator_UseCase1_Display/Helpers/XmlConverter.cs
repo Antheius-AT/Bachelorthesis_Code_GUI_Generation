@@ -83,7 +83,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 case "float":
                     return new FloatElementType<SensorData>(binding, label);
                 case "int":
-                    return new integerelementType<SensorData>(label);
+                    return new integerelementType<SensorData>(binding, label);
                 default:
                     throw new ArgumentException(nameof(subType), "Sub type not recognized");
             }

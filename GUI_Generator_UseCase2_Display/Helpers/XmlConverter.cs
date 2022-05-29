@@ -1,12 +1,12 @@
 ﻿using System.Xml.Linq;
 using System.Xml;
 using GeneratorSharedComponents.Abstractions;
-using Models.UseCases.DisplayOnly.UseCase1;
+using Models.UseCases.DisplayOnly.UseCase2;
 using GeneratorSharedComponents;
 
-namespace GUI_Generator_UseCase1_Display.Helpers
+namespace GUI_Generator_UseCase2_Display.Helpers
 {
-    public class XmlConverter : IXMLSpecificationConverter<SensorData>
+    public class XmlConverter : IXMLSpecificationConverter<PersonalDetails>
     {
         /// <summary>
         /// Transforms an interface specification from XML to C# objects.
@@ -14,10 +14,10 @@ namespace GUI_Generator_UseCase1_Display.Helpers
         /// <param name="root"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public IEnumerable<InterfaceSpecificationElement<SensorData>> TransformToElementCollection(XElement root)
+        public IEnumerable<InterfaceSpecificationElement<PersonalDetails>> TransformToElementCollection(XElement root)
         {
             var xmlElements = root.Elements().Where(e => e.Parent == root);
-            var interfaceElementCollection = new List<InterfaceSpecificationElement<SensorData>>();
+            var interfaceElementCollection = new List<InterfaceSpecificationElement<PersonalDetails>>();
 
             foreach (var item in xmlElements)
             {
@@ -27,11 +27,11 @@ namespace GUI_Generator_UseCase1_Display.Helpers
             return interfaceElementCollection;
         }
 
-        private InterfaceSpecificationElement<SensorData> TransformXmlNodeToElement(XElement node, XElement root)
+        private InterfaceSpecificationElement<PersonalDetails> TransformXmlNodeToElement(XElement node, XElement root)
         {
             var type = node.Attribute("Type")?.Value ?? throw new XmlException($"Could not parse type attribute of node {node}");
 
-            switch (type)
+            switch (type.ToLower())
             {
                 case "float":
                     return ParseFloatType(node);
@@ -39,20 +39,34 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                     return ParseConditionalType(node, root);
                 case "bool":
                     return ParseBoolType(node);
+                case "string":
+                    return ParseStringType(node);
+                case "int":
+                    return ParseIntegerType(node);
+                case "container":
+                    return ParseContainerType(node, root);
                 default:
                     throw new XmlException("Node type not recognized");
             }
         }
 
-        private InterfaceSpecificationElement<SensorData> ParseFloatType(XElement element)
+        private InterfaceSpecificationElement<PersonalDetails> ParseFloatType(XElement element)
         {
             var bindingPath = element.Attributes().Single(a => a.Name == "Binding")?.Value ?? throw new ArgumentException(nameof(element), "Element missing Binding attribute");
             var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<SensorData>(new FloatElementType<SensorData>(bindingPath, label));
+            return new InterfaceSpecificationElement<PersonalDetails>(new FloatElementType<PersonalDetails>(bindingPath, label));
         }
 
-        private InterfaceSpecificationElement<SensorData> ParseConditionalType(XElement element, XElement root)
+        private InterfaceSpecificationElement<PersonalDetails> ParseIntegerType(XElement element)
+        {
+            var bindingPath = element.Attributes().Single(a => a.Name == "Binding")?.Value ?? throw new ArgumentException(nameof(element), "Element missing Binding attribute");
+            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+
+            return new InterfaceSpecificationElement<PersonalDetails>(new integerelementType<PersonalDetails>(bindingPath, label));
+        }
+
+        private InterfaceSpecificationElement<PersonalDetails> ParseConditionalType(XElement element, XElement root)
         {
             var attributes = element.Attributes();
 
@@ -65,28 +79,60 @@ namespace GUI_Generator_UseCase1_Display.Helpers
             XElement conditionElement = root.Descendants().FirstOrDefault(p => p.Name.LocalName == condition) ?? throw new ArgumentException(nameof(condition), $"Conditional element {condition} not found in descendants of root node");
             var conditionBindingPath = conditionElement.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Conditional element reference found, but no conditional binding specified");
 
-            return new InterfaceSpecificationElement<SensorData>(new ConditionalElementType<SensorData>(subElementType, conditionBindingPath, label));
+            return new InterfaceSpecificationElement<PersonalDetails>(new ConditionalElementType<PersonalDetails>(subElementType, conditionBindingPath, label));
         }
 
-        private InterfaceSpecificationElement<SensorData> ParseBoolType(XElement element)
+        private InterfaceSpecificationElement<PersonalDetails> ParseContainerType(XElement element, XElement root)
+        {
+            var attributes = element.Attributes();
+
+            var binding = attributes.Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
+            var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+            var containerContentElements = ParseContainerContents(element, root);
+
+            return new InterfaceSpecificationElement<PersonalDetails>(new ContainerElementType<PersonalDetails>(containerContentElements, binding, label));
+
+        }
+
+        private InterfaceSpecificationElement<PersonalDetails> ParseBoolType(XElement element)
         {
             var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
             var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<SensorData>(new BooleanElementType<SensorData>(binding, label));
+            return new InterfaceSpecificationElement<PersonalDetails>(new BooleanElementType<PersonalDetails>(binding, label));
         }
 
-        private InterfaceElementType<SensorData> GetSubElementType(string subType, string binding, string? label)
+        private InterfaceSpecificationElement<PersonalDetails> ParseStringType(XElement element)
+        {
+            var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
+            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+
+            return new InterfaceSpecificationElement<PersonalDetails>(new StringElementType<PersonalDetails>(binding, label));
+        }
+
+        private InterfaceElementType<PersonalDetails> GetSubElementType(string subType, string binding, string? label)
         {
             switch (subType)
             {
                 case "float":
-                    return new FloatElementType<SensorData>(binding, label);
+                    return new FloatElementType<PersonalDetails>(binding, label);
                 case "int":
-                    return new integerelementType<SensorData>(label);
+                    return new integerelementType<PersonalDetails>(binding, label);
                 default:
                     throw new ArgumentException(nameof(subType), "Sub type not recognized");
             }
+        }
+
+        private IEnumerable<InterfaceSpecificationElement<PersonalDetails>> ParseContainerContents(XElement containerElement, XElement root)
+        {
+            List<InterfaceSpecificationElement<PersonalDetails>> result = new List<InterfaceSpecificationElement<PersonalDetails>>();
+
+            foreach (var item in containerElement.Descendants())
+            {
+                result.Add(TransformXmlNodeToElement(item, root));
+            }
+
+            return result;
         }
     }
 }

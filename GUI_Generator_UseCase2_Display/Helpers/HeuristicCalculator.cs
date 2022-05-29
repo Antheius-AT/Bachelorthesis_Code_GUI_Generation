@@ -1,13 +1,13 @@
 ﻿using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
 using Models.Metadata;
-using Models.UseCases.DisplayOnly.UseCase1;
+using Models.UseCases.DisplayOnly.UseCase2;
 
 namespace GUI_Generator_UseCase1_Display.Helpers
 {
     public static class HeuristicCalculator
     {
-        public static int CalculateWidgetScore(InterfaceElementType<SensorData> element, WidgetBase widget)
+        public static int CalculateWidgetScore(InterfaceElementType<PersonalDetails> element, WidgetBase widget)
         {
             var customAttributes = widget.GetType().GetCustomAttributes(false);
             var valueKind = customAttributes.FirstOrDefault(a => a.GetType() == typeof(ValueKindAttribute)) as ValueKindAttribute ?? throw new ArgumentException(nameof(widget), "missing value kind attribute");

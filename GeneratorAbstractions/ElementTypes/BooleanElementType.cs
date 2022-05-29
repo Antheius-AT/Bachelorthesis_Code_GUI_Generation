@@ -5,12 +5,9 @@ namespace GeneratorSharedComponents
 {
     public class BooleanElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public BooleanElementType(string bindingPath, string? label) : base("bool", typeof(bool), label)
+        public BooleanElementType(string binding, string? label) : base("bool", typeof(bool), binding, label)
         {
-            BindingPath = bindingPath;
         }
-
-        public string BindingPath { get; }
 
         public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)
         {

@@ -5,12 +5,9 @@ namespace GeneratorSharedComponents
 {
     public class FloatElementType<TModelType> : InterfaceElementType<TModelType> where TModelType : class
     {
-        public FloatElementType(string bindingPath, string? label) : base("float", typeof(float), label)
+        public FloatElementType(string binding, string? label) : base("float", typeof(float), binding, label)
         {
-            BindingPath = bindingPath;
         }
-
-        public string BindingPath { get; }
 
         public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)
         {

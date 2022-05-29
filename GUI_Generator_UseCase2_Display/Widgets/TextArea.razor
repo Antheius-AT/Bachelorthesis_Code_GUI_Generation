@@ -1,0 +1,13 @@
+﻿@using GeneratorSharedComponents.Abstractions
+@using Models.Metadata
+
+@inherits WidgetBase
+@attribute [ValueKind(typeof(string))]
+@attribute [Editable]
+
+<TextArea></TextArea>
+
+@code {
+	[Parameter]
+	public string? Value { get; set; }
+}

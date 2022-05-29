@@ -1,9 +1,67 @@
 ﻿@page "/"
+@using GUI_Generator_UseCase1_Display.Helpers
+@using GUI_Generator_UseCase1_Display.InitialExperiments
+@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
+@using Models
+@using Models.Metadata
+@using Models.UseCases.DisplayOnly.UseCase1
+@using Radzen.Blazor
+@using System.Reflection
+@using System.Xml.Linq
 
-<PageTitle>Index</PageTitle>
+@inject IXMLSpecificationConverter<SensorData> xmlConverter
 
-<h1>Hello, world!</h1>
+@if (!showGui)
+{
+    <RadzenButton Click="() => showGui = true" Text="Render GUI"></RadzenButton>
+}
+else
+{
+    performanceMonitor.Start();
+    InitializeGenerator();
+    <AdaptiveInterfaceGeneratorView PerformanceMonitor="performanceMonitor" ModelData="sensorData" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
+}
 
-Welcome to your new app.
+@code {
+    private DeviceModel<SensorData> deviceModel;
+    private PerformanceMonitor performanceMonitor;
+    private InterfaceSpecification<SensorData> interfaceSpecification;
+    private UserModel userModel;
+    private SensorData sensorData;
+    private bool showGui;
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override void OnInitialized()
+    {
+        sensorData = new SensorData();
+        performanceMonitor = new PerformanceMonitor();
+    }
+
+    private void InitializeGenerator()
+    {
+        var asm = Assembly.GetExecutingAssembly();
+        var widgets = asm.GetTypes().GetDescendantElementsOfType<WidgetBase>().ToArray();
+
+        var xml = BuildSpecification();
+
+        var elementCollection = xmlConverter.TransformToElementCollection(xml);
+
+        interfaceSpecification = new InterfaceSpecification<SensorData>(elementCollection, null!);
+        userModel = new UserModel();
+        deviceModel = new DeviceModel<SensorData>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);        
+    }
+
+    private XElement BuildSpecification()
+    {
+        var avgTempElement = new XElement("AvgTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "AverageTemperature"), new XAttribute("Label", "Durchschnittliche Temperatur"));
+        var avgPowerConsumptionelement = new XElement("AvgPowerConsumption", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "AveragePowerConsumption"), new XAttribute("Label", "Durchschnittlicher Stromverbrauch"));
+        var currentHumidityElement = new XElement("CurrentHumidity", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "CurrentHumidity"), new XAttribute("Label", "Aktuelle Luftfeuchtigkeit"));
+        var currentTemperatureElement = new XElement("CurrentTemperature", new XAttribute("Type", "conditional"), new XAttribute("SubType", "float"), new XAttribute("Condition", "IsPoweredOn"), new XAttribute("Binding", "CurrentTemperature"), new XAttribute("Label", "Aktuelle Temperatur"));
+
+        var hasPowerElement = new XElement("IsPoweredOn", new XAttribute("Type", "bool"), new XAttribute("Binding", "IsPoweredOn"), new XAttribute("Label", "Sensor aktuell aktiv"));
+
+        var rootElement = new XElement("Sensor", avgTempElement, avgPowerConsumptionelement, currentHumidityElement, currentTemperatureElement, hasPowerElement);
+
+        return rootElement;
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
+@using Models
+@using Models.UseCases.DisplayOnly.UseCase2
+
+@inject IAdaptiveInterfaceGenerator<PersonalDetails> InterfaceGenerator
+
+@if (UserModel != null && DeviceModel != null && InterfaceSpecification != null && ModelData != null)
+{
+    @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel, ModelData)
+}
+@code {
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    [Parameter]
+    public PersonalDetails? ModelData { get; set; }
+
+    [Parameter]
+    public UserModel? UserModel { get; set; }
+
+    [Parameter]
+    public DeviceModel<PersonalDetails>? DeviceModel { get; set; }
+
+    [Parameter]
+    public InterfaceSpecification<PersonalDetails>? InterfaceSpecification { get; set; }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+}

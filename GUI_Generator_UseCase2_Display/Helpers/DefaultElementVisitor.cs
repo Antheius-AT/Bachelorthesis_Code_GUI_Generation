@@ -24,7 +24,20 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(StringElementType<PersonalDetails> element)
         {
-            throw new NotImplementedException();
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
+
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
+            string value = property.GetValue(concreteData)!.ToString()!;
+
+            return BuildRenderTree(value, element);
         }
 
         public RenderFragment Visit(FloatElementType<PersonalDetails> element)
@@ -47,7 +60,20 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(integerelementType<PersonalDetails> element)
         {
-            throw new NotImplementedException();
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
+
+            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
+            int value = Convert.ToInt32(property.GetValue(concreteData));
+
+            return BuildRenderTree(value, element);
         }
 
         public RenderFragment Visit(DerivativeElementType<PersonalDetails> element)
@@ -122,17 +148,18 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
             var containerProperty = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             var containerInstance = containerProperty.GetValue(concreteData);
-            // Think about how to best do this.
-            throw new Exception();
-            //return new RenderFragment(builder =>
-            //{
-            //    builder.OpenComponent(1, )
-            //    foreach (var item in element.ContentElements)
-            //    {
-            //        var elementProperty = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == item.ElementType.Binding) ?? throw new InvalidOperationException($"Specified container type did not contain property associated with the specified binding. Path: {element.Binding}/{item.ElementType.Binding}");
-            //        var elementValue = elementProperty.GetValue(containerInstance);
-            //    }
-            //});
+
+            return new RenderFragment(builder =>
+            {
+                foreach (var item in element.ContentElements)
+                {
+                    var elementProperty = containerInstance!.GetType().GetProperties().SingleOrDefault(p => p.Name == item.ElementType.Binding) ?? throw new InvalidOperationException($"Specified container type did not contain property associated with the specified binding. Path: {element.Binding}/{item.ElementType.Binding}");
+                    var elementValue = elementProperty.GetValue(containerInstance);
+
+                    var subFragment = BuildRenderTree(elementValue!, item.ElementType);
+                    builder.AddContent(1, subFragment);
+                }
+            });
         }
 
         private WidgetBase GetMostAppropriateWidget(InterfaceElementType<PersonalDetails> element)
@@ -164,7 +191,7 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 builder.AddAttribute(2, "Value", value);
                 builder.AddAttribute(3, "Label", element.Label);
                 builder.CloseComponent();
-                builder.AddMarkupContent(3, "<br/>");
+                builder.AddMarkupContent(4, "<br/>");
             });
         }
     }

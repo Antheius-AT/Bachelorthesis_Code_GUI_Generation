@@ -2,11 +2,11 @@
 @using Models.Metadata
 
 @inherits WidgetBase
-@attribute [ValueKind(typeof(float))]
+@attribute [ValueKind(typeof(int))]
 
 <span>@Label</span>
 <Radzen.Blazor.RadzenNumeric Disabled @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
 @code {
 	[Parameter]
-	public float Value { get; set; }
+	public int Value { get; set; }
 }

@@ -75,7 +75,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attribute_Reflection_UseCas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneratorSharedComponents", "GeneratorAbstractions\GeneratorSharedComponents.csproj", "{4752E58F-580E-44B7-92C8-5C84E176B46B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI_Generator_UseCase2_Display", "GUI_Generator_UseCase2_Display\GUI_Generator_UseCase2_Display.csproj", "{FAD56F15-4C06-46CB-88D7-038C80710096}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUI_Generator_UseCase2_Display", "GUI_Generator_UseCase2_Display\GUI_Generator_UseCase2_Display.csproj", "{FAD56F15-4C06-46CB-88D7-038C80710096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

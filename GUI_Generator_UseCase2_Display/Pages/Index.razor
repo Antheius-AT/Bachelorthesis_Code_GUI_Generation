@@ -62,11 +62,14 @@ else
         var addressElement = new XElement("Address", new XAttribute("Type", "container"), new XAttribute("Binding", "Address"));
         var streetElement = new XElement("Street", new XAttribute("Type", "string"), new XAttribute("Binding", "Street"));
         var houseNumberElement = new XElement("HouseNumber", new XAttribute("Type", "string"), new XAttribute("Binding", "HouseNumber"));
-        var zipCodeElement = new XElement("ZipCode", new XAttribute("Type", "string"), new XAttribute("Binding", "ZipCode"));
+        var zipCodeElement = new XElement("ZipCode", new XAttribute("Type", "int"), new XAttribute("Binding", "ZipCode"));
         var cityElement = new XElement("City", new XAttribute("Type", "string"), new XAttribute("Binding", "City"));
+
+        var educationElement = new XElement("Educations", new XAttribute("Type", "array"), new XAttribute("Binding", "Educations"));
 
         addressElement.Add(streetElement, houseNumberElement, zipCodeElement, cityElement);
         rootelement.Add(firstNameElement, lastNameElement, genderElement, ageElement, addressElement);
+        rootelement.Add(educationElement);
 
         return rootelement;
     }

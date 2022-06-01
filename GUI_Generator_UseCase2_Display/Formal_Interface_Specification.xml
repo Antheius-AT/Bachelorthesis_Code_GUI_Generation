@@ -9,5 +9,6 @@
 		<City Type="string" Binding="City"></City>
 		<HouseNumber Type="string" Binding="HouseNumber"></HouseNumber>
 	</Address>
-	<EducationHistory type="array" Binding="Educations"></EducationHistory>
+	<EducationHistory type="array" Binding="Educations">
+	</EducationHistory>
 </PersonalDetails>

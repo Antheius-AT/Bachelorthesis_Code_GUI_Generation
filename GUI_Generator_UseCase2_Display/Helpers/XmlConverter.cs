@@ -45,6 +45,8 @@ namespace GUI_Generator_UseCase2_Display.Helpers
                     return ParseIntegerType(node);
                 case "container":
                     return ParseContainerType(node, root);
+                case "array":
+                    return ParseArrayType(node, root);
                 default:
                     throw new XmlException("Node type not recognized");
             }
@@ -92,6 +94,17 @@ namespace GUI_Generator_UseCase2_Display.Helpers
 
             return new InterfaceSpecificationElement<PersonalDetails>(new ContainerElementType<PersonalDetails>(containerContentElements, binding, label));
 
+        }
+
+        private InterfaceSpecificationElement<PersonalDetails> ParseArrayType(XElement element, XElement root)
+        {
+            var attributes = element.Attributes();
+
+            var binding = attributes.Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
+            var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
+            var containerContentElements = ParseContainerContents(element, root);
+
+            return new InterfaceSpecificationElement<PersonalDetails>(new ArrayElementType<PersonalDetails>(binding, label));
         }
 
         private InterfaceSpecificationElement<PersonalDetails> ParseBoolType(XElement element)

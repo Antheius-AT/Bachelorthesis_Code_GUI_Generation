@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections;
+using System.Xml.Linq;
 using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
 using GUI_Generator_UseCase1_Display.Widgets;
@@ -30,17 +31,9 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(FloatElementType<SensorData> element)
         {
-            if (concreteData == null)
-            {
-                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
-            }
+            EnsureReferences();
 
-            if (deviceModel == null)
-            {
-                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
-            }
-
-            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             float value = Convert.ToSingle(property.GetValue(concreteData));
 
             return BuildRenderTree(value, element);
@@ -63,17 +56,9 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(BooleanElementType<SensorData> element)
         {
-            if (concreteData == null)
-            {
-                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
-            }
+            EnsureReferences();
 
-            if (deviceModel == null)
-            {
-                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
-            }
-
-            var property = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.BindingPath) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.BindingPath}");
+            var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             bool value = Convert.ToBoolean(property.GetValue(concreteData));
 
             return BuildRenderTree(value, element);
@@ -86,17 +71,9 @@ namespace GUI_Generator_UseCase1_Display.Helpers
 
         public RenderFragment Visit(ConditionalElementType<SensorData> element)
         {
-            if (concreteData == null)
-            {
-                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
-            }
+            EnsureReferences();
 
-            if (deviceModel == null)
-            {
-                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
-            }
-
-            var constraintProperty = concreteData.GetType().GetProperties().SingleOrDefault(p => p.Name == element.ConstraintPropertyName) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.ConstraintPropertyName}");
+            var constraintProperty = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.ConstraintPropertyName) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.ConstraintPropertyName}");
             bool value = Convert.ToBoolean(constraintProperty.GetValue(concreteData));
 
             if (value)
@@ -145,6 +122,19 @@ namespace GUI_Generator_UseCase1_Display.Helpers
                 builder.CloseComponent();
                 builder.AddMarkupContent(3, "<br/>");
             });
+        }
+
+        private void EnsureReferences()
+        {
+            if (concreteData == null)
+            {
+                throw new InvalidOperationException("Setting the concrete data is required before attempting to generate a render fragment");
+            }
+
+            if (deviceModel == null)
+            {
+                throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
+            }
         }
     }
 }

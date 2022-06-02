@@ -1,0 +1,12 @@
+﻿@using GeneratorSharedComponents.Abstractions
+@using Models.Metadata
+
+@inherits WidgetBase
+@attribute [ValueKind(typeof(int))]
+
+<span>@Label</span>
+<Radzen.Blazor.RadzenNumeric Disabled @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
+@code {
+	[Parameter]
+	public int Value { get; set; }
+}

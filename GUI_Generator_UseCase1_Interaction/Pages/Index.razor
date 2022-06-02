@@ -1,0 +1,72 @@
+﻿@page "/"
+@using GUI_Generator_UseCase1_Interaction.Helpers
+@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
+@using Models
+@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase1
+@using Radzen.Blazor
+@using System.Reflection
+@using System.Xml.Linq
+
+@inject IXMLSpecificationConverter<LoginModel> xmlConverter
+
+@if (!showGui)
+{
+    <RadzenButton Click="() => showGui = true" Text="Render GUI"></RadzenButton>
+}
+else
+{
+    performanceMonitor.Start();
+    InitializeGenerator();
+    <AdaptiveInterfaceGeneratorView PerformanceMonitor="performanceMonitor" ModelData="loginModel" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
+}
+
+@code {
+    private DeviceModel<LoginModel> deviceModel;
+    private PerformanceMonitor performanceMonitor;
+    private InterfaceSpecification<LoginModel> interfaceSpecification;
+    private UserModel userModel;
+    private LoginModel loginModel;
+    private bool showGui;
+
+    protected override void OnInitialized()
+    {
+        loginModel = new LoginModel();
+        performanceMonitor = new PerformanceMonitor();
+    }
+
+    private void InitializeGenerator()
+    {
+        var asm = Assembly.GetExecutingAssembly();
+        var widgets = asm.GetTypes().GetDescendantElementsOfType<WidgetBase>().ToArray();
+
+        var xml = BuildSpecification();
+
+        var elementCollection = xmlConverter.TransformToElementCollection(xml);
+
+        interfaceSpecification = new InterfaceSpecification<LoginModel>(elementCollection, null!);
+        userModel = new UserModel();
+        deviceModel = new DeviceModel<LoginModel>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);        
+    }
+
+    private XElement BuildSpecification()
+    {
+        var rootelement = new XElement("LoginForm", new XAttribute("Type", "root"));
+
+        var contentContainerElement = new XElement("FormContents", new XAttribute("type", "container"), new XAttribute("Name", "formContents"), new XAttribute("XmlIgnore", "true"));
+        var usernameElement = new XElement("UserName", new XAttribute("Type", "string"), new XAttribute("Binding", "UserName"));
+        var passwordElement = new XElement("Password", new XAttribute("Type", "string"), new XAttribute("Binding", "Password"));
+        var passwordConfirmation = new XElement("Confirmation", new XAttribute("Type", "string"), new XAttribute("Binding", "PasswordConfirmation"));
+        var actionButtonElement = new XElement("FormAction", new XAttribute("Type", "action"), new XAttribute("ActionTypeRef", "formContents"));
+
+        contentContainerElement.Add(usernameElement);
+        contentContainerElement.Add(passwordElement);
+        contentContainerElement.Add(passwordConfirmation);
+
+        rootelement.Add(contentContainerElement);
+        rootelement.Add(actionButtonElement);
+
+        return rootelement;
+    }
+}

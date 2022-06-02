@@ -1,0 +1,8 @@
+﻿<LoginForm type="root">
+	<Contents Name="formContents" type="container" XmlIgnore="true">
+		<Username type="string" Binding="UserName"></Username>
+		<Password type="string" Binding="Password"></Password>
+		<Confirmation type="string" Binding="PasswordConfirmation"></Confirmation>
+	</Contents>
+	<FormAction type="action" ActionTypeRef="formContents"></FormAction>
+</LoginForm>

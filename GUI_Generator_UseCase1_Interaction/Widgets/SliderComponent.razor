@@ -1,0 +1,12 @@
+﻿@using GeneratorSharedComponents.Abstractions
+@using Models.Metadata
+
+@inherits WidgetBase
+@attribute [ValueKind(typeof(float))]
+@attribute [Editable]
+
+<Radzen.Blazor.RadzenSlider Min="0" Max="10" @bind-Value="Value"></Radzen.Blazor.RadzenSlider>
+@code {
+	[Parameter]
+	public float Value { get; set; }
+}

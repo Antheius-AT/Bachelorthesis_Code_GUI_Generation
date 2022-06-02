@@ -1,0 +1,22 @@
+﻿@using GeneratorSharedComponents.Abstractions
+@using GeneratorSharedComponents.MarkerTypes
+@using Models.Metadata
+
+@inherits WidgetBase
+@attribute [ValueKind(typeof(Container))]
+
+<Radzen.Blazor.RadzenCard class="mt-3">
+	<div class="row">
+		@foreach (var item in Value ?? Enumerable.Empty<RenderFragment>())
+		{
+			<div class="mt-3 col-12 col-lg-6">
+				@item
+			</div>
+		}
+	</div>
+</Radzen.Blazor.RadzenCard>
+
+@code {
+	[Parameter]
+	public IEnumerable<RenderFragment>? Value { get; set; }
+}

@@ -1,0 +1,11 @@
+﻿@using GeneratorSharedComponents.Abstractions
+@using Models.Metadata
+
+@inherits WidgetBase
+@attribute [ValueKind(typeof(string))]
+
+<Radzen.Blazor.RadzenTextBox @bind-Value="Value"></Radzen.Blazor.RadzenTextBox>
+@code {
+	[Parameter]
+	public string? Value { get; set; }
+}

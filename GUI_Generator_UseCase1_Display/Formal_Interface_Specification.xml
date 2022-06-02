@@ -1,4 +1,4 @@
-﻿<Sensor Type="container">
+﻿<Sensor Type="root">
 		<IsPoweredOn Name="isOn" Type="bool" Binding="IsPoweredOn"></IsPoweredOn>
 		<AvgTemperature Type="conditional" SubType="float" Condition="isOn" Binding="AverageTemperature"></AvgTemperature>
 		<AvgPowerConsumption Type="conditional" SubType="float" Condition="isOn" Binding="AveragePowerConsumption"></AvgPowerConsumption>

@@ -7,7 +7,7 @@ namespace Models.UseCases.IncludingUserInteraction.UseCase2
         public Address()
         {
             this.City = "Demo city";
-            this.Zipcode = 12459;
+            this.ZipCode = 12459;
             this.HouseNumber = "196/Object C/Entrance 5A";
             this.Street = "This is a very very long street name";
         }
@@ -22,7 +22,7 @@ namespace Models.UseCases.IncludingUserInteraction.UseCase2
 
         [StringLength(10)]
         [Editable]
-        public int Zipcode { get; set; }
+        public int ZipCode { get; set; }
 
         [StringLength(10)]
         [Editable]

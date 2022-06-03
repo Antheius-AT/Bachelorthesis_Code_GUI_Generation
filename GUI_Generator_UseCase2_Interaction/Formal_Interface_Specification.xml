@@ -1,0 +1,14 @@
+﻿<PersonalDetails>
+	<FirstName Type="string" Binding="FirstName"></FirstName>
+	<LastName Type="string" Binding="LastName"></LastName>
+	<Gender Type="string" Binding="Gender"></Gender>
+	<Age Type="int" Binding="Age"></Age>
+	<Address Type="container" Binding="Address">
+		<Street Type="string" Binding="Street"></Street>
+		<ZipCode Type="int" Binding="ZipCode"></ZipCode>
+		<City Type="string" Binding="City"></City>
+		<HouseNumber Type="string" Binding="HouseNumber"></HouseNumber>
+	</Address>
+	<EducationHistory type="array" Binding="Educations">
+	</EducationHistory>
+</PersonalDetails>

@@ -1,0 +1,10 @@
+﻿@using Models.Metadata
+@inherits ComponentBase
+@attribute [ReadOnly]
+@attribute [ValueKind(typeof(Array))]
+
+<h2>Test</h2>
+
+@code {
+	public IEnumerable<RenderFragment>? Value { get; set; }
+}

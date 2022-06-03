@@ -1,0 +1,12 @@
+﻿@using GeneratorSharedComponents.Abstractions
+@using Models.Metadata
+
+@inherits WidgetBase
+@attribute [ValueKind(typeof(bool))]
+
+<span>@Label</span>
+<Radzen.Blazor.RadzenCheckBox Disabled @bind-Value="Value"></Radzen.Blazor.RadzenCheckBox>
+@code {
+    [Parameter]
+    public bool Value { get; set; }
+}

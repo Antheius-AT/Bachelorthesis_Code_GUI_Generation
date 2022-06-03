@@ -20,10 +20,10 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
             if (isEditable)
             {
-                return 5;
+                return 10;
             }
 
-            return 10;
+            return 5;
         }
     }
 }

@@ -2,8 +2,10 @@
 @using Models.Metadata
 
 @inherits WidgetBase
+@attribute [Editable]
 @attribute [ValueKind(typeof(string))]
 
+<span>@Label: </span>
 <Radzen.Blazor.RadzenTextBox @bind-Value="Value"></Radzen.Blazor.RadzenTextBox>
 @code {
 	[Parameter]

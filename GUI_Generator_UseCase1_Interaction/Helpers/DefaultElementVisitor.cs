@@ -4,6 +4,7 @@ using GeneratorSharedComponents.Abstractions;
 using GUI_Generator_UseCase1_Interaction.Widgets;
 using Microsoft.AspNetCore.Components;
 using Models.UseCases.IncludingUserInteraction.UseCase1;
+using Radzen;
 using Radzen.Blazor;
 
 namespace GUI_Generator_UseCase1_Interaction.Helpers
@@ -12,6 +13,12 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
     {
         private LoginModel? concreteData;
         private DeviceModel<LoginModel>? deviceModel;
+        private readonly DialogService dialogService;
+
+        public DefaultElementVisitor(DialogService dialogService)
+        {
+            this.dialogService = dialogService;
+        }
 
         public void SetData(LoginModel data)
         {
@@ -25,17 +32,18 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         public RenderFragment Visit(StringElementType<LoginModel> element)
         {
-            EnsureReferences();
-
+            CheckReferences();
+            // Sollte hier noch ein callback einbauen das einen geänderten Wert zurückschreibt
+            // aber nur für controls die auch editiert werden können.
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
-            string value = property.GetValue(concreteData)!.ToString()!;
+            string value = property.GetValue(concreteData)?.ToString() ?? string.Empty;
 
             return BuildRenderTree(value, element);
         }
 
         public RenderFragment Visit(FloatElementType<LoginModel> element)
         {
-            EnsureReferences();
+            CheckReferences();
 
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             float value = Convert.ToSingle(property.GetValue(concreteData));
@@ -45,7 +53,7 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         public RenderFragment Visit(integerelementType<LoginModel> element)
         {
-            EnsureReferences();
+            CheckReferences();
 
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             int value = Convert.ToInt32(property.GetValue(concreteData));
@@ -60,12 +68,23 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         public RenderFragment Visit(ActionElementType<LoginModel> element)
         {
-            throw new NotImplementedException();
+            CheckReferences();
+
+            var actionTypeFragment = element.ActionType.Accept(this);
+
+            return new RenderFragment(builder =>
+            {
+                builder.AddContent(10, actionTypeFragment);
+                builder.OpenComponent(15, typeof(ActionButtonWidget));
+                builder.AddAttribute(20, "Label", element.Label);
+                builder.AddAttribute(30, "Action", new EventCallback(null, () => HandleAction(element)));
+                builder.CloseComponent();
+            });
         }
 
         public RenderFragment Visit(BooleanElementType<LoginModel> element)
         {
-            EnsureReferences();
+            CheckReferences();
 
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             bool value = Convert.ToBoolean(property.GetValue(concreteData));
@@ -75,7 +94,7 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         public RenderFragment Visit(ArrayElementType<LoginModel> element)
         {
-            EnsureReferences();
+            CheckReferences();
 
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
 
@@ -91,7 +110,7 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         public RenderFragment Visit(ConditionalElementType<LoginModel> element)
         {
-            EnsureReferences();
+            CheckReferences();
 
             var constraintProperty = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.ConstraintPropertyName) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.ConstraintPropertyName}");
             bool value = Convert.ToBoolean(constraintProperty.GetValue(concreteData));
@@ -108,11 +127,22 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         public RenderFragment Visit(ContainerElementType<LoginModel> element)
         {
-            EnsureReferences();
+            CheckReferences();
 
+            if (!string.IsNullOrWhiteSpace(element.Binding))
+            {
+                return GetContainerWithBinding(element);
+            }
+            else
+            {
+                return GetContainerWithoutBinding(element);
+            }
+        }
+        
+        private RenderFragment GetContainerWithBinding(ContainerElementType<LoginModel> element)
+        {
             var containerProperty = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             var containerInstance = containerProperty.GetValue(concreteData);
-            var containerWidget = GetMostAppropriateWidget(element);
             var contentList = new List<RenderFragment>();
 
             return new RenderFragment(builder =>
@@ -125,6 +155,25 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
                     var elementValue = elementProperty.GetValue(containerInstance);
 
                     var subFragment = BuildRenderTree(elementValue!, item.ElementType);
+                    contentList.Add(subFragment);
+                }
+
+                builder.AddAttribute(100, "Value", contentList);
+                builder.CloseComponent();
+            });
+        }
+
+        private RenderFragment GetContainerWithoutBinding(ContainerElementType<LoginModel> element)
+        {
+            var contentList = new List<RenderFragment>();
+
+            return new RenderFragment(builder =>
+            {
+                builder.OpenComponent(10, typeof(ContainerWidget));
+
+                foreach (var item in element.ContentElements)
+                {
+                    var subFragment = item.ElementType.Accept(this);
                     contentList.Add(subFragment);
                 }
 
@@ -166,7 +215,7 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
             });
         }
 
-        private void EnsureReferences()
+        private void CheckReferences()
         {
             if (concreteData == null)
             {
@@ -177,6 +226,11 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
             {
                 throw new InvalidOperationException("Setting the device model is required before attempting to generate a render fragment");
             }
+        }
+
+        private void HandleAction(ActionElementType<LoginModel> element)
+        {
+            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Components;
 
 namespace GeneratorSharedComponents.Abstractions
 {
@@ -6,5 +7,8 @@ namespace GeneratorSharedComponents.Abstractions
     {
         [Parameter]
         public string? Label { get; set; }
+
+        [Parameter]
+        public EventCallback<ValueChangedArgs> ValueChanged { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
 using GUI_Generator_UseCase1_Interaction.Widgets;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Models.UseCases.IncludingUserInteraction.UseCase1;
 using Radzen;
 using Radzen.Blazor;
@@ -15,10 +16,12 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
         private LoginModel? concreteData;
         private DeviceModel<LoginModel>? deviceModel;
         private readonly DialogService dialogService;
+        private readonly IJSRuntime jsRuntime;
 
-        public DefaultElementVisitor(DialogService dialogService)
+        public DefaultElementVisitor(DialogService dialogService, IJSRuntime jsRuntime)
         {
             this.dialogService = dialogService;
+            this.jsRuntime = jsRuntime;
         }
 
         public void SetData(LoginModel data)
@@ -227,7 +230,7 @@ namespace GUI_Generator_UseCase1_Interaction.Helpers
 
         private async void HandleAction(ActionElementType<LoginModel> element)
         {
-            throw new NotImplementedException();
+            await jsRuntime.InvokeVoidAsync("alert", $"Username: {concreteData!.UserName}\nPassword: {concreteData.Password}\nPassword confirmation: {concreteData.PasswordConfirmation}");
         }
 
         private void SetValue(PropertyInfo property, object accessorInstance, ValueChangedArgs args)

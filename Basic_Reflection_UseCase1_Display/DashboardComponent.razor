@@ -1,4 +1,5 @@
-﻿@using Basic_Reflection_UseCase1_Display_Template.Templates
+﻿@using Basic_Reflection_UseCase1_Display_Template.Helpers
+@using Basic_Reflection_UseCase1_Display_Template.Templates
 @using Models
 @using Models.UseCases.DisplayOnly.UseCase1
 @using System.Reflection
@@ -10,15 +11,19 @@
 {
 	@foreach (var item in Model.GetType().GetProperties())
 	{
-		var typeAndValue = this.GetTypeValueTuple(item);
-		<DynamicComponent Type=typeAndValue.Item1 Parameters="@(new Dictionary<string, object>(){{"Value", typeAndValue.Item2}, {"Label", typeAndValue.Item3}})"></DynamicComponent>
+		var result = this.GetTypeValueTuple(item);
+		var parameters = new Dictionary<string, object>()
+		{
+			{"Value", result.Value},
+			{"Label", result.Label},
+		};
+
+		<DynamicComponent Type=result.TemplateType Parameters="@parameters"></DynamicComponent>
 		<br />
 	}
 }
 
 @code {
-	private bool isFirstRender = true;
-
 	[Parameter]
 	public SensorData? Model { get; set; }
 
@@ -42,11 +47,11 @@
 	{
 		if (firstRender)
 		{
-			Monitor!.Stop();	
+			Monitor!.Stop();
 		}
 	}
 
-	private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
+	private TemplateResult GetTypeValueTuple(PropertyInfo property)
 	{
 		Type[] basics = new Type[]
 			{
@@ -57,7 +62,7 @@
 
 		if (basics.Contains(property.PropertyType))
 		{
-			return (typeMap![property.PropertyType], property.GetValue(Model)!, property.Name);
+			return new TemplateResult(typeMap![property.PropertyType], property.GetValue(Model), property.Name);
 		}
 		else
 		{

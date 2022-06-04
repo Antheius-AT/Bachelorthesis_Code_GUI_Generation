@@ -1,4 +1,5 @@
-﻿@using Basic_Reflection_UseCase2_Display_Template.Templates
+﻿@using Basic_Reflection_UseCase2_Display_Template.Helpers
+@using Basic_Reflection_UseCase2_Display_Template.Templates
 @using Models
 @using Models.UseCases.DisplayOnly.UseCase2
 @using System.Reflection
@@ -10,46 +11,52 @@
 {
 	foreach (var propertyInfo in Details.GetType().GetProperties())
 	{
-		(Type, object, string) tuple = GetTypeValueTuple(propertyInfo);
-        <DynamicComponent Type=tuple.Item1 Parameters="@(new Dictionary<string, object>(){{"Data", tuple.Item2}, {"Label", tuple.Item3}})"></DynamicComponent>
+		var result = this.GetTypeValueTuple(propertyInfo);
+		var parameters = new Dictionary<string, object>()
+		{
+			{"Data", result.Value},
+			{"Label", result.Label},
+		};
+		
+		<DynamicComponent Type=result.TemplateType Parameters="parameters"></DynamicComponent>
 	}
 }
 
 @code {
-    [Parameter]
-    public PersonalDetails? Details { get; set; }
+	[Parameter]
+	public PersonalDetails? Details { get; set; }
 
-    [Parameter]
-    public PerformanceMonitor? PerformanceMonitor { get; set; }
+	[Parameter]
+	public PerformanceMonitor? PerformanceMonitor { get; set; }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            PerformanceMonitor.Stop();
-        }
-    }
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			PerformanceMonitor!.Stop();
+		}
+	}
 
-    private (Type, object, string) GetTypeValueTuple(PropertyInfo property)
-    {
-        var typeMap = new Dictionary<Type, Type>()
-        {
-            {typeof(string), typeof(StringTemplate)},
-            {typeof(int), typeof(IntegerTemplate)},
-        };
+	private TemplateResult GetTypeValueTuple(PropertyInfo property)
+	{
+		var typeMap = new Dictionary<Type, Type>()
+		{
+			{typeof(string), typeof(StringTemplate)},
+			{typeof(int), typeof(IntegerTemplate)},
+		};
 
-        if (typeMap.ContainsKey(property.PropertyType))
-        {
-            var controlType = typeMap[property.PropertyType];
-            return (controlType, property.GetValue(Details)!, property.Name);
-        }
-        else if (property.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
-        {
-            return (typeof(CollectionView), property.GetValue(Details)!, property.Name);
-        }
-        else
-        {
-            return (typeof(ContainerView), property.GetValue(Details)!, property.Name);
-        }
-    }
+		if (typeMap.ContainsKey(property.PropertyType))
+		{
+			var controlType = typeMap[property.PropertyType];
+			return new TemplateResult(controlType, property.GetValue(Details), property.Name);
+		}
+		else if (property.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
+		{
+			return new TemplateResult(typeof(CollectionView), property.GetValue(Details), property.Name);
+		}
+		else
+		{
+			return new TemplateResult(typeof(ContainerView), property.GetValue(Details)!, property.Name);
+		}
+	}
 }

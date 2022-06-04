@@ -1,8 +1,8 @@
 ﻿@inject AppState AppState
 
-    @if (Label != null)
+@if (Label != null)
 {
-    <label>@Label</label>
+	<label>@Label</label>
 }
 <Radzen.Blazor.RadzenSwitch Disabled Value=@this.Value></Radzen.Blazor.RadzenSwitch>
 
@@ -10,21 +10,9 @@
 
 
 @code {
-    private bool value;
+	[Parameter]
+	public bool Value { get; set; }
 
-    [Parameter]
-    public bool Value {get{ return value; }
-        set
-        {
-            if (value != this.value)
-            {
-                this.value = value;
-                AppState.Visible = this.value;
-                AppState.RaiseEvent();
-            }
-        }
-    }
-
-    [Parameter]
-    public string? Label { get; set; }
+	[Parameter]
+	public string? Label { get; set; }
 }

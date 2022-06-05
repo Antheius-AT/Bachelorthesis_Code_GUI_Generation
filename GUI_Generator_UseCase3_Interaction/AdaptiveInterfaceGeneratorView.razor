@@ -1,0 +1,35 @@
+﻿@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
+@using Models
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+
+@inject IAdaptiveInterfaceGenerator<EditToolBox> InterfaceGenerator
+
+@if (UserModel != null && DeviceModel != null && InterfaceSpecification != null && ModelData != null)
+{
+    @InterfaceGenerator.GenerateGUI(InterfaceSpecification, DeviceModel, UserModel, ModelData)
+}
+@code {
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    [Parameter]
+    public EditToolBox? ModelData { get; set; }
+
+    [Parameter]
+    public UserModel? UserModel { get; set; }
+
+    [Parameter]
+    public DeviceModel<EditToolBox>? DeviceModel { get; set; }
+
+    [Parameter]
+    public InterfaceSpecification<EditToolBox>? InterfaceSpecification { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+}

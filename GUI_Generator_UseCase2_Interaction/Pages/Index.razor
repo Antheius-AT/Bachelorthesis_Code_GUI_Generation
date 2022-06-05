@@ -66,12 +66,13 @@ else
         var zipCodeElement = new XElement("ZipCode", new XAttribute("Type", "int"), new XAttribute("Binding", "ZipCode"));
         var cityElement = new XElement("City", new XAttribute("Type", "string"), new XAttribute("Binding", "City"));
 
-        var educationElement = new XElement("Educations", new XAttribute("Type", "array"), new XAttribute("Binding", "Educations"));
+        var educationElement = new XElement("Educations", new XAttribute("Type", "array"), new XAttribute("Name", "educationArray"), new XAttribute("XmlIgnore", "true"), new XAttribute("Binding", "Educations"));
+		var addEducationElement = new XElement("AddEducation", new XAttribute("Type", "action"), new XAttribute("ActionTypeRef", "educationArray"), new XAttribute("Label", "Add education"));
 
         addressElement.Add(streetElement, houseNumberElement, zipCodeElement, cityElement);
         personalInfoElement.Add(firstNameElement, lastNameElement, genderElement, ageElement);
 
-        rootelement.Add(personalInfoElement, addressElement, educationElement);
+        rootelement.Add(personalInfoElement, addressElement, educationElement, addEducationElement);
 
         return rootelement;
     }

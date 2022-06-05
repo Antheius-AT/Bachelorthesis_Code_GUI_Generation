@@ -1,0 +1,64 @@
+﻿@page "/"
+@using GUI_Generator_UseCase3_Interaction.Helpers
+@using GeneratorSharedComponents
+@using GeneratorSharedComponents.Abstractions
+@using Models
+@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+@using Radzen.Blazor
+@using System.Reflection
+@using System.Xml.Linq
+
+@inject IXMLSpecificationConverter<EditToolBox> xmlConverter
+
+@if (!showGui)
+{
+    <RadzenButton Click="() => showGui = true" Text="Render GUI"></RadzenButton>
+}
+else
+{
+    performanceMonitor.Start();
+    InitializeGenerator();
+    <AdaptiveInterfaceGeneratorView PerformanceMonitor="performanceMonitor" ModelData="tools" DeviceModel="deviceModel" UserModel="userModel" InterfaceSpecification="interfaceSpecification"></AdaptiveInterfaceGeneratorView>
+}
+
+@code {
+    private DeviceModel<EditToolBox> deviceModel;
+    private PerformanceMonitor performanceMonitor;
+    private InterfaceSpecification<EditToolBox> interfaceSpecification;
+    private UserModel userModel;
+    private EditToolBox tools;
+    private bool showGui;
+
+    protected override void OnInitialized()
+    {
+        tools = new EditToolBox();
+        performanceMonitor = new PerformanceMonitor();
+    }
+
+    private void InitializeGenerator()
+    {
+        var asm = Assembly.GetExecutingAssembly();
+        var widgets = asm.GetTypes().GetDescendantElementsOfType<WidgetBase>().ToArray();
+
+        var xml = BuildSpecification();
+
+        var elementCollection = xmlConverter.TransformToElementCollection(xml);
+
+        interfaceSpecification = new InterfaceSpecification<EditToolBox>(elementCollection, null!);
+        userModel = new UserModel();
+        deviceModel = new DeviceModel<EditToolBox>(widgets, null!, HeuristicCalculator.CalculateWidgetScore);        
+    }
+
+    private XElement BuildSpecification()
+    {
+        var rootelement = new XElement("PersonalDetails", new XAttribute("Type", "root"));
+
+        var selectionContainer = new XElement("ToolSelection", new XAttribute("type", "container"));
+        var brush = new XElement("tool", new XAttribute("type", "action",))
+
+        rootelement.Add(selectionContainer);
+
+        return rootelement;
+    }
+}

@@ -2,32 +2,31 @@
 using System.Reflection;
 using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
-using GUI_Generator_UseCase2_Interaction.Widgets;
+using GUI_Generator_UseCase3_Interaction.Widgets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Models.UseCases.IncludingUserInteraction.UseCase1;
-using Models.UseCases.IncludingUserInteraction.UseCase2;
+using Models.UseCases.IncludingUserInteraction.UseCase3;
 using Radzen;
 using Radzen.Blazor;
 
-namespace GUI_Generator_UseCase2_Interaction.Helpers
+namespace GUI_Generator_UseCase3_Interaction.Helpers
 {
-    public class DefaultElementVisitor : ISpecificationElementVisitor<PersonalDetails>
+    public class DefaultElementVisitor : ISpecificationElementVisitor<EditToolBox>
     {
-        private PersonalDetails? concreteData;
-        private DeviceModel<PersonalDetails>? deviceModel;
+        private EditToolBox? concreteData;
+        private DeviceModel<EditToolBox>? deviceModel;
 
-        public void SetData(PersonalDetails data)
+        public void SetData(EditToolBox data)
         {
             concreteData = data;
         }
 
-        public void SetDeviceModel(DeviceModel<PersonalDetails> deviceModel)
+        public void SetDeviceModel(DeviceModel<EditToolBox> deviceModel)
         {
             this.deviceModel = deviceModel;
         }
 
-        public RenderFragment Visit(StringElementType<PersonalDetails> element)
+        public RenderFragment Visit(StringElementType<EditToolBox> element)
         {
             CheckReferences();
             // Sollte hier noch ein callback einbauen das einen geänderten Wert zurückschreibt
@@ -37,7 +36,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return BuildRenderTree(property, element);
         }
 
-        public RenderFragment Visit(FloatElementType<PersonalDetails> element)
+        public RenderFragment Visit(FloatElementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -46,7 +45,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return BuildRenderTree(property, element);
         }
 
-        public RenderFragment Visit(integerelementType<PersonalDetails> element)
+        public RenderFragment Visit(integerelementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -55,12 +54,12 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return BuildRenderTree(property, element);
         }
 
-        public RenderFragment Visit(DerivativeElementType<PersonalDetails> element)
+        public RenderFragment Visit(DerivativeElementType<EditToolBox> element)
         {
             throw new NotImplementedException();
         }
 
-        public RenderFragment Visit(ActionElementType<PersonalDetails> element)
+        public RenderFragment Visit(ActionElementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -76,7 +75,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             });
         }
 
-        public RenderFragment Visit(BooleanElementType<PersonalDetails> element)
+        public RenderFragment Visit(BooleanElementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -85,7 +84,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return BuildRenderTree(property, element);
         }
 
-        public RenderFragment Visit(ArrayElementType<PersonalDetails> element)
+        public RenderFragment Visit(ArrayElementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -99,7 +98,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return BuildRenderTree(property!, element);
         }
 
-        public RenderFragment Visit(ConditionalElementType<PersonalDetails> element)
+        public RenderFragment Visit(ConditionalElementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -116,7 +115,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             }
         }
 
-        public RenderFragment Visit(ContainerElementType<PersonalDetails> element)
+        public RenderFragment Visit(ContainerElementType<EditToolBox> element)
         {
             CheckReferences();
 
@@ -130,7 +129,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             }
         }
         
-        private RenderFragment GetContainerWithBinding(ContainerElementType<PersonalDetails> element)
+        private RenderFragment GetContainerWithBinding(ContainerElementType<EditToolBox> element)
         {
             var containerProperty = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
             var containerInstance = containerProperty.GetValue(concreteData);
@@ -154,7 +153,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             });
         }
 
-        private RenderFragment GetContainerWithoutBinding(ContainerElementType<PersonalDetails> element)
+        private RenderFragment GetContainerWithoutBinding(ContainerElementType<EditToolBox> element)
         {
             var contentList = new List<RenderFragment>();
 
@@ -173,7 +172,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             });
         }
 
-        private WidgetBase GetMostAppropriateWidget(InterfaceElementType<PersonalDetails> element)
+        private WidgetBase GetMostAppropriateWidget(InterfaceElementType<EditToolBox> element)
         {
             int currentHigh = -1;
             WidgetBase? currentWidget = null;
@@ -192,7 +191,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return currentWidget ?? throw new ArgumentException(nameof(element), $"No widget could be found for the specified element: {element}");
         }
 
-        private RenderFragment BuildRenderTree(PropertyInfo property, InterfaceElementType<PersonalDetails> element, object? accessorInstance = null)
+        private RenderFragment BuildRenderTree(PropertyInfo property, InterfaceElementType<EditToolBox> element, object? accessorInstance = null)
         {
             var widget = this.GetMostAppropriateWidget(element);
             var value = property.GetValue(accessorInstance ?? concreteData);

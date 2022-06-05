@@ -1,12 +1,12 @@
 ﻿using System.Xml.Linq;
 using System.Xml;
 using GeneratorSharedComponents.Abstractions;
-using Models.UseCases.IncludingUserInteraction.UseCase2;
 using GeneratorSharedComponents;
+using Models.UseCases.IncludingUserInteraction.UseCase3;
 
-namespace GUI_Generator_UseCase2_Interaction.Helpers
+namespace GUI_Generator_UseCase3_Interaction.Helpers
 {
-    public class XmlConverter : IXMLSpecificationConverter<PersonalDetails>
+    public class XmlConverter : IXMLSpecificationConverter<EditToolBox>
     {
         /// <summary>
         /// Transforms an interface specification from XML to C# objects.
@@ -14,10 +14,10 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
         /// <param name="root"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public IEnumerable<InterfaceSpecificationElement<PersonalDetails>> TransformToElementCollection(XElement root)
+        public IEnumerable<InterfaceSpecificationElement<EditToolBox>> TransformToElementCollection(XElement root)
         {
             var xmlElements = root.Elements().Where(e => e.Parent == root);
-            var interfaceElementCollection = new List<InterfaceSpecificationElement<PersonalDetails>>();
+            var interfaceElementCollection = new List<InterfaceSpecificationElement<EditToolBox>>();
 
             foreach (var item in xmlElements)
             {
@@ -32,7 +32,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             return interfaceElementCollection;
         }
 
-      private InterfaceSpecificationElement<PersonalDetails> TransformXmlNodeToElement(XElement node, XElement root)
+      private InterfaceSpecificationElement<EditToolBox> TransformXmlNodeToElement(XElement node, XElement root)
         {
             var type = node.Attributes().FirstOrDefault(a => a.Name.LocalName.ToLower() == "type")?.Value ?? throw new XmlException($"Could not parse type attribute of node {node}");
 
@@ -59,7 +59,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             }
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseActionType(XElement element, XElement root)
+        private InterfaceSpecificationElement<EditToolBox> ParseActionType(XElement element, XElement root)
         {
             var attributes = element.Attributes();
 
@@ -70,26 +70,26 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
 
             var actionContentElement = TransformXmlNodeToElement(referencedElement, root);
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new ActionElementType<PersonalDetails>(actionContentElement.ElementType, string.Empty, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new ActionElementType<EditToolBox>(actionContentElement.ElementType, string.Empty, label));
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseFloatType(XElement element)
+        private InterfaceSpecificationElement<EditToolBox> ParseFloatType(XElement element)
         {
             var bindingPath = element.Attributes().Single(a => a.Name == "Binding")?.Value ?? throw new ArgumentException(nameof(element), "Element missing Binding attribute");
             var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new FloatElementType<PersonalDetails>(bindingPath, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new FloatElementType<EditToolBox>(bindingPath, label));
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseIntegerType(XElement element)
+        private InterfaceSpecificationElement<EditToolBox> ParseIntegerType(XElement element)
         {
             var bindingPath = element.Attributes().Single(a => a.Name == "Binding")?.Value ?? throw new ArgumentException(nameof(element), "Element missing Binding attribute");
             var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new integerelementType<PersonalDetails>(bindingPath, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new integerelementType<EditToolBox>(bindingPath, label));
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseConditionalType(XElement element, XElement root)
+        private InterfaceSpecificationElement<EditToolBox> ParseConditionalType(XElement element, XElement root)
         {
             var attributes = element.Attributes();
 
@@ -102,10 +102,10 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             XElement conditionElement = root.Descendants().FirstOrDefault(p => p.Name.LocalName == condition) ?? throw new ArgumentException(nameof(condition), $"Conditional element {condition} not found in descendants of root node");
             var conditionBindingPath = conditionElement.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Conditional element reference found, but no conditional binding specified");
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new ConditionalElementType<PersonalDetails>(subElementType, conditionBindingPath, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new ConditionalElementType<EditToolBox>(subElementType, conditionBindingPath, label));
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseContainerType(XElement element, XElement root)
+        private InterfaceSpecificationElement<EditToolBox> ParseContainerType(XElement element, XElement root)
         {
             var attributes = element.Attributes();
 
@@ -113,11 +113,11 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
             var containerContentElements = ParseContainerContents(element, root);
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new ContainerElementType<PersonalDetails>(containerContentElements, binding, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new ContainerElementType<EditToolBox>(containerContentElements, binding, label));
 
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseArrayType(XElement element, XElement root)
+        private InterfaceSpecificationElement<EditToolBox> ParseArrayType(XElement element, XElement root)
         {
             var attributes = element.Attributes();
 
@@ -125,41 +125,41 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
             var containerContentElements = ParseContainerContents(element, root);
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new ArrayElementType<PersonalDetails>(binding, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new ArrayElementType<EditToolBox>(binding, label));
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseBoolType(XElement element)
+        private InterfaceSpecificationElement<EditToolBox> ParseBoolType(XElement element)
         {
             var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
             var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new BooleanElementType<PersonalDetails>(binding, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new BooleanElementType<EditToolBox>(binding, label));
         }
 
-        private InterfaceSpecificationElement<PersonalDetails> ParseStringType(XElement element)
+        private InterfaceSpecificationElement<EditToolBox> ParseStringType(XElement element)
         {
             var binding = element.Attributes().Single(a => a.Name.LocalName.ToLower() == "binding")?.Value ?? throw new ArgumentException(nameof(element), "Binding attribute was not specified in conditional type");
             var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new StringElementType<PersonalDetails>(binding, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new StringElementType<EditToolBox>(binding, label));
         }
 
-        private InterfaceElementType<PersonalDetails> GetSubElementType(string subType, string binding, string? label)
+        private InterfaceElementType<EditToolBox> GetSubElementType(string subType, string binding, string? label)
         {
             switch (subType)
             {
                 case "float":
-                    return new FloatElementType<PersonalDetails>(binding, label);
+                    return new FloatElementType<EditToolBox>(binding, label);
                 case "int":
-                    return new integerelementType<PersonalDetails>(binding, label);
+                    return new integerelementType<EditToolBox>(binding, label);
                 default:
                     throw new ArgumentException(nameof(subType), "Sub type not recognized");
             }
         }
 
-        private IEnumerable<InterfaceSpecificationElement<PersonalDetails>> ParseContainerContents(XElement containerElement, XElement root)
+        private IEnumerable<InterfaceSpecificationElement<EditToolBox>> ParseContainerContents(XElement containerElement, XElement root)
         {
-            List<InterfaceSpecificationElement<PersonalDetails>> result = new List<InterfaceSpecificationElement<PersonalDetails>>();
+            List<InterfaceSpecificationElement<EditToolBox>> result = new List<InterfaceSpecificationElement<EditToolBox>>();
 
             foreach (var item in containerElement.Descendants())
             {

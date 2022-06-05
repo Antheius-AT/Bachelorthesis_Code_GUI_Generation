@@ -11,10 +11,10 @@
 {
 	foreach (var propertyInfo in Details.GetType().GetProperties())
 	{
-		var result = this.GetTypeValueTuple(propertyInfo);
+		var result = this.GetTemplateResult(propertyInfo);
 		var parameters = new Dictionary<string, object>()
 		{
-			{"Data", result.Value},
+			{"Data", result.Value!},
 			{"Label", result.Label},
 		};
 		
@@ -37,7 +37,7 @@
 		}
 	}
 
-	private TemplateResult GetTypeValueTuple(PropertyInfo property)
+	private TemplateResult GetTemplateResult(PropertyInfo property)
 	{
 		var typeMap = new Dictionary<Type, Type>()
 		{

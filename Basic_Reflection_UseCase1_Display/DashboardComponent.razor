@@ -11,10 +11,10 @@
 {
 	@foreach (var item in Model.GetType().GetProperties())
 	{
-		var result = this.GetTypeValueTuple(item);
+		var result = this.GetTemplateResult(item);
 		var parameters = new Dictionary<string, object>()
 		{
-			{"Value", result.Value},
+			{"Value", result.Value!},
 			{"Label", result.Label},
 		};
 
@@ -51,7 +51,7 @@
 		}
 	}
 
-	private TemplateResult GetTypeValueTuple(PropertyInfo property)
+	private TemplateResult GetTemplateResult(PropertyInfo property)
 	{
 		Type[] basics = new Type[]
 			{

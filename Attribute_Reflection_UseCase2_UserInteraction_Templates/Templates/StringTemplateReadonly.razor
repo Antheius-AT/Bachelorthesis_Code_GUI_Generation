@@ -1,13 +1,12 @@
 ﻿@using Models.Metadata
 
 @inherits TemplateBase
-@attribute [Multiline]
-@attribute [Editable]
+@attribute [ReadOnly]
 @attribute [ValueKind(typeof(string))]
 <div class=row>
 	<div class=col-12>
 		@Label:
-		<Radzen.Blazor.RadzenTextArea @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
+		<Radzen.Blazor.RadzenTextBox Disabled @bind-Value=Value></Radzen.Blazor.RadzenTextBox>
 	</div>
 </div>
 

@@ -1,5 +1,6 @@
 ﻿@using Attribute_Reflection_UseCase2_UserInteraction_Templates.Helpers
 @using Attribute_Reflection_UseCase2_UserInteraction_Templates.Templates
+@using Models
 @using Models.Metadata
 @using Models.UseCases.IncludingUserInteraction.UseCase2
 @using System.Reflection
@@ -57,6 +58,7 @@
 	private TemplateResult GetStringTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
 	{
 		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(string)).ToArray();
+		Console.WriteLine(info.Name);
 		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
 		var value = info.GetValue(Details)!;
@@ -67,6 +69,7 @@
 	private TemplateResult GetBoolTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
 	{
 		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(bool)).ToArray();
+		Console.WriteLine(info.Name);
 		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
 		var value = info.GetValue(Details);
@@ -76,6 +79,7 @@
 
 	private TemplateResult GetIntegerTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
 	{
+		Console.WriteLine(info.Name);
 		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(int)).ToArray();
 		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
@@ -88,6 +92,7 @@
 	{
 		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(IEnumerable)).ToArray();
 
+		Console.WriteLine(info.Name);
 		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
 		var value = info.GetValue(Details);
@@ -99,6 +104,7 @@
 	private TemplateResult GetContainerViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
 	{
 		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(object)).ToArray();
+		Console.WriteLine(info.Name);
 
 		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
@@ -110,11 +116,18 @@
 	private Type ApplyFurtherTemplateConstraints(IEnumerable<Type> templates, Attribute[] attributes)
 	{
 		bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
+		bool isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+
 		var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
 
 		if (isEditable)
 		{
 			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();
+		}
+
+		if (isReadOnly)
+		{
+			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(ReadOnlyAttribute))).ToArray();
 		}
 
 		if (stringLengthAttribute != null)

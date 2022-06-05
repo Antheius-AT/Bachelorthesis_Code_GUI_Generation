@@ -1,0 +1,14 @@
+﻿@using Models.Metadata
+
+@inherits TemplateBase
+@attribute [ValueKind(typeof(int))]
+@attribute [Editable]
+
+@Label
+<Radzen.Blazor.RadzenSlider Min="1" Max="10" @bind-Value="Value"></Radzen.Blazor.RadzenSlider>
+@Value
+
+@code {
+	[Parameter]
+	public int Value { get; set; }
+}

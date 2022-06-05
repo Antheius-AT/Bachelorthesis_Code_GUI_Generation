@@ -1,7 +1,6 @@
 ﻿@using Models.Metadata
 @inherits TemplateBase
 @attribute [ValueKind(typeof(object))]
-@attribute [Editable]
 
 @if (Value != null)
 {
@@ -16,7 +15,4 @@
 @code {
     [Parameter]
     public object? Value{ get; set; }
-
-    [Parameter]
-    public string? Label{ get; set; }
 }

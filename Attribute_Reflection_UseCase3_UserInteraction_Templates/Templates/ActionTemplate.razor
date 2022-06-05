@@ -1,0 +1,15 @@
+﻿@using Models.Metadata
+@inherits TemplateBase
+
+@attribute [ValueKind(typeof(Action))]
+@attribute [Editable]
+
+@if (Value != null)
+{
+    <RadzenButton Click="Value" Text="@Label"></RadzenButton>
+}
+
+@code {
+    [Parameter]
+    public Action? Value { get; set; }
+}

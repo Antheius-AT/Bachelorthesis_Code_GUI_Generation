@@ -1,0 +1,14 @@
+﻿@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+@inherits TemplateBase
+
+@attribute [Editable]
+@attribute [ValueKind(typeof(Enum))]
+
+@Label
+<Radzen.Blazor.RadzenDropDown TValue="Tools" @bind-Value=Value Data="Enum.GetNames<Tools>()"></Radzen.Blazor.RadzenDropDown>
+
+@code {
+    [Parameter]
+    public Tools Value { get; set; }
+}

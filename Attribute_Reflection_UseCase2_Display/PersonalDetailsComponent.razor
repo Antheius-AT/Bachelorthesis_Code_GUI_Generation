@@ -1,5 +1,6 @@
 ﻿@using Attribute_Reflection_UseCase1_Display_Templates.Helpers
 @using Attribute_Reflection_UseCase2_Display_Templates.Templates
+@using Models
 @using Models.Metadata
 @using Models.UseCases.DisplayOnly.UseCase2
 @using System.Reflection
@@ -25,6 +26,17 @@
 @code {
 	[Parameter]
 	public PersonalDetails? Details { get; set; }
+
+	[Parameter]
+	public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			PerformanceMonitor!.Stop();
+		}
+	}
 
 	private TemplateResult DecideTemplate(PropertyInfo info)
 	{
@@ -110,11 +122,18 @@
 	private Type ApplyFurtherTemplateConstraints(IEnumerable<Type> templates, Attribute[] attributes)
 	{
 		bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
+		bool isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+
 		var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
 
 		if (isEditable)
 		{
 			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();
+		}
+
+		if (isReadOnly)
+		{
+			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(ReadOnlyAttribute))).ToArray();
 		}
 
 		if (stringLengthAttribute != null)

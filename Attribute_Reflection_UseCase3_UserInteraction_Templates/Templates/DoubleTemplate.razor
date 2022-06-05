@@ -2,7 +2,6 @@
 
 @inherits TemplateBase
 @attribute [ValueKind(typeof(double))]
-@attribute [ReadOnly]
 
 <div class=row>
 	<div class=col-12>
@@ -12,9 +11,6 @@
 </div>
 
 @code {
-	[Parameter]
-	public string? Label { get; set; }
-
 	[Parameter]
 	public double Value { get; set; }
 }

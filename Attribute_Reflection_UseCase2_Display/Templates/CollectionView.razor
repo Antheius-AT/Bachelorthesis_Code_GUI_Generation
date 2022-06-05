@@ -3,6 +3,7 @@
 
 @inherits TemplateBase
 @attribute [ValueKind(typeof(IEnumerable))]
+@attribute [ReadOnly]
 
 @if (Value != null && Value.Any())
 {

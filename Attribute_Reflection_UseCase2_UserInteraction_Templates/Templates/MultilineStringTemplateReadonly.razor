@@ -2,12 +2,12 @@
 
 @inherits TemplateBase
 @attribute [Multiline]
-@attribute [Editable]
+@attribute [ReadOnly]
 @attribute [ValueKind(typeof(string))]
 <div class=row>
 	<div class=col-12>
 		@Label:
-		<Radzen.Blazor.RadzenTextArea @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
+		<Radzen.Blazor.RadzenTextArea Disabled @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
 	</div>
 </div>
 

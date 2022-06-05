@@ -3,7 +3,6 @@
 
 @inherits TemplateBase
 @attribute [ValueKind(typeof(IEnumerable))]
-@attribute [Editable]
 
 @if (Value != null && Value.Any())
 {
@@ -37,7 +36,4 @@
 @code {
 	[Parameter]
 	public IEnumerable<object>? Value { get; set; }
-
-	[Parameter]
-	public string? Label { get; set; }
 }

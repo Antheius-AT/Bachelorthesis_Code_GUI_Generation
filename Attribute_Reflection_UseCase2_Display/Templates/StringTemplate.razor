@@ -6,7 +6,7 @@
 <div class=row>
 	<div class=col-12>
 		@Label:
-		<Radzen.Blazor.RadzenTextBox Disabled ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
+		<Radzen.Blazor.RadzenTextBox @bind-Value="Value"></Radzen.Blazor.RadzenTextBox>
 	</div>
 </div>
 
@@ -16,9 +16,4 @@
 
 	[Parameter]
 	public string? Value { get; set; }
-
-	private void HandleValueChanged(string newValue)
-	{
-		this.Value = newValue;
-	}
 }

@@ -14,7 +14,6 @@
     foreach (var item in Details.GetType().GetProperties())
     {
         @GetRenderFragment(item, Details)
-        ;
     }
 
     if (Details.GetType().GetProperties().Any(p => p.GetCustomAttributes().Any(m => m.GetType() == typeof(EditableAttribute))))

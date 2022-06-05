@@ -1,0 +1,93 @@
+﻿@using Models
+@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase2
+@using System.Collections
+@using System.Reflection
+@using Radzen
+
+@inject DialogService DialogService
+
+@if (Details != null)
+{
+    foreach (var item in Details.GetType().GetProperties())
+    {
+        @GetRenderFragment(item, Details)
+    }
+}
+
+@code {
+    [Parameter]
+    public PersonalDetails? Details { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+
+    private RenderFragment GetRenderFragment(PropertyInfo info, object instance)
+    {
+        if (info.PropertyType == typeof(int))
+        {
+            return GetIntegerRenderFragment(info, instance);
+        }
+        else
+        {
+            return GetActionTypeFragment(info, instance);
+        }
+    }
+
+    private RenderFragment GetIntegerRenderFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<int>(info, instance);
+        var attributes = info.GetCustomAttributes();
+
+        var isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+
+        if (isReadOnly)
+        {
+            throw new NotImplementedException("Readonly properties not supported");
+        }
+        else
+        {
+            return new RenderFragment(
+        @<div class=col-6>@info.Name <Radzen.Blazor.RadzenNumeric Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
+    );
+        }
+    }
+
+    private RenderFragment GetActionTypeFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<Action>(info, instance);
+
+        return new RenderFragment(
+    @<div><RadzenButton Click="value" Text="@info.Name"></RadzenButton></div>
+    );
+    }
+
+    private TOutput GetPropertyValue<TOutput>(PropertyInfo property, object instance)
+    {
+        if (property.PropertyType != typeof(TOutput))
+        {
+            throw new ArgumentException(nameof(property), "Property type did not match generic type parameter");
+        }
+
+        return (TOutput)property.GetValue(instance)!;
+    }
+
+    private void ValueChanged(int newValue, PropertyInfo info, object instance)
+    {
+        info.SetValue(instance, newValue);
+
+        if (instance.GetType() != typeof(PersonalDetails))
+        {
+            var upperLevelProperty = this.Details!.GetType().GetProperties().First(p => p.PropertyType == instance.GetType());
+            upperLevelProperty.SetValue(Details, instance);
+        }
+    }
+    }

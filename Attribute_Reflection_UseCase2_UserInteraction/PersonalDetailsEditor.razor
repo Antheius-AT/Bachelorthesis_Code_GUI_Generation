@@ -66,13 +66,13 @@
         <div>
             <div class=row>
                 @foreach (var item in nonBasicTypeProperty.PropertyType.GetProperties())
-                    {
+                {
                         <div class="col-12 col-lg-6">@GetRenderFragment(item, instance!)</div>
-                    }
+                }
                 </div>
             </div>
         </Radzen.Blazor.RadzenCard>
-    );
+        );
     }
 
     private RenderFragment GetStringRenderFragment(PropertyInfo info, object instance)
@@ -94,13 +94,13 @@
             {
                 return new RenderFragment(
     @<div>@info.Name <RadzenTextBox class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextBox></div>
-          );
+      );
             }
             else
             {
                 return new RenderFragment(
-        @<div>@info.Name <RadzenTextArea class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextArea></div>
-    );
+    @<div>@info.Name <RadzenTextArea class="mt-3" Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) Placeholder=@info.Name></RadzenTextArea></div>
+        );
             }
         }
     }
@@ -120,7 +120,7 @@
         {
             return new RenderFragment(
     @<div class=col-6>@info.Name <Radzen.Blazor.RadzenNumeric Value="@value" ValueChanged=@((val) => ValueChanged(val, info, instance)) class=mt-3 TValue=int></Radzen.Blazor.RadzenNumeric></div>
-        );
+    );
         }
     }
 
@@ -128,8 +128,8 @@
     {
         // View is borrowed for demonstration and confirmation that changes were made to object.
         await DialogService.OpenAsync("Successfully saved in database", ds =>
-        @<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
-    );
+    @<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+        );
     }
 
     private TOutput GetPropertyValue<TOutput>(PropertyInfo property, object instance)
@@ -184,10 +184,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        @foreach (var property in value.First().GetType().GetProperties())
+                        @foreach (var property in value.FirstOrDefault()?.GetType().GetProperties() ?? Enumerable.Empty<PropertyInfo>())
                         {
                                 <th>@property.Name</th>
                         }
+
+                        <th>Aktion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,12 +202,30 @@
                                         @property.GetValue(item)
                                     </td>
                             }
+
+                            <td><RadzenButton Text="Delete entry" Click="() => DeleteEntry(item, info, instance)"></RadzenButton></td>
                             </tr>
                     }
                     </tbody>
                 </table>
+
+                <RadzenButton Click="@(() => AddEntry(info, instance))" Text="Add entry"></RadzenButton>
             </div>
         </RadzenCard>
     );
+    }
+
+    private void DeleteEntry(object entry, PropertyInfo propertyInfo, object accessorInstance)
+    {
+        var collection = propertyInfo.GetValue(accessorInstance) as List<JobEducation> ?? throw new ArgumentException(nameof(propertyInfo), "Property must be an enumerable type");
+
+        propertyInfo.SetValue(accessorInstance, collection.Where(p => p != entry).ToList());
+    }
+
+    private void AddEntry(PropertyInfo propertyInfo, object accessorInstance)
+    {
+        var collection = propertyInfo.GetValue(accessorInstance) as List<JobEducation> ?? throw new ArgumentException(nameof(propertyInfo), "Property must be an enumerable type");
+
+        collection.Add(new JobEducation() { InstitutionName = "Test Add button", Duration = 5 });
     }
     }

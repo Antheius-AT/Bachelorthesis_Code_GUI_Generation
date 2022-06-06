@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.Metadata.Wellknown
 {
-    public class AuthenticationFormAttribute : WellKnownAttribute
+    public class ImageEditorAttribute : WellKnownAttribute
     {
     }
 }

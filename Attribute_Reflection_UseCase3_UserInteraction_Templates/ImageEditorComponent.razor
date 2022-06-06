@@ -1,4 +1,5 @@
-﻿@using Attribute_Reflection_UseCase3_UserInteraction_Templates.Helpers
+﻿@using Attribute_Reflection_UseCase3_UserInteraction_RenderFragment.Helpers
+@using Attribute_Reflection_UseCase3_UserInteraction_Templates.Helpers
 @using Attribute_Reflection_UseCase3_UserInteraction_Templates.Templates
 @using Models
 @using Models.Metadata
@@ -18,7 +19,6 @@
         };        
         
         <DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
-        <br />
     }
 }
 
@@ -39,86 +39,15 @@
 
     private TemplateResult DecideTemplate(PropertyInfo info)
     {
-        var asm = Assembly.GetExecutingAssembly();
-        var templates = asm.GetTypes().Where(t => typeof(TemplateBase).IsAssignableFrom(t)).ToArray();
-        var attributes = info.GetCustomAttributes().ToArray();
-
-        if (info.PropertyType == typeof(int))
-        {
-            return GetIntegerTemplate(templates, attributes, info);
-        }
-        else if (info.PropertyType == typeof(Action))
-        {
-            return GetActionTemplate(templates, attributes, info);
-        }
-        else
-        {
-            return GetEnumerationTemplate(templates, attributes, info);
-        }
+        return GetTemplate(info);
     }
 
-    private TemplateResult GetIntegerTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+    private TemplateResult GetTemplate(PropertyInfo info)
     {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(int)).ToArray();
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
+        var predefinedTemplate = WellKnownStyles.ImageEditorStyles[info.PropertyType];
 
         var value = info.GetValue(ToolBox);
 
-        return new TemplateResult(template, value!, info.Name);
-    }
-
-    private TemplateResult GetActionTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(Action)).ToArray();
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
-
-        var value = info.GetValue(ToolBox);
-
-        return new TemplateResult(template, value!, info.Name);
-
-    }
-
-    private TemplateResult GetEnumerationTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(Enum)).ToArray();
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
-
-        var value = info.GetValue(ToolBox);
-
-        return new TemplateResult(template, value!, info.Name);
-    }
-
-    private Type ApplyFurtherTemplateConstraints(IEnumerable<Type> templates, Attribute[] attributes)
-    {
-        bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
-        var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
-
-        if (isEditable)
-        {
-            templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();
-        }
-
-        if (stringLengthAttribute != null)
-        {
-            if (stringLengthAttribute.MaxLength > 49)
-            {
-                templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
-            }
-            else
-            {
-                templates = templates.Where(t => !t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
-            }
-        }
-
-        if (templates.Count() > 1)
-        {
-            throw new InvalidOperationException("Constraints not specific enough. Could not map to single template");
-        }
-        else if (!templates.Any())
-        {
-            throw new InvalidOperationException("No matching template found.");
-        }
-
-        return templates.First();
+        return new TemplateResult(predefinedTemplate, value!, info.Name);
     }
 }

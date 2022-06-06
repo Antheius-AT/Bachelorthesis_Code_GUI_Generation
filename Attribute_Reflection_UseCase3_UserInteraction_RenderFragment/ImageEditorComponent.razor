@@ -1,23 +1,21 @@
 ﻿@using Models
 @using Models.Metadata
-@using Models.UseCases.IncludingUserInteraction.UseCase2
+@using Models.UseCases.IncludingUserInteraction.UseCase3
 @using System.Collections
 @using System.Reflection
 @using Radzen
 
-@inject DialogService DialogService
-
-@if (Details != null)
+@if (EditTools != null)
 {
-    foreach (var item in Details.GetType().GetProperties())
+    foreach (var item in EditTools.GetType().GetProperties())
     {
-        @GetRenderFragment(item, Details)
+        @GetRenderFragment(item, EditTools)
     }
 }
 
 @code {
     [Parameter]
-    public PersonalDetails? Details { get; set; }
+    public EditToolBox? EditTools { get; set; }
 
     [Parameter]
     public PerformanceMonitor? PerformanceMonitor { get; set; }
@@ -78,16 +76,5 @@
         }
 
         return (TOutput)property.GetValue(instance)!;
-    }
-
-    private void ValueChanged(int newValue, PropertyInfo info, object instance)
-    {
-        info.SetValue(instance, newValue);
-
-        if (instance.GetType() != typeof(PersonalDetails))
-        {
-            var upperLevelProperty = this.Details!.GetType().GetProperties().First(p => p.PropertyType == instance.GetType());
-            upperLevelProperty.SetValue(Details, instance);
-        }
     }
     }

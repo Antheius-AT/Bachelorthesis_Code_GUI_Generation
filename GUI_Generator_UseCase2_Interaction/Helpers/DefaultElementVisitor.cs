@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Reflection;
+﻿using System.Reflection;
 using GeneratorSharedComponents;
 using GeneratorSharedComponents.Abstractions;
 using GUI_Generator_UseCase2_Interaction.Widgets;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Models.UseCases.IncludingUserInteraction.UseCase1;
 using Models.UseCases.IncludingUserInteraction.UseCase2;
-using Radzen;
-using Radzen.Blazor;
 
 namespace GUI_Generator_UseCase2_Interaction.Helpers
 {
@@ -16,6 +12,12 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
     {
         private PersonalDetails? concreteData;
         private DeviceModel<PersonalDetails>? deviceModel;
+        private readonly IJSRuntime jsRuntime;
+
+        public DefaultElementVisitor(IJSRuntime jsRuntime)
+        {
+            this.jsRuntime = jsRuntime;
+        }
 
         public void SetData(PersonalDetails data)
         {
@@ -30,8 +32,7 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
         public RenderFragment Visit(StringElementType<PersonalDetails> element)
         {
             CheckReferences();
-            // Sollte hier noch ein callback einbauen das einen geänderten Wert zurückschreibt
-            // aber nur für controls die auch editiert werden können.
+
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
 
             return BuildRenderTree(property, element);
@@ -64,14 +65,14 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
         {
             CheckReferences();
 
-            var actionTypeFragment = element.ActionType.Accept(this);
+            var actionTypeFragment = element.ActionType?.Accept(this);
 
             return new RenderFragment(builder =>
             {
                 builder.AddContent(10, actionTypeFragment);
                 builder.OpenComponent(15, typeof(ActionButtonWidget));
                 builder.AddAttribute(20, "Label", element.Label);
-                builder.AddAttribute(30, "Action", EventCallback.Factory.Create(this, () => throw new Exception()));
+                builder.AddAttribute(30, "Action", EventCallback.Factory.Create(this, () => SaveCommand()));
                 builder.CloseComponent();
             });
         }
@@ -224,6 +225,19 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
         private void SetValue(PropertyInfo property, object accessorInstance, ValueChangedArgs args)
         {
             property.SetValue(accessorInstance, args.Value);
+        }
+
+        private void SaveCommand()
+        {
+            jsRuntime.InvokeVoidAsync("alert", $"Successfully saved:\nCurrent data: " +
+                $"{concreteData!.FirstName}\n" +
+                $" {concreteData.LastName}\n" +
+                $"{concreteData.Gender}\n" +
+                $"{concreteData.Age}\n" +
+                $"{concreteData.Address.Street}\n" +
+                $"{concreteData.Address.ZipCode} \n" +
+                $"{concreteData.Address.City} \n" +
+                $"{concreteData.Address.HouseNumber} \n");
         }
     }
 }

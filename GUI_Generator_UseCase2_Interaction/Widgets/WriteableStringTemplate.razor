@@ -5,8 +5,27 @@
 @attribute [Editable]
 @attribute [ValueKind(typeof(string))]
 
+<span>@Label: </span>
 <Radzen.Blazor.RadzenTextBox @bind-Value="Value"></Radzen.Blazor.RadzenTextBox>
 @code {
+	private string? value;
+
 	[Parameter]
-	public string? Value { get; set; }
+	public string? Value
+	{
+		get
+		{
+			return value;
+		}
+
+		set
+		{
+			this.value = value;
+
+			if (ValueChanged.HasDelegate)
+			{
+				ValueChanged.InvokeAsync(new ValueChangedArgs(value));	
+			}
+		}
+	}
 }

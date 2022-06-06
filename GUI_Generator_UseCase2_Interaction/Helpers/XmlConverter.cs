@@ -66,11 +66,16 @@ namespace GUI_Generator_UseCase2_Interaction.Helpers
             var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
             var typeRef = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "actiontyperef")?.Value ?? throw new ArgumentException(nameof(element), "Action element requires an action type ref to another element");
 
-            var referencedElement = root.Descendants().SingleOrDefault(e => e.Attributes().Any(a => a.Name.LocalName.ToLower() == "name" && a.Value == typeRef)) ?? throw new ArgumentException(nameof(root), "Root element did not contain element that action reference was pointing to");
+            var referencedElement = root.DescendantsAndSelf().SingleOrDefault(e => e.Attributes().Any(a => a.Name.LocalName.ToLower() == "name" && a.Value == typeRef)) ?? throw new ArgumentException(nameof(root), "Root element did not contain element that action reference was pointing to");
 
-            var actionContentElement = TransformXmlNodeToElement(referencedElement, root);
+            InterfaceSpecificationElement<PersonalDetails>? actionContentElement = null;
 
-            return new InterfaceSpecificationElement<PersonalDetails>(new ActionElementType<PersonalDetails>(actionContentElement.ElementType, string.Empty, label));
+            if (referencedElement != root)
+            {
+                actionContentElement = TransformXmlNodeToElement(referencedElement, root);
+            }
+
+            return new InterfaceSpecificationElement<PersonalDetails>(new ActionElementType<PersonalDetails>(actionContentElement?.ElementType, string.Empty, label));
         }
 
         private InterfaceSpecificationElement<PersonalDetails> ParseFloatType(XElement element)

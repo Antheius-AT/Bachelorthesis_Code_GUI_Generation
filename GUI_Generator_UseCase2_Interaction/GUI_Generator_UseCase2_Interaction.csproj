@@ -16,4 +16,10 @@
     <ProjectReference Include="..\GeneratorAbstractions\GeneratorSharedComponents.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Widgets\WriteableStringTemplate.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
 </Project>

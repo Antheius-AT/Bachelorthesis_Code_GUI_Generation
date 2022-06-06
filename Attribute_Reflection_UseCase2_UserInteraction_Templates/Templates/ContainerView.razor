@@ -15,7 +15,7 @@
 
                 <div class="col-12 col-lg-6">
                     @item.Name
-                    <RadzenTextBox ValueChanged="(val) => HandleValueChanged(val, item, Value)" Placeholder="@item.Name"></RadzenTextBox>
+                    <RadzenTextBox Value="@item.GetValue(Value)!.ToString()" ValueChanged="(val) => HandleValueChanged(val, item, Value)" Placeholder="@item.Name"></RadzenTextBox>
                 </div>
             }
         </div>
@@ -29,7 +29,6 @@
 
     private void HandleValueChanged(object value, PropertyInfo info, object instance)
     {
-        Console.WriteLine("value change");
         Value = value;
 
         if (ValueChanged.HasDelegate)

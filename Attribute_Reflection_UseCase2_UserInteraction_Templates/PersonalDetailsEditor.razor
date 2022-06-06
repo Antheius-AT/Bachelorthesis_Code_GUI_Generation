@@ -11,195 +11,178 @@
 
 @if (Details != null)
 {
-    foreach (var item in Details.GetType().GetProperties())
-    {
-        TemplateResult template = DecideTemplate(item);
-        var parameters = new Dictionary<string, object>()
-        {
-            {"Value", template.Value},
-            {"Label", template.Label},
-            {"ValueChanged", EventCallback.Factory.Create<ValueChangedArguments>(this, ValueChanged)},
-            {"PropertyInfo", item},
-            {"AccessorInstance", template.Value.GetType() == typeof(Address) ? template.Value : Details}
-        };
+	foreach (var item in Details.GetType().GetProperties())
+	{
+		TemplateResult template = DecideTemplate(item);
+		var parameters = new Dictionary<string, object>()
+		{
+			{"Value", template.Value},
+			{"Label", template.Label},
+			{"ValueChanged", EventCallback.Factory.Create<ValueChangedArguments>(this, ValueChanged)},
+			{"PropertyInfo", item},
+			{"AccessorInstance", template.Value.GetType() == typeof(Address) ? template.Value : Details}
+		};
 
-        <DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
-    }
+		<DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
+	}
 
-    if (Details.GetType().GetProperties().Any(p => p.GetCustomAttributes().Any(m => m.GetType() == typeof(EditableAttribute))))
-    {
-        <Radzen.Blazor.RadzenButton class=mt-3 Text=Save Click=this.SaveData></Radzen.Blazor.RadzenButton>
-    }
+	if (Details.GetType().GetProperties().Any(p => p.GetCustomAttributes().Any(m => m.GetType() == typeof(EditableAttribute))))
+	{
+		<Radzen.Blazor.RadzenButton class=mt-3 Text=Save Click=this.SaveData></Radzen.Blazor.RadzenButton>
+	}
 }
 
 @code {
-    [Parameter]
-    public PersonalDetails? Details { get; set; }
+	[Parameter]
+	public PersonalDetails? Details { get; set; }
 
-    [Parameter]
-    public PerformanceMonitor? PerformanceMonitor { get; set; }
+	[Parameter]
+	public PerformanceMonitor? PerformanceMonitor { get; set; }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            PerformanceMonitor!.Stop();
-        }
-    }
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if (firstRender)
+		{
+			PerformanceMonitor!.Stop();
+		}
+	}
 
-    private TemplateResult DecideTemplate(PropertyInfo info)
-    {
-        var asm = Assembly.GetExecutingAssembly();
-        var templates = asm.GetTypes().Where(t => typeof(TemplateBase).IsAssignableFrom(t)).ToArray();
-        var attributes = info.GetCustomAttributes().ToArray();
+	private TemplateResult DecideTemplate(PropertyInfo info)
+	{
+		var asm = Assembly.GetExecutingAssembly();
+		var templates = asm.GetTypes().Where(t => typeof(TemplateBase).IsAssignableFrom(t)).ToArray();
+		var attributes = info.GetCustomAttributes().ToArray();
 
-        if (info.PropertyType == typeof(int))
-        {
-            return GetIntegerTemplate(templates, attributes, info);
-        }
-        else if (info.PropertyType == typeof(bool))
-        {
-            return GetBoolTemplate(templates, attributes, info);
-        }
-        else if (info.PropertyType == typeof(string))
-        {
-            return GetStringTemplate(templates, attributes, info);
-        }
-        else if (info.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
-        {
-            return GetCollectionViewTemplate(templates, attributes, info);
-        }
-        else
-        {
-            return GetContainerViewTemplate(templates, attributes, info);
-        }
-    }
+		if (info.PropertyType == typeof(int))
+		{
+			return GetIntegerTemplate(templates, attributes, info);
+		}
+		else if (info.PropertyType == typeof(bool))
+		{
+			return GetBoolTemplate(templates, attributes, info);
+		}
+		else if (info.PropertyType == typeof(string))
+		{
+			return GetStringTemplate(templates, attributes, info);
+		}
+		else if (info.PropertyType.GetInterfaces().Any(p => p.IsAssignableTo(typeof(IEnumerable))))
+		{
+			return GetCollectionViewTemplate(templates, attributes, info);
+		}
+		else
+		{
+			return GetContainerViewTemplate(templates, attributes, info);
+		}
+	}
 
-    private TemplateResult GetStringTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(string)).ToArray();
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
+	private TemplateResult GetStringTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(string)).ToArray();
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
-        var value = info.GetValue(Details)!;
+		var value = info.GetValue(Details)!;
 
-        return new TemplateResult(template, value, info.Name);
-    }
+		return new TemplateResult(template, value, info.Name);
+	}
 
-    private TemplateResult GetBoolTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(bool)).ToArray();
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
+	private TemplateResult GetBoolTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(bool)).ToArray();
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
-        var value = info.GetValue(Details);
+		var value = info.GetValue(Details);
 
-        return new TemplateResult(template, Convert.ToBoolean(value), info.Name);
-    }
+		return new TemplateResult(template, Convert.ToBoolean(value), info.Name);
+	}
 
-    private TemplateResult GetIntegerTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(int)).ToArray();
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
+	private TemplateResult GetIntegerTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(int)).ToArray();
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
-        var value = info.GetValue(Details);
+		var value = info.GetValue(Details);
 
-        return new TemplateResult(template, value!, info.Name);
-    }
+		return new TemplateResult(template, value!, info.Name);
+	}
 
-    private TemplateResult GetCollectionViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(IEnumerable)).ToArray();
+	private TemplateResult GetCollectionViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(IEnumerable)).ToArray();
 
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
-        var value = info.GetValue(Details);
+		var value = info.GetValue(Details);
 
-        return new TemplateResult(template, value!, info.Name);
+		return new TemplateResult(template, value!, info.Name);
 
-    }
+	}
 
-    private TemplateResult GetContainerViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
-    {
-        templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(object)).ToArray();
+	private TemplateResult GetContainerViewTemplate(IEnumerable<Type> templates, Attribute[] attributes, PropertyInfo info)
+	{
+		templates = templates.Where(t => t.GetCustomAttribute<ValueKindAttribute>()?.ValueKind == typeof(object)).ToArray();
 
-        var template = ApplyFurtherTemplateConstraints(templates, attributes);
+		var template = ApplyFurtherTemplateConstraints(templates, attributes);
 
-        var value = info.GetValue(Details);
+		var value = info.GetValue(Details);
 
-        return new TemplateResult(template, value!, info.Name);
-    }
+		return new TemplateResult(template, value!, info.Name);
+	}
 
-    private Type ApplyFurtherTemplateConstraints(IEnumerable<Type> templates, Attribute[] attributes)
-    {
-        bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
-        bool isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
+	private Type ApplyFurtherTemplateConstraints(IEnumerable<Type> templates, Attribute[] attributes)
+	{
+		bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
+		bool isReadOnly = attributes.Any(a => a.GetType() == typeof(ReadOnlyAttribute));
 
-        var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
+		var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
 
-        if (isEditable)
-        {
-            templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();
-        }
+		if (isEditable)
+		{
+			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();
+		}
 
-        if (isReadOnly)
-        {
-            templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(ReadOnlyAttribute))).ToArray();
-        }
+		if (isReadOnly)
+		{
+			templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(ReadOnlyAttribute))).ToArray();
+		}
 
-        if (stringLengthAttribute != null)
-        {
-            if (stringLengthAttribute.MaxLength > 49)
-            {
-                templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
-            }
-            else
-            {
-                templates = templates.Where(t => !t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
-            }
-        }
+		if (stringLengthAttribute != null)
+		{
+			if (stringLengthAttribute.MaxLength > 49)
+			{
+				templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
+			}
+			else
+			{
+				templates = templates.Where(t => !t.GetCustomAttributes().Any(a => a.GetType() == typeof(MultilineAttribute))).ToArray();
+			}
+		}
 
-        if (templates.Count() > 1)
-        {
-            throw new InvalidOperationException("Constraints not specific enough. Could not map to single template");
-        }
-        else if (!templates.Any())
-        {
-            throw new InvalidOperationException("No matching template found.");
-        }
+		if (templates.Count() > 1)
+		{
+			throw new InvalidOperationException("Constraints not specific enough. Could not map to single template");
+		}
+		else if (!templates.Any())
+		{
+			throw new InvalidOperationException("No matching template found.");
+		}
 
-        return templates.First();
-    }
+		return templates.First();
+	}
 
-    private async Task SaveData()
-    {
-        // View is borrowed for demonstration and confirmation that changes were made to object.
-        await DialogService.OpenAsync("Successfully saved in database", ds =>
-    @<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
-    );
-    }
+	private async Task SaveData()
+	{
+		// View is borrowed for demonstration and confirmation that changes were made to object.
+		await DialogService.OpenAsync("Successfully saved in database", ds =>
+	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+	);
+	}
 
-    private TOutput GetPropertyValue<TOutput>(PropertyInfo property, object instance)
-    {
-        if (property.PropertyType != typeof(TOutput))
-        {
-            throw new ArgumentException(nameof(property), "Property type did not match generic type parameter");
-        }
+	private void ValueChanged(ValueChangedArguments arguments)
+	{
+		var info = arguments.SourceProperty;
+		var instance = arguments.AccessorInstance;
+		var newValue = arguments.Value;
 
-        return (TOutput)property.GetValue(instance)!;
-    }
-
-    private void ValueChanged(ValueChangedArguments arguments)
-    {
-        var info = arguments.SourceProperty;
-        var instance = arguments.AccessorInstance;
-        var newValue = arguments.Value;
-
-        if (instance!.GetType() != typeof(PersonalDetails))
-        {
-            Details!.Address.GetType().GetProperties().Single(p => p.Name == info.Name).SetValue(newValue, Details.Address);
-        }
-        else
-        {
-            Details!.GetType().GetProperties().Single(p => p.Name == info.Name).SetValue(newValue, Details);
-        }
-    }
+		info.SetValue(instance, newValue);
+	}
 }

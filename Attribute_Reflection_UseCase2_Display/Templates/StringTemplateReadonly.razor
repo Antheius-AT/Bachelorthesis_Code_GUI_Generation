@@ -3,12 +3,9 @@
 @inherits TemplateBase
 @attribute [ReadOnly]
 @attribute [ValueKind(typeof(string))]
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenTextBox Disabled @bind-Value=Value></Radzen.Blazor.RadzenTextBox>
-	</div>
-</div>
+
+@Label:
+<Radzen.Blazor.RadzenTextBox Disabled @bind-Value=Value></Radzen.Blazor.RadzenTextBox>
 
 @code {
 	[Parameter]

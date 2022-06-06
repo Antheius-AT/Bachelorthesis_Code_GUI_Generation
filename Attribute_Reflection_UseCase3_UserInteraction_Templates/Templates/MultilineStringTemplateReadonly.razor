@@ -4,17 +4,11 @@
 @attribute [Multiline]
 @attribute [ReadOnly]
 @attribute [ValueKind(typeof(string))]
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenTextArea @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
-	</div>
-</div>
+
+@Label:
+<Radzen.Blazor.RadzenTextArea @bind-Value=Value></Radzen.Blazor.RadzenTextArea>
 
 @code {
-	[Parameter]
-	public string? Label { get; set; }
-
 	[Parameter]
 	public string? Value { get; set; }
 }

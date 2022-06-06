@@ -2,12 +2,8 @@
 @inherits TemplateBase
 @attribute [ValueKind(typeof(int))]
 
-    <div class=row>
-        <div class=col-12>
-            @Label:
-            <Radzen.Blazor.RadzenNumeric Disabled @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
-        </div>
-    </div>
+@Label:
+<Radzen.Blazor.RadzenNumeric Disabled @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
 
 @code {
     [Parameter]

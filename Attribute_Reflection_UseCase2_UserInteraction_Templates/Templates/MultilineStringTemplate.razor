@@ -5,12 +5,9 @@
 @attribute [Multiline]
 @attribute [Editable]
 @attribute [ValueKind(typeof(string))]
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenTextArea Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)"></Radzen.Blazor.RadzenTextArea>
-	</div>
-</div>
+
+@Label:
+<Radzen.Blazor.RadzenTextArea Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)"></Radzen.Blazor.RadzenTextArea>
 
 @code {
 	[Parameter]

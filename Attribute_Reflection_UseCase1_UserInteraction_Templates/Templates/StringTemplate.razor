@@ -1,26 +1,24 @@
-﻿@using Models.Metadata
+﻿@using Attribute_Reflection_UseCase1_UserInteraction_Templates.Helpers
+@using Models.Metadata
 
 @inherits TemplateBase
 @attribute [Editable]
 @attribute [StringLength(20)]
 
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenTextBox ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
-	</div>
-</div>
+@Label:
+<Radzen.Blazor.RadzenTextBox ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
 
 @code {
-	[Parameter]
-	public string? Label { get; set; }
+    [Parameter]
+    public string? Value { get; set; }
 
-	[Parameter]
-	public string? Value { get; set; }
+    private void HandleValueChanged(string value)
+    {
+        Value = value;
 
-	private void HandleValueChanged(string newValue)
-	{
-		this.Value = newValue;
-		this.RaiseValueChanged(this.Value, this.Label ?? "UNDEFINED");
-	}
+        if (ValueChanged.HasDelegate)
+        {
+            this.ValueChanged.InvokeAsync(new ValueChangedArguments(value, PropertyInfo!, AccessorInstance!));
+        }
+    }
 }

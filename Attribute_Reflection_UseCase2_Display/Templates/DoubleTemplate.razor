@@ -4,12 +4,10 @@
 @attribute [ValueKind(typeof(double))]
 @attribute [ReadOnly]
 
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenNumeric Disabled TValue="double" @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
-	</div>
-</div>
+
+@Label:
+<Radzen.Blazor.RadzenNumeric Disabled TValue="double" @bind-Value="Value"></Radzen.Blazor.RadzenNumeric>
+
 
 @code {
 	[Parameter]

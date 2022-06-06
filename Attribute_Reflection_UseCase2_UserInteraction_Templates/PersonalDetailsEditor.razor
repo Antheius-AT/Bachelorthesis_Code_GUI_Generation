@@ -24,6 +24,7 @@
 		};
 
 		<DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
+		<br />
 	}
 
 	if (Details.GetType().GetProperties().Any(p => p.GetCustomAttributes().Any(m => m.GetType() == typeof(EditableAttribute))))
@@ -173,7 +174,7 @@
 	{
 		// View is borrowed for demonstration and confirmation that changes were made to object.
 		await DialogService.OpenAsync("Successfully saved in database", ds =>
-	@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
+		@<div><PersonalDetailsComponent Details=Details></PersonalDetailsComponent></div>
 	);
 	}
 

@@ -14,14 +14,18 @@
 {
 	foreach (var property in Data.GetType().GetProperties())
 	{
-		var template = this.DecideTemplate(property);
+		TemplateResult template = DecideTemplate(property);
 		var parameters = new Dictionary<string, object>()
 		{
 			{"Value", template.Value},
-			{"Label", template.Label}
+			{"Label", template.Label},
+			{"ValueChanged", EventCallback.Factory.Create<ValueChangedArguments>(this, ValueChanged)},
+			{"PropertyInfo", property},
+			{"AccessorInstance", Data}
 		};
 
-		<DynamicComponent Type="template.TemplateType" Parameters="parameters"></DynamicComponent>
+		<DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
+		<br />
 	}
 
 	if (Data.GetType().GetCustomAttributes().Any(p => p.GetType() == typeof(AuthenticationFormAttribute)))
@@ -103,6 +107,15 @@
 		}
 
 		return templates.First();
+	}
+
+	private void ValueChanged(ValueChangedArguments arguments)
+	{
+		var info = arguments.SourceProperty;
+		var instance = arguments.AccessorInstance;
+		var newValue = arguments.Value;
+
+		info.SetValue(instance, newValue);
 	}
 
 	private async Task HandleLogin()

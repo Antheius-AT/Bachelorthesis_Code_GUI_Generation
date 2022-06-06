@@ -11,12 +11,24 @@
         <div class="row">
             @foreach (var item in Value.GetType().GetProperties())
             {
-                var value = item.GetValue(Value)!.ToString()!;
+                if (item.PropertyType == typeof(string))
+                {
+                    var value = item.GetValue(Value)!.ToString()!;
 
-                <div class="col-12 col-lg-6">
-                    @item.Name
-                    <RadzenTextBox Value="@item.GetValue(Value)!.ToString()" ValueChanged="(val) => HandleValueChanged(val, item, Value)" Placeholder="@item.Name"></RadzenTextBox>
-                </div>
+                    <div class="col-12 col-lg-6">
+                        @item.Name
+                        <RadzenTextBox Value="@value" ValueChanged="(val) => HandleValueChanged(val, item, Value)" Placeholder="@item.Name"></RadzenTextBox>
+                    </div>
+                }
+                else
+                {
+                    var value = Convert.ToInt32(item.GetValue(Value));
+
+                    <div class="col-12 col-lg-6">
+                        @item.Name
+                        <RadzenNumeric TValue="int" Value="@value" ValueChanged="(val) => HandleValueChanged(val, item, Value)" Placeholder="@item.Name"></RadzenNumeric>
+                    </div>
+                }
             }
         </div>
 
@@ -29,7 +41,7 @@
 
     private void HandleValueChanged(object value, PropertyInfo info, object instance)
     {
-        Value = value;
+        info.SetValue(instance, value);
 
         if (ValueChanged.HasDelegate)
         {

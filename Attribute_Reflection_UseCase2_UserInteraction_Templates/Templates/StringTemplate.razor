@@ -4,12 +4,10 @@
 @inherits TemplateBase
 @attribute [Editable]
 @attribute [ValueKind(typeof(string))]
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenTextBox Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)"></Radzen.Blazor.RadzenTextBox>
-	</div>
-</div>
+
+@Label:
+<Radzen.Blazor.RadzenTextBox Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)"></Radzen.Blazor.RadzenTextBox>
+
 
 @code {
 	[Parameter]

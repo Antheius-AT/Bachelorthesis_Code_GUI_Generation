@@ -5,17 +5,11 @@
 @attribute [Editable]
 @attribute [StringLength(20)]
 @attribute [ValueKind(typeof(string))]
-<div class=row>
-	<div class=col-12>
-		@Label:
-		<Radzen.Blazor.RadzenTextBox ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
-	</div>
-</div>
+
+@Label:
+<Radzen.Blazor.RadzenTextBox ValueChanged="(newValue) => HandleValueChanged(newValue)"></Radzen.Blazor.RadzenTextBox>
 
 @code {
-	[Parameter]
-	public string? Label { get; set; }
-
 	[Parameter]
 	public string? Value { get; set; }
 

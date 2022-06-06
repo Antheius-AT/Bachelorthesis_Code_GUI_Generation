@@ -18,6 +18,7 @@
         };        
         
         <DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
+        <br />
     }
 }
 
@@ -92,8 +93,6 @@
         bool isEditable = attributes.Any(a => a.GetType() == typeof(EditableAttribute));
         var stringLengthAttribute = attributes.FirstOrDefault(a => a.GetType() == typeof(StringLengthAttribute)) as StringLengthAttribute;
 
-        Console.WriteLine(isEditable);
-        Console.WriteLine(templates.Count());
         if (isEditable)
         {
             templates = templates.Where(t => t.GetCustomAttributes().Any(a => a.GetType() == typeof(EditableAttribute))).ToArray();

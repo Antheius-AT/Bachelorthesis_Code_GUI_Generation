@@ -1,4 +1,5 @@
-﻿@using Models.Metadata
+﻿@using Attribute_Reflection_UseCase2_UserInteraction_Templates.Helpers
+@using Models.Metadata
 
 @inherits TemplateBase
 @attribute [Editable]
@@ -6,14 +7,21 @@
 <div class=row>
 	<div class=col-12>
 		@Label:
-		<Radzen.Blazor.RadzenTextBox @bind-Value="Value"></Radzen.Blazor.RadzenTextBox>
+		<Radzen.Blazor.RadzenTextBox Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)"></Radzen.Blazor.RadzenTextBox>
 	</div>
 </div>
 
 @code {
 	[Parameter]
-	public string? Label { get; set; }
-
-	[Parameter]
 	public string? Value { get; set; }
+
+	private void HandleValueChanged(string value, object instance)
+    {
+        Value = value;
+
+        if (ValueChanged.HasDelegate)
+        {
+            this.ValueChanged.InvokeAsync(new ValueChangedArguments(value, PropertyInfo!, instance));
+        }
+    }
 }

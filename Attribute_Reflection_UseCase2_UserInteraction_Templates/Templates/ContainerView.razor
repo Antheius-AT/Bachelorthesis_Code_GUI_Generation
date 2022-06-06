@@ -1,22 +1,40 @@
-﻿@using Models.Metadata
+﻿@using Attribute_Reflection_UseCase2_UserInteraction_Templates.Helpers
+@using Models.Metadata
+@using System.Reflection
 @inherits TemplateBase
 @attribute [ValueKind(typeof(object))]
 @attribute [Editable]
 
 @if (Value != null)
 {
-    @foreach (var item in Value.GetType().GetProperties())
-    {
-        <span>@item.Name:</span>
-        <span>@item.GetValue(Value)</span>
-        <br />
-    }
+    <RadzenCard>
+        <div class="row">
+            @foreach (var item in Value.GetType().GetProperties())
+            {
+                var value = item.GetValue(Value)!.ToString()!;
+
+                <div class="col-12 col-lg-6">
+                    @item.Name
+                    <RadzenTextBox ValueChanged="(val) => HandleValueChanged(val, item, Value)" Placeholder="@item.Name"></RadzenTextBox>
+                </div>
+            }
+        </div>
+
+    </RadzenCard>
 }
 
 @code {
     [Parameter]
-    public object? Value{ get; set; }
+    public object? Value { get; set; }
 
-    [Parameter]
-    public string? Label{ get; set; }
+    private void HandleValueChanged(object value, PropertyInfo info, object instance)
+    {
+        Console.WriteLine("value change");
+        Value = value;
+
+        if (ValueChanged.HasDelegate)
+        {
+            this.ValueChanged.InvokeAsync(new ValueChangedArguments(value, info, instance));
+        }
+    }
 }

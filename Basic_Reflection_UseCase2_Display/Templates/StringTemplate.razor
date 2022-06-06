@@ -1,16 +1,11 @@
-﻿@if (Data != null)
+﻿@inherits TemplateBase
+
+@if (Data != null)
 {
-    <div class=row>
-        <div class=col-12>
-            @Label:
-            <Radzen.Blazor.RadzenTextBox Disabled Value=@Data.ToString()></Radzen.Blazor.RadzenTextBox>
-        </div>
-    </div>
+    @Label;
+    <Radzen.Blazor.RadzenTextBox Disabled Value=@Data.ToString()></Radzen.Blazor.RadzenTextBox>
 }
 @code {
- [Parameter]
-    public object? Data { get; set; }
-
     [Parameter]
-    public string? Label { get; set; }
+    public string? Data { get; set; }
 }

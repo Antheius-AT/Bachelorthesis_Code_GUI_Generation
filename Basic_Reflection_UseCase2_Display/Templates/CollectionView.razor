@@ -1,4 +1,6 @@
-﻿@if (Data != null && Data.Any())
+﻿@inherits TemplateBase
+
+@if (Data != null && Data.Any())
 {
 	<span>@Label:</span>
 	<br />
@@ -30,7 +32,4 @@
 @code {
 	[Parameter]
 	public IEnumerable<object>? Data { get; set; }
-
-	[Parameter]
-	public string? Label { get; set; }
 }

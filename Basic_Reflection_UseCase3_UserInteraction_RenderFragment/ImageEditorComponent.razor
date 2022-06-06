@@ -1,26 +1,90 @@
 ﻿@using Models
+@using Models.Metadata
 @using Models.UseCases.IncludingUserInteraction.UseCase3
+@using System.Collections
+@using System.Reflection
+@using Radzen
 
-@if (Tools != null)
+@if (ToolBox != null)
 {
-    @foreach (var item in Tools.GetType().GetProperties())
+    foreach (var item in ToolBox.GetType().GetProperties())
     {
-
+        @GetRenderFragment(item, ToolBox)
     }
+
+    <Radzen.Blazor.RadzenImage Style="width:60%" Path="https://farm6.staticflickr.com/5591/15008867125_b61960af01_h.jpg"></Radzen.Blazor.RadzenImage>
 }
 
 @code {
     [Parameter]
-    public EditToolBox? Tools { get; set; }
+    public EditToolBox? ToolBox { get; set; }
 
     [Parameter]
-    public PerformanceMonitor? Monitor { get; set; }
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            Monitor!.Stop();
+            PerformanceMonitor!.Stop();
         }
     }
-}
+
+    private RenderFragment GetRenderFragment(PropertyInfo info, object instance)
+    {
+        if (info.PropertyType == typeof(int))
+        {
+            return GetIntegerRenderFragment(info, instance);
+        }
+        else if (info.PropertyType == typeof(Tools))
+        {
+            return GetToolSelectionFragment(info, instance);
+        }
+        else
+        {
+            return GetActionTypeFragment(info, instance);
+        }
+    }
+
+    private RenderFragment GetIntegerRenderFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<int>(info, instance);
+
+        return new RenderFragment(
+    @<div class=mt-3>@info.Name <Radzen.Blazor.RadzenNumeric Min="1" Max="5" Value="@value" TValue=int ValueChanged=@((val) => ValueChanged(val, info, instance)) class=mt-3></Radzen.Blazor.RadzenNumeric></div>
+        );
+    }
+
+    private RenderFragment GetToolSelectionFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<Tools>(info, instance);
+
+        return new RenderFragment(
+    @<div class=mt-3>@info.Name <Radzen.Blazor.RadzenDropDown Data="Enum.GetValues<Tools>()" @bind-Value=ToolBox!.SelectedTool TValue=Tools class=mt-3></Radzen.Blazor.RadzenDropDown></div>
+    );
+    }
+
+    private RenderFragment GetActionTypeFragment(PropertyInfo info, object instance)
+    {
+        var value = GetPropertyValue<Action>(info, instance);
+
+        return new RenderFragment(
+    @<div class="mt-3"><RadzenButton Click="value" Text="@info.Name"></RadzenButton></div>
+    );
+    }
+
+    private TOutput GetPropertyValue<TOutput>(PropertyInfo property, object instance)
+    {
+        if (property.PropertyType != typeof(TOutput))
+        {
+            throw new ArgumentException(nameof(property), "Property type did not match generic type parameter");
+        }
+
+        return (TOutput)property.GetValue(instance)!;
+    }
+
+    private void ValueChanged(object value, PropertyInfo property, object instance)
+    {
+        property.SetValue(instance, value);
+    }
+    }

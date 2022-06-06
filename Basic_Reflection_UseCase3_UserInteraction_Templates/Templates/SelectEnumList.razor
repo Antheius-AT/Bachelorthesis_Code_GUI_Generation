@@ -1,0 +1,25 @@
+﻿@using Basic_Reflection_UseCase3_UserInteraction_Templates.Helpers
+@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+@inherits TemplateBase
+
+@attribute [Editable]
+@attribute [ValueKind(typeof(Enum))]
+
+@Label
+<Radzen.Blazor.RadzenDropDown TValue="Tools" Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)" Data="Enum.GetValues<Tools>()"></Radzen.Blazor.RadzenDropDown>
+
+@code {
+    [Parameter]
+    public Tools Value { get; set; }
+
+    private void HandleValueChanged(Tools value, object instance)
+    {
+        Value = value;
+
+        if (ValueChanged.HasDelegate)
+        {
+            this.ValueChanged.InvokeAsync(new ValueChangedArguments(value, PropertyInfo!, instance));
+        }
+    }
+}

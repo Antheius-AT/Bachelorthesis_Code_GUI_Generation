@@ -1,0 +1,72 @@
+﻿@using Basic_Reflection_UseCase3_UserInteraction_Templates.Helpers
+@using Basic_Reflection_UseCase3_UserInteraction_Templates.Templates
+@using Models
+@using Models.Metadata
+@using Models.UseCases.IncludingUserInteraction.UseCase3
+@using System.Reflection
+@using System.Collections
+
+@if (ToolBox != null)
+{
+    foreach (var propertyInfo in ToolBox.GetType().GetProperties())
+    {
+        TemplateResult template = GetTemplateResult(propertyInfo);
+        var parameters = new Dictionary<string, object>()
+        {
+            {"Value", template.Value},
+            {"Label", template.Label},
+            {"ValueChanged", EventCallback.Factory.Create<ValueChangedArguments>(this, ValueChanged)},
+            {"PropertyInfo", propertyInfo},
+            {"AccessorInstance", ToolBox}
+        };
+
+        <DynamicComponent Type=template.TemplateType Parameters="parameters"></DynamicComponent>
+    }
+
+    <Radzen.Blazor.RadzenImage Style="width:60%" Path="https://farm6.staticflickr.com/5591/15008867125_b61960af01_h.jpg"></Radzen.Blazor.RadzenImage>
+}
+
+@code {
+    [Parameter]
+    public EditToolBox? ToolBox { get; set; }
+
+    [Parameter]
+    public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+    private Dictionary<Type, Type>? typeMap;
+
+    protected override void OnInitialized()
+    {
+        typeMap = new Dictionary<Type, Type>()
+        {
+            {typeof(Tools), typeof(SelectEnumList)},
+            {typeof(int), typeof(IntegerTemplate)},
+            {typeof(Action), typeof(ActionTemplate)}
+        };
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            PerformanceMonitor!.Stop();
+        }
+    }
+
+    private TemplateResult GetTemplateResult(PropertyInfo property)
+    {
+        var controlType = typeMap![property.PropertyType];
+        var value = property.GetValue(ToolBox);
+
+        return new TemplateResult(controlType, value!, property.Name);
+    }
+
+    private void ValueChanged(ValueChangedArguments arguments)
+    {
+        var info = arguments.SourceProperty;
+        var instance = arguments.AccessorInstance;
+        var newValue = arguments.Value;
+
+        info.SetValue(instance, newValue);
+    }
+}

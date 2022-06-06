@@ -19,6 +19,7 @@
 		};
 		
 		<DynamicComponent Type=result.TemplateType Parameters="parameters"></DynamicComponent>
+		<br />
 	}
 }
 
@@ -28,6 +29,17 @@
 
 	[Parameter]
 	public PerformanceMonitor? PerformanceMonitor { get; set; }
+
+	private Dictionary<Type, Type>? typeMap;
+
+	protected override void OnInitialized()
+	{
+		typeMap = new Dictionary<Type, Type>()
+		{
+			{typeof(string), typeof(StringTemplate)},
+			{typeof(int), typeof(IntegerTemplate)},
+		};
+	}
 
 	protected override void OnAfterRender(bool firstRender)
 	{
@@ -39,13 +51,7 @@
 
 	private TemplateResult GetTemplateResult(PropertyInfo property)
 	{
-		var typeMap = new Dictionary<Type, Type>()
-		{
-			{typeof(string), typeof(StringTemplate)},
-			{typeof(int), typeof(IntegerTemplate)},
-		};
-
-		if (typeMap.ContainsKey(property.PropertyType))
+		if (typeMap!.ContainsKey(property.PropertyType))
 		{
 			var controlType = typeMap[property.PropertyType];
 			return new TemplateResult(controlType, property.GetValue(Details), property.Name);

@@ -1,0 +1,25 @@
+﻿@using Basic_Reflection_UseCase3_UserInteraction_Templates.Helpers
+@using Models.Metadata
+@using System.Reflection
+@inherits TemplateBase
+@attribute [ValueKind(typeof(int))]
+@attribute [Editable]
+
+@Label:
+<Radzen.Blazor.RadzenNumeric TValue="int" Value="@Value" ValueChanged="(val) => HandleValueChanged(val, AccessorInstance!)"></Radzen.Blazor.RadzenNumeric>
+
+@code {
+    [Parameter]
+    public int Value { get; set; }
+
+    private void HandleValueChanged(int value, object instance)
+    {
+        Console.WriteLine("value change");
+        Value = value;
+
+        if (ValueChanged.HasDelegate)
+        {
+            this.ValueChanged.InvokeAsync(new ValueChangedArguments(value, PropertyInfo!, instance));
+        }
+    }
+}

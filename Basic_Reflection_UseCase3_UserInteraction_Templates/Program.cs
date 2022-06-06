@@ -1,4 +1,4 @@
-using Basic_Reflection_UseCase3_UserInteraction;
+using Basic_Reflection_UseCase3_UserInteraction_Templates;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

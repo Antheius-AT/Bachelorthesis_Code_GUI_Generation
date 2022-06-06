@@ -1,7 +1,9 @@
 ﻿using Models.Metadata;
+using Models.Metadata.Wellknown;
 
 namespace Models.UseCases.IncludingUserInteraction.UseCase3
 {
+    [ImageEditor]
     public class EditToolBox
     {
         public EditToolBox()

@@ -6,7 +6,7 @@
 @attribute [ValueKind(typeof(Enum))]
 
 @Label
-<Radzen.Blazor.RadzenDropDown TValue="Tools" @bind-Value=Value Data="Enum.GetNames<Tools>()"></Radzen.Blazor.RadzenDropDown>
+<Radzen.Blazor.RadzenDropDown TValue="Tools" @bind-Value=Value Data="Enum.GetValues<Tools>()"></Radzen.Blazor.RadzenDropDown>
 
 @code {
     [Parameter]

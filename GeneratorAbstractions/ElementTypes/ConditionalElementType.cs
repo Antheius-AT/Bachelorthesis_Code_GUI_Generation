@@ -14,9 +14,6 @@ namespace GeneratorSharedComponents
 
         public InterfaceElementType<TModelType> ElementType { get; }
 
-        /// <summary>
-        /// Rethink how to use this, wont stay a string.
-        /// </summary>
         public string ConstraintPropertyName { get; }
 
         public override RenderFragment Accept(ISpecificationElementVisitor<TModelType> visitor)

@@ -63,14 +63,12 @@ namespace GUI_Generator_UseCase3_Interaction.Helpers
         {
             var attributes = element.Attributes();
 
-            var label = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
-            var typeRef = attributes.SingleOrDefault(a => a.Name.LocalName.ToLower() == "actiontyperef")?.Value ?? throw new ArgumentException(nameof(element), "Action element requires an action type ref to another element");
+            var bindingPath = attributes.Single(a => a.Name == "Binding")?.Value ?? throw new ArgumentException(nameof(element), "Element missing Binding attribute");
+            var label = element.Attributes().SingleOrDefault(a => a.Name.LocalName.ToLower() == "label")?.Value;
 
-            var referencedElement = root.Descendants().SingleOrDefault(e => e.Attributes().Any(a => a.Name.LocalName.ToLower() == "name" && a.Value == typeRef)) ?? throw new ArgumentException(nameof(root), "Root element did not contain element that action reference was pointing to");
+            InterfaceSpecificationElement<EditToolBox>? actionContentElement = null;
 
-            var actionContentElement = TransformXmlNodeToElement(referencedElement, root);
-
-            return new InterfaceSpecificationElement<EditToolBox>(new ActionElementType<EditToolBox>(actionContentElement.ElementType, string.Empty, label));
+            return new InterfaceSpecificationElement<EditToolBox>(new ActionElementType<EditToolBox>(actionContentElement?.ElementType, bindingPath, label));
         }
 
         private InterfaceSpecificationElement<EditToolBox> ParseFloatType(XElement element)

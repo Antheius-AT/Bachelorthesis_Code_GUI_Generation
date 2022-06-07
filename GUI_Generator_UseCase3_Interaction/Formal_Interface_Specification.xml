@@ -1,12 +1,8 @@
 ﻿<ImageView type="root">
-	<brush type="string" Name="brush" XmlIgnore="true"></brush>
-	<eraser type="string" Name="eraser" XmlIgnore="true"></eraser>
-	<setting type="string" Name="stroke" XmlIgnore="true"></setting>
-
 	<ToolSelection type="container">
-		<Tool type="action" ActionTypeRef="brush"></Tool>
-		<Tool type="action" ActionTypeRef="eraser"></Tool>
-		<Tool type="action" ActionTypeRef="stroke"></Tool>
-		<Tool type="action" ActionTypeRef=""></Tool>
+		<StrokeWidth type="int" Binding="StrokeWidth"></StrokeWidth>
+		<SelectedTool type="int" Binding="SelectedTool"></SelectedTool>
+		<action Type="action" Binding="NewImageCommand"></action>
+		<action Type="action" Binding="SaveImageCommand"></action>
 	</ToolSelection>
 </ImageView>

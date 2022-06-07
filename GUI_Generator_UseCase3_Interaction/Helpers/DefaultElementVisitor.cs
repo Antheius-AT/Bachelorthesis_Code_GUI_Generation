@@ -29,8 +29,7 @@ namespace GUI_Generator_UseCase3_Interaction.Helpers
         public RenderFragment Visit(StringElementType<EditToolBox> element)
         {
             CheckReferences();
-            // Sollte hier noch ein callback einbauen das einen geänderten Wert zurückschreibt
-            // aber nur für controls die auch editiert werden können.
+
             var property = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException($"Specified instance did not contain property associated with the specified binding {element.Binding}");
 
             return BuildRenderTree(property, element);
@@ -63,14 +62,23 @@ namespace GUI_Generator_UseCase3_Interaction.Helpers
         {
             CheckReferences();
 
-            var actionTypeFragment = element.ActionType.Accept(this);
+            var command = concreteData!.GetType().GetProperties().SingleOrDefault(p => p.Name == element.Binding) ?? throw new InvalidOperationException("Specified binding was not found for trigger");
+          
+            if (command.PropertyType != typeof(Action))
+            {
+                throw new InvalidOperationException("Binding was found for action type but C# type was not valid. Expected an Action delegate.");
+            }
+
+            var action = command.GetValue(concreteData) as Action;
+
+            var actionTypeFragment = element.ActionType?.Accept(this);
 
             return new RenderFragment(builder =>
             {
                 builder.AddContent(10, actionTypeFragment);
                 builder.OpenComponent(15, typeof(ActionButtonWidget));
                 builder.AddAttribute(20, "Label", element.Label);
-                builder.AddAttribute(30, "Action", EventCallback.Factory.Create(this, () => throw new Exception()));
+                builder.AddAttribute(30, "Action", EventCallback.Factory.Create(this, () => action!.Invoke()));
                 builder.CloseComponent();
             });
         }

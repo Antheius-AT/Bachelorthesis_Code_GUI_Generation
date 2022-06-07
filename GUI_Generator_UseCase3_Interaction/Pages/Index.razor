@@ -54,8 +54,13 @@ else
     {
         var rootelement = new XElement("PersonalDetails", new XAttribute("Type", "root"));
 
-        var selectionContainer = new XElement("ToolSelection", new XAttribute("type", "container"));
+        var selectionContainer = new XElement("ToolSelection", new XAttribute("type", "container"), new XAttribute("Label", "Image editing tools"));
+        var widthElement = new XElement("StrokeWidth", new XAttribute("type", "int"), new XAttribute("Binding", "StrokeWidth"), new XAttribute("Label", "Stroke width"));
+        var toolElement = new XElement("SelectedTool", new XAttribute("type", "int"), new XAttribute("Binding", "SelectedTool"), new XAttribute("Label", "Selected tool"));
+        var saveActionElement = new XElement("action", new XAttribute("type", "action"), new XAttribute("Binding", "SaveImageCommand"), new XAttribute("Label", "Save image"));
+        var loadActionElement = new XElement("action", new XAttribute("type", "action"), new XAttribute("Binding", "NewImageCommand"), new XAttribute("Label", "Load image"));
 
+        selectionContainer.Add(toolElement, widthElement, saveActionElement, loadActionElement);
         rootelement.Add(selectionContainer);
 
         return rootelement;

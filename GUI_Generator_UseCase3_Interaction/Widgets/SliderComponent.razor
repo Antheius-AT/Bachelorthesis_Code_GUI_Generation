@@ -2,11 +2,32 @@
 @using Models.Metadata
 
 @inherits WidgetBase
-@attribute [ValueKind(typeof(float))]
+@attribute [ValueKind(typeof(int))]
 @attribute [Editable]
 
+@Label
 <Radzen.Blazor.RadzenSlider Min="0" Max="10" @bind-Value="Value"></Radzen.Blazor.RadzenSlider>
+@Value
+
 @code {
+	private int value;
+
 	[Parameter]
-	public float Value { get; set; }
+	public int Value
+	{
+		get
+		{
+			return value;
+		}
+
+		set
+		{
+			this.value = value;
+
+			if (ValueChanged.HasDelegate)
+			{
+				ValueChanged.InvokeAsync(new ValueChangedArgs(value));
+			}
+		}
+	}
 }

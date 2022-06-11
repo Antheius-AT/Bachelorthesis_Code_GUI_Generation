@@ -56,7 +56,7 @@
         var value = Convert.ToDouble(info.GetValue(Model));
 
         return new RenderFragment(
-        @<div class="@(isPoweredOn ? "mt-3" : "visually-hidden mt-3")"><RadzenNumeric TValue="double" @bind-Value="value" Disabled=@isReadOnly></RadzenNumeric></div>
+        @<div class="@(isPoweredOn ? "mt-3" : "visually-hidden mt-3")"><span>@info.Name: </span><RadzenNumeric TValue="double" @bind-Value="value" Disabled=@isReadOnly></RadzenNumeric></div>
     );
     }
 
@@ -70,7 +70,7 @@
         var value = Convert.ToBoolean(info.GetValue(Model));
 
         return new RenderFragment(
-        @<div class="mt-3"><RadzenSwitch Value="value" Disabled=@isReadOnly ValueChanged="@((changed) => HandleValueChanged(isDataToggle, changed))"></RadzenSwitch></div>
+        @<div class="mt-3"><span>@info.Name: </span><RadzenSwitch Value="value" Disabled=@isReadOnly ValueChanged="@((changed) => HandleValueChanged(isDataToggle, changed))"></RadzenSwitch></div>
     );
     }
 

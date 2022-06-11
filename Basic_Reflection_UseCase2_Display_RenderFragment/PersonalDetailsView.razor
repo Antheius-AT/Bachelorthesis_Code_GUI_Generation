@@ -33,7 +33,7 @@
             var value = info.GetValue(instance)?.ToString() ?? string.Empty;
 
             return new RenderFragment(
-    @<div class="mt-3"><RadzenTextBox @bind-Value="value"></RadzenTextBox></div>
+    @<div class="mt-3"><span>@info.Name</span><RadzenTextBox @bind-Value="value"></RadzenTextBox></div>
     );
         }
         else if (info.PropertyType == typeof(int))
@@ -41,7 +41,7 @@
             var value = Convert.ToInt32(info.GetValue(instance));
 
             return new RenderFragment(
-        @<div class="mt-3"><RadzenNumeric @bind-Value="value"></RadzenNumeric></div>
+        @<div class="mt-3"><span>@info.Name</span><RadzenNumeric @bind-Value="value"></RadzenNumeric></div>
     );
         }
         else if (info.PropertyType.IsAssignableTo(typeof(IEnumerable)))

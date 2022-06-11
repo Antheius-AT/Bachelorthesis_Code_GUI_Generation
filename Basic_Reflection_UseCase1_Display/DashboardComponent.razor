@@ -53,20 +53,13 @@
 
 	private TemplateResult GetTemplateResult(PropertyInfo property)
 	{
-		Type[] basics = new Type[]
-			{
-			typeof(string),
-			typeof(double),
-			typeof(bool),
-			};
-
-		if (basics.Contains(property.PropertyType))
+		if (typeMap!.ContainsKey(property.PropertyType))
 		{
 			return new TemplateResult(typeMap![property.PropertyType], property.GetValue(Model), property.Name);
 		}
 		else
 		{
-			throw new Exception();
+			throw new ArgumentException(nameof(property), "Property type not registered");
 		}
 	}
 }

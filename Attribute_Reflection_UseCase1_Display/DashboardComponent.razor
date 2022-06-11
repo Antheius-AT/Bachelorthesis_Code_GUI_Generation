@@ -95,7 +95,7 @@
 
 		if (templates.Count() > 1)
 		{
-			throw new InvalidOperationException("Property meta data not specific enough. Could not map to single template");
+			throw new InvalidOperationException("Meta data not specific enough. Multiple templates found");
 		}
 		else if (!templates.Any())
 		{
